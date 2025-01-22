@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FeedBack Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <meta property="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="ico.ico" type="image/x-icon" />
+    
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/animate.css@4.1.1/animate.css"
+    />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;display=swap"
+      data-tag="font"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css"
+    />
+
+  </head>
+  <body>
+    <link rel="stylesheet" href="./index.css">  
+    <link rel="stylesheet" href="./style.css">  
+    <link rel="stylesheet" href="./profile.css">  
+    <div>
+      <a href="#main-content" class="skip-link">Skip to main content</a>
+      <div class="home-container">
+        <header class="main-header" role="banner">
+          <div class="header-content">
+            <a href="/index.html" class="logo-link">
+              <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80" class="logo">
+            </a>
+            <div data-thq="navbar-nav" class="navbar-desktop-menu">
+              <nav class="navbar-links" role="navigation" aria-label="Main navigation">
+                  <ul class="nav-list">
+                      <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
+                      <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
+                      <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
+                      <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
+                      <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
+                      <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
+                  </ul>
+              </nav>
+              <div class="user-actions" role="navigation" aria-label="User menu" hidden>
+                <a href="/profile.html" button class="button-outline">
+                  <span class="body-small">Log in</span>
+                </a>
+                <a href="/signin.html" button class="button-filled">
+                  <span class="body-small">sign up</span>
+                </a>
+              </div>
+              <div class="user-actions" role="navigation" aria-label="User menu">
+                <button class="notifications-btn" aria-label="Notifications">
+                  <a href="/profile.html" aria-label="Notifications">
+                    <img src="profile_sml.png" alt="profile" width="43" height="43">
+                    <span class="visually-hidden">Notifications</span></a>
+                </button>
+                <!-- <a href="/index.html" class="logout-btn" aria-label="Log out">Log Out</a> -->
+            </div>
+
+              <div data-thq="burger-menu" class="navbar-burger-menu">
+              <svg viewBox="0 0 1024 1024" class="navbar-icon">
+                <path d="M128 554.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 298.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 810.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667z"></path>
+              </svg>              
+              </div>
+              <div data-thq="mobile-menu" class="navbar-mobile-menu">
+              <div class="navbar-nav">
+                <div class="navbar-top">
+                  <img alt="Feedback Hub Logo" src="icon.png" class="navbar-logo">
+                  <div data-thq="close-menu" class="navbar-close-menu">
+                    <svg viewBox="0 0 1024 1024" class="navbar-icon">
+                      <path d="M810 274l-238 238 238 238-60 60-238-238-238 238-60-60 238-238-238-238 60-60 238 238 238-238z"></path>
+                    </svg>
+                  </div>
+                </div>
+                <nav class="navbar-links1">
+                  <span class="link body-small">
+                    <span>Home</span>
+                  </span>
+                  <span class="link body-small">
+                    <span>Reviews</span>
+                  </span>
+                  <span class="link body-small">
+                    <span>About Us</span>
+                  </span>
+                  <span class="link body-small">
+                    <span>Contact Us</span>
+                  </span>
+                </nav>
+                </div>
+                <div class="navbar-buttons">
+                <button class="button-filled">Login</button>
+                <button class="button-outline">Register</button>
+                </div>
+              </div>
+            </div>  
+        </header>
+      </div>
+      <div id="main-content" class="main-contant">
+        <div class="steps-container">
+          <div class="hero-header">
+          <div class="hero-column section-padding section-max-width">
+            <div class="hero-content">
+              <h1 class="hero-text heading-1">
+                <span>Welcome to Feedback Hub</span>
+              </h1>
+              <p class="hero-text1 body-large">
+                <span>
+                  Discover the best product reviews from various sites all in
+                  one place. Make informed decisions before making a purchase.
+                </span>
+              </p>
+            </div>
+            <div class="hero-actions">
+                <a href="/signup.html" button class="button-filled">
+                <span class="body-small" >Sign Up</span>
+              </a>
+              <a href="#hover-content" button class="button-outline">
+                <span class="body-small">Learn More</span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="hero-container" id="hero-container">
+          <div class="hero-content1">
+            <div class="hero-row-container animated-group-container-horizontal mask-image-horizontal"id="hover-content">
+              <div class="animated-group-horizontal">
+                <img alt="Hero Image" src="placeholder1.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder2.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder3.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder4.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">  
+              </div>
+              <div class="animated-group-horizontal">
+                <img alt="Hero Image" src="placeholder1.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder2.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder3.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder4.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">  
+              </div>
+            </div>
+            <div class="hero-row-container animated-group-container-horizontal mask-image-horizontal" >
+              <div class="animated-group-horizontal-reverse">
+                <img alt="Hero Image" src="placeholder5.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder6.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder7.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder8.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">  
+              </div>
+              <div class="animated-group-horizontal-reverse">
+                <img alt="Hero Image" src="placeholder5.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder6.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder7.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">
+                <img alt="Hero Image" src="placeholder8.jpg" class="hero-placeholder-image img-ratio-1-1 img-scale">  
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-padding" id="features-content">
+          <div class="features1-container1 section-max-width">
+            <div class="features1-image-container">
+              <img alt="Product Review Image" src="placeholder9.jpg"  class="features1-image img-ratio-16-9">
+            </div>
+            <div class="features1-tabs-menu">
+              <div class="features1-tab-horizontal">
+                <div class="features1-divider-container">
+                  <div class="features1-container2"></div>
+                </div>
+                <div class="features1-content">
+                  <h2 class="heading-2"><span>Product Reviews</span></h2>
+                  <span class="body-small">
+                    <span>Find concise reviews for products</span>
+                  </span>
+                </div>
+              </div>
+              <div class="features1-tab-horizontal1">
+                <div class="features1-divider-container">
+                  <div class="features1-container2"></div>
+                </div>
+                <div class="features1-content1">
+                  <h2 class="heading-2"><span>Product Ratings</span></h2>
+                  <span class="body-small">
+                    <span>Easy access to product ratings</span>
+                  </span>
+                </div>
+              </div>
+              <div class="features1-tab-horizontal2">
+                <div class="features1-divider-container">
+                  <div class="features1-container2"></div>
+                </div>
+                <div class="features1-content2">
+                  <h2 class="heading-2"><span>Aggregated Reviews</span></h2>
+                  <span class="body-small">
+                    <span>Read short reviews from various sites</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-padding" id="community-content">
+          <div class="section-max-width">
+            <div class="cta-accent2-bg  ">
+              <div class="cta-accent1-bg">
+                <div class="cta-container1">
+                  <div class="cta-content">
+                    <span class="heading-2">
+                      <span>Join the Feedback Hub community!</span>
+                    </span>
+                    <p class="body-large">
+                      <span>
+                        Sign up now to start sharing your product reviews and
+                        reading reviews from other users.
+                      </span>
+                    </p>
+                  </div>
+                  <div class="cta-actions">
+                    <a href="/signup.html" type="button" class="button-filled">
+                      <span>Sign Up</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-padding"id="feedback-reviews">
+          <div class="features2-container1 section-max-width">
+            <div class="features2-tabs-menu">
+              <div class="features2-tab-horizontal">
+                <div class="features2-divider-container1">
+                  <div class="features2-container2"></div>
+                </div>
+                <div class="features2-content1">
+                  <h2 class="heading-2">
+                    <span>Get Accurate Reviews</span>
+                  </h2>
+                  <span class="body-small">
+                    <span>
+                      We provide accurate reviews with various sources and users.all the reviews verified by FeedbackHub.
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="features2-tab-horizontal">
+                <div class="features2-divider-container1">
+                  <div class="features2-container2"></div>
+                </div>
+                <div class="features2-content1">
+                  <h2 class="heading-2">
+                    <span>Product Reviews Aggregator</span>
+                  </h2>
+                  <span class="body-small">
+                    <span>
+                      Get short reviews from various sites for products in one
+                      place.
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="features2-tab-horizontal">
+                <div class="features2-divider-container1">
+                  <div class="features2-container2"></div>
+                </div>
+                <div class="features2-content1">
+                  <h2 class="heading-2">
+                    <span>Verified</span>
+                  </h2>
+                  <span class="body-small">
+                    <span>
+                      All the reviews verifird and shorted by AI technology to short and find the correct reviwes for your product place.
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="features2-tab-horizontal">
+                <div class="features2-divider-container2">
+                  <div class="features2-container4"></div>
+                </div>
+              </div>
+            </div>
+            <div class="features2-image-container">
+              <img alt="feature 1" src="/placeholder10.jpg" class="features2-image img-ratio-16-9">
+            </div>
+          </div>
+        </div>
+        <div class="steps-container section-padding">
+          <div class="steps-max-width section-max-width">
+            <div class="steps-container1 grid-2">
+              <div class="steps-section-header">
+                <h2 class="heading-2">
+                  Discover the Power of Our Products
+                </h2>
+                <p class="body-large">
+                  the Power of Our Products reviwes and make informed decisions with ease. Our platform aggregates reviews from multiple sources, ensuring you get a comprehensive view of each product.
+                </p>
+                <div class="steps-actions" >
+                  <a href="#" class="button-filled button-animated steps-button">
+                    <span class="body-small">Explore More</span>
+                  </a>
+                </div>
+              </div>
+              <div class="steps-container2">
+                <div class="steps-container3 flex-card">
+                  <h2 class="heading-2">
+                    <span>Sign Up for an Account</span>
+                  </h2>
+                  <span class="steps-text01 body-small">
+                    <span>
+                      Create a new account by providing your email address and
+                      setting up a password.
+                    </span>
+                  </span>
+                  <label class="steps-text02 heading-3">01</label>
+                </div>
+                <div class="steps-container4 flex-card">
+                  <h2 class="heading-2">
+                    <span>Search for Products</span>
+                  </h2>
+                  <span class="steps-text01 body-small">
+                    <span>
+                      Use the search bar to find the product you want to read
+                      reviews about.
+                    </span>
+                  </span>
+                  <label class="steps-text02 heading-3">02</label>
+                </div>
+                <div class="steps-container3 flex-card">
+                  <h2 class="heading-2"><span>Read Short Reviews</span></h2>
+                  <span class="steps-text01 body-small">
+                    <span>
+                      Browse through concise reviews from various sites to get a
+                      quick overview of the product.
+                    </span>
+                  </span>
+                  <label class="steps-text02 heading-3">03</label>
+                </div>
+                <div class="steps-container4 flex-card">
+                  <h2 class="heading-2">
+                    <span>Login to Access More Features</span>
+                  </h2>
+                  <span class="steps-text01 body-small">
+                    <span>
+                      Login to your account to save products, write your own
+                      reviews, and interact with other users.
+                    </span>
+                  </span>
+                  <label class="steps-text02 heading-3">04</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="section-padding">
+          <div class="testimonial-max-width section-max-width">
+            <div class="testimonial-container">
+              <h2 class="heading-2"><span>Testimonials</span></h2>
+              <span class="body-small">
+                <span>
+                  Feedback Hub is the go-to place for honest and concise product
+                  reviews. I love how easy it is to find the information I need
+                  before making a purchase.
+                </span>
+              </span>
+            </div>
+            <div class="grid-2">
+              <div class="animated-card-bg-2">
+                <div class="animated-card-bg-1">
+                  <div data-animated="true" class="flex-card">
+                    <div class="testimonial-container01">
+                      <img alt="Image" src="/profile1.jpeg" class="testimonial-image">
+                      <span class="testimonial-container02">
+                        <strong class="body-large">
+                          <span>John Doe</span>
+                        </strong>
+                        <span class="body-small">
+                          <span>Tech Enthusiast</span>
+                        </span>
+                      </span>
+                    </div>
+                    <span class="testimonial-text body-small">
+                      <span>
+                        5 stars - Excellent platform for product reviews!
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="animated-card-bg-2">
+                <div class="animated-card-bg-1">
+                  <div data-animated="true" class="flex-card">
+                    <div class="testimonial-container01">
+                      <img alt="Image" src="/profile1.jpeg" class="testimonial-image">
+                      <div class="testimonial-container02">
+                        <strong class="body-large">
+                          <span>Jane Smith</span>
+                        </strong>
+                        <span class="body-small">
+                          <span>Fashion Blogger</span>
+                        </span>
+                      </div>
+                    </div>
+                    <span class="testimonial-text body-small">
+                      <span>
+                        I rely on Feedback Hub for quick insights into the
+                        latest fashion trends and product recommendations. It's
+                        a time-saver!
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="animated-card-bg-2">
+                <div class="animated-card-bg-1">
+                  <div data-animated="true" class="flex-card">
+                    <div class="testimonial-container01">
+                      <img alt="Image" src="/profile1.jpeg" class="testimonial-image">
+                      <div class="testimonial-container02">
+                        <strong class="body-large">
+                          <span>David Johnson</span>
+                        </strong>
+                        <span class="body-small">
+                          <span>Gadget Geek</span>
+                        </span>
+                      </div>
+                    </div>
+                    <span class="testimonial-text body-small">
+                      <span>
+                        Feedback Hub has helped me make informed decisions on
+                        tech purchases. The reviews are spot on and saved me
+                        from buying subpar products.
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="animated-card-bg-2">
+                <div class="animated-card-bg-1">
+                  <div data-animated="true" class="flex-card">
+                    <div class="testimonial-container01">
+                      <img alt="Image" src="/profile1.jpeg" class="testimonial-image">
+                      <div class="testimonial-container02">
+                        <strong class="body-large">
+                          <span>John Doe</span>
+                        </strong>
+                        <span class="body-small">
+                          <span>Tech Enthusiast</span>
+                        </span>
+                      </div>
+                    </div>
+                    <span class="testimonial-text body-small">
+                      <span>
+                        5 stars - Excellent platform for product reviews!
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="contact-contact20 section-padding" id="contact-content">
+          <div class="contact-max-width section-max-width" id="contact-contant">
+            <div class="contact-section-title">
+              <span class="body-small">
+                <span>We are here to assist you with any inquiries.</span>
+              </span>
+              <div class="contact-content" >
+                <h2 class="heading-2"><span>Contact Us</span></h2>
+                <p class="contact-text body-large">
+                  <span>Have a question or feedback? Reach out to us!</span>
+                </p>
+              </div>
+            </div>
+            <div class="contact-row">
+              <div class="contact-content">
+                <svg viewBox="0 0 1024 1024" class="icon-medium">
+                  <path d="M854 342v-86l-342 214-342-214v86l342 212zM854 170q34 0 59 26t25 60v512q0 34-25 60t-59 26h-684q-34 0-59-26t-25-60v-512q0-34 25-60t59-26h684z"></path>
+                </svg>
+                <h3 class="contact-text heading-3">Email</h3>
+                <p class="contact-text body-large">
+                  Feel free to drop by our office during business hours.
+                </p>
+                  <span>contact@feedbackhub.com</span>
+              </div>
+              <div class="contact-content">
+                <svg viewBox="0 0 1024 1024" class="icon-medium">
+                  <path d="M282 460q96 186 282 282l94-94q20-20 44-10 72 24 152 24 18 0 30 12t12 30v150q0 18-12 30t-30 12q-300 0-513-213t-213-513q0-18 12-30t30-12h150q18 0 30 12t12 30q0 80 24 152 8 26-10 44z"></path>
+                </svg>
+                <div class="contact-contact-info1">
+                  <div class="contact-content">
+                    <h3 class="contact-text heading-3">Phone</h3>
+                    <p class="contact-text body-large">
+                        Follow us on social media for updates and more.
+                    </p>
+                  </div>
+                  <span class="contact-phone body-small">
+                    <span>+1-123-456-7890</span>
+                  </span>
+                </div>
+              </div>
+              <div class="contact-content">
+                <svg viewBox="0 0 1024 1024" class="icon-medium">
+                  <path d="M512 0c-176.732 0-320 143.268-320 320 0 320 320 704 320 704s320-384 320-704c0-176.732-143.27-320-320-320zM512 512c-106.040 0-192-85.96-192-192s85.96-192 192-192 192 85.96 192 192-85.96 192-192 192z"></path>
+                </svg>
+                <div class="contact-contact-info2">
+                  <div class="contact-content">
+                    <h3 class="contact-text heading-3">Office</h3>
+                    <p class="contact-text body-large">
+                        We value your input and look forward to hearing from
+                        you!
+                    </p>
+                  </div>
+                  <span class="contact-address body-small">
+                    <span>123 Main Street, City, Country</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+        <div class="about-us section-padding" id="about-us">
+          <div class="section-max-width">
+            <div class="contact-content" >
+              <h2 class="heading-2"><span>About Us</span></h2>
+              <p class="contact-text body-large">
+                <span>
+                  Feedback Hub is dedicated to providing users with the most reliable and concise product reviews from various sources. Our mission is to help you make informed decisions by aggregating reviews and ratings in one convenient platform.
+                </span>
+              </p>
+            </div>
+
+            <div class="about-us-container" style="margin-top: 100px; ">
+              <div class="about-us-content">
+              <div class="hero-row-container animated-group-container-horizontal" sytle="margin: 10px;">
+                <div class="hero-container text">
+                  <h3 class="heading-3">Our Vision</h3>
+                  <p class="body-small">
+                    We envision a world where consumers can easily access trustworthy reviews and make confident purchasing decisions. Our platform aims to be the go-to source for product insights and user feedback.
+                  </p>
+                </div>
+                <div class="hero-container text">
+                  <h3 class="heading-3">Our Team</h3>
+                  <p class="body-small">
+                    Our team is composed of passionate individuals who are committed to delivering the best user experience. We work tirelessly to ensure that our reviews are accurate, up-to-date, and helpful.
+                  </p>
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer section-padding">
+          <div class="footer-max-width section-max-width">
+            <div class="footer-content">
+              <div class="footer-newsletter">
+                <img alt="Feedback Hub Logo" src="/icon_trans.png" class="footer-image ">
+                <span>CLARITY IN REVIEWS, CONFIDENCE IN CHOICE</span>
+                <span class="body-small">
+                  Subscribe to our newsletter for the latest updates on new
+                  features and product releases.
+                </span>
+                <div class="footer-actions">
+                  <div class="footer-form visually-hidden">
+                    <div class="footer-container">
+                      <input type="email" placeholder="Enter your email" class="footer-text-input input">
+                    </div>
+                    <button class="button-outline footer-button">
+                      <span class="body-small"><span>/login</span></span>
+                    </button>
+                  </div>
+                  <span class="footer-content body-small">
+                    <span>© 2022 Feedback Hub. All rights reserved.</span>
+                  </span>
+                </div>
+              </div>
+              <div class="footer-links">
+                <div class="footer-column">
+                  <strong class="body-large footer-column-title">
+                    <span>Company</span>
+                  </strong>
+                  <div class="footer-footer-links">
+                    <span class="body-small"><a href="#">Why Feedback Hub?</a></span>
+                    <span class="body-small"><a href="#community-content">About Us</a></span>
+                    <span class="body-small"><a href="#feedback-reviews">Explore all FeedBacks</a></span>
+                    <span class="body-small"><a href="/404.html">FAQs</a></span>
+                    <span class="body-small"><a href="#">Privacy Policy</a></span>
+                  </div>
+                </div>
+                <div class="footer-column">
+                  <strong class="body-large footer-column-title"><span>Quick Links</span></strong>
+                  <div class="footer-footer-links">
+                    <span class="body-small"><span><a href="#contact-content">Term of Service</a></span></span>
+                    <span class="body-small"><span><a href="#contact-content">Product Review</a></span></span>
+                    <span class="body-small"><span><a href="/login.html">Log In</a></span></span>
+                    <span class="body-small"><span><a href="/signup.html">Sign Up</a></span></span>
+                    <span class="body-small"><span><a href="#">Feedback Hub</a></span></span>
+                  </div>
+                </div>
+                <div class="footer-column">
+                  <strong class="body-large footer-social-link1-title">
+                    <span>Connect with Us</span>
+                  </strong>
+                  <div class="footer-social-links">
+                    <a href="https://www.facebook.com" class="footer-link">
+                      <svg viewBox="0 0 877.7142857142857 1024" class="icon-small">
+                        <path d="M713.143 73.143c90.857 0 164.571 73.714 164.571 164.571v548.571c0 90.857-73.714 164.571-164.571 164.571h-107.429v-340h113.714l17.143-132.571h-130.857v-84.571c0-38.286 10.286-64 65.714-64l69.714-0.571v-118.286c-12-1.714-53.714-5.143-101.714-5.143-101.143 0-170.857 61.714-170.857 174.857v97.714h-114.286v132.571h114.286v340h-304c-90.857 0-164.571-73.714-164.571-164.571v-548.571c0-90.857 73.714-164.571 164.571-164.571h548.571z"></path>
+                      </svg>
+                      <span class="body-small">Facebook</span>
+                    </a>
+                    <a href="https://www.Instagram.com" class="footer-link">
+                      <svg viewBox="0 0 877.7142857142857 1024" class="icon-small">
+                        <path d="M585.143 512c0-80.571-65.714-146.286-146.286-146.286s-146.286 65.714-146.286 146.286 65.714 146.286 146.286 146.286 146.286-65.714 146.286-146.286zM664 512c0 124.571-100.571 225.143-225.143 225.143s-225.143-100.571-225.143-225.143 100.571-225.143 225.143-225.143 225.143 100.571 225.143 225.143zM725.714 277.714c0 29.143-23.429 52.571-52.571 52.571s-52.571-23.429-52.571-52.571 23.429-52.571 52.571-52.571 52.571 23.429 52.571 52.571zM438.857 152c-64 0-201.143-5.143-258.857 17.714-20 8-34.857 17.714-50.286 33.143s-25.143 30.286-33.143 50.286c-22.857 57.714-17.714 194.857-17.714 258.857s-5.143 201.143 17.714 258.857c8 20 17.714 34.857 33.143 50.286s30.286 25.143 50.286 33.143c57.714 22.857 194.857 17.714 258.857 17.714s201.143 5.143 258.857-17.714c20-8 34.857-17.714 50.286-33.143s25.143-30.286 33.143-50.286c22.857-57.714 17.714-194.857 17.714-258.857s5.143-201.143-17.714-258.857c-8-20-17.714-34.857-33.143-50.286s-30.286-25.143-50.286-33.143c-57.714-22.857-194.857-17.714-258.857-17.714zM877.714 512c0 60.571 0.571 120.571-2.857 181.143-3.429 70.286-19.429 132.571-70.857 184s-113.714 67.429-184 70.857c-60.571 3.429-120.571 2.857-181.143 2.857s-120.571 0.571-181.143-2.857c-70.286-3.429-132.571-19.429-184-70.857s-67.429-113.714-70.857-184c-3.429-60.571-2.857-120.571-2.857-181.143s-0.571-120.571 2.857-181.143c3.429-70.286 19.429-132.571 70.857-184s113.714-67.429 184-70.857c60.571-3.429 120.571-2.857 181.143-2.857s120.571-0.571 181.143 2.857c70.286 3.429 132.571 19.429 184 70.857s67.429 113.714 70.857 184c3.429 60.571 2.857 120.571 2.857 181.143z"></path>
+                      </svg>
+                      <span class="body-small">Instagram</span>
+                    </a>
+                    <a href="https://www.LinkedIn.com" class="footer-link">
+                      <svg viewBox="0 0 877.7142857142857 1024" class="icon-small">
+                        <path d="M135.429 808h132v-396.571h-132v396.571zM276 289.143c-0.571-38.857-28.571-68.571-73.714-68.571s-74.857 29.714-74.857 68.571c0 37.714 28.571 68.571 73.143 68.571h0.571c46.286 0 74.857-30.857 74.857-68.571zM610.286 808h132v-227.429c0-121.714-65.143-178.286-152-178.286-70.857 0-102.286 39.429-119.429 66.857h1.143v-57.714h-132s1.714 37.143 0 396.571v0h132v-221.714c0-11.429 0.571-23.429 4-32 9.714-23.429 31.429-48 68-48 47.429 0 66.286 36 66.286 89.714v212zM877.714 237.714v548.571c0 90.857-73.714 164.571-164.571 164.571h-548.571c-90.857 0-164.571-73.714-164.571-164.571v-548.571c0-90.857 73.714-164.571 164.571-164.571h548.571c90.857 0 164.571 73.714 164.571 164.571z"></path>
+                      </svg>
+                      <span class="body-small">LinkedIn</span>
+                    </a>
+                    <a href="https://www.youtube.com" class="footer-link">
+                      <svg viewBox="0 0 1024 1024" class="icon-small">
+                        <path d="M406.286 644.571l276.571-142.857-276.571-144.571v287.429zM512 152c215.429 0 358.286 10.286 358.286 10.286 20 2.286 64 2.286 102.857 43.429 0 0 31.429 30.857 40.571 101.714 10.857 82.857 10.286 165.714 10.286 165.714v77.714s0.571 82.857-10.286 165.714c-9.143 70.286-40.571 101.714-40.571 101.714-38.857 40.571-82.857 40.571-102.857 42.857 0 0-142.857 10.857-358.286 10.857v0c-266.286-2.286-348-10.286-348-10.286-22.857-4-74.286-2.857-113.143-43.429 0 0-31.429-31.429-40.571-101.714-10.857-82.857-10.286-165.714-10.286-165.714v-77.714s-0.571-82.857 10.286-165.714c9.143-70.857 40.571-101.714 40.571-101.714 38.857-41.143 82.857-41.143 102.857-43.429 0 0 142.857-10.286 358.286-10.286v0z"></path>
+                      </svg>
+                      <span class="body-small">Youtube</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="footer-credits">
+              <div class="divider-horizontal"></div>
+              <div class="footer-row">
+                  <span>Stay connected with us on social media!</span>
+                <div class="footer-footer-links1">
+                    <span>/privacy-policy</span>
+                    <span>/terms-of-service</span>
+                    <span>/cookies-policy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
+  
+</body>
+</html>

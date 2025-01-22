@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="index.css">
+    <link rel="icon" href="ico.ico" type="image/x-icon" />
+
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="main-header" role="banner">
+        <div class="header-content">
+          <a href="/index.html" class="logo-link">
+            <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80" class="logo">
+          </a>
+          <div data-thq="navbar-nav" class="navbar-desktop-menu">
+            <nav class="navbar-links" role="navigation" aria-label="Main navigation">
+                <ul class="nav-list">
+                    <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
+                    <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
+                    <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
+                    <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
+                    <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
+                    <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
+                </ul>
+            </nav>
+            <div class="user-actions" role="navigation" aria-label="User menu">
+                <button class="notifications-btn" aria-label="Notifications">
+                    <img src="profile_sml.png" alt="" width="43" height="43">
+                    <span class="visually-hidden">Notifications</span>
+                </button>
+                <a href="/index.html" class="logout-btn" aria-label="Log out">Log Out</a>
+            </div>
+            
+      </header>
+    <main id="main-content" class="profile-layout" role="main">
+        <div class="profile-container">
+            <div class="profile-main">
+                <section class="profile-header" aria-labelledby="profile-title">
+                    <div class="profile-info">
+                        <img src="profile photo.svg" alt="" class="profile-avatar" width="207" height="162">
+                        <div class="profile-details">
+                            <h1 id="profile-title" class="profile-name">Sahil Katariya</h1>
+                            <p class="profile-role">Customer</p>
+                            <p class="profile-location">Gujarat, India</p>
+                        </div>
+                        <button class="edit-profile-btn" aria-label="Edit profile">
+                            <img src="edit.svg" alt="edit-btn" >
+                        </button>
+                    </div>
+                </section>
+
+                <section class="reviews-section" aria-labelledby="reviews-title">
+                    <h2 id="reviews-title">Your Reviews</h2>
+                    <div class="add-review-card">
+                        <img src="stage.png" alt="" width="64" height="64">
+                        <div>
+                            <h3>Add Reviews</h3>
+                            <p>Learn how to add additional reviews, including flipkart, amazon, myntra to your profile.</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="badges-section" aria-labelledby="badges-title">
+                    <div class="badges-header">
+                        <h2 id="badges-title">4 Badges</h2>
+                        <div class="badges-filter">
+                            <!-- <button class="filter-btn" aria-expanded="true" aria-controls="filter-menu">
+                                Filter by All Badges
+                            </button> -->
+                            <label for="menu"class="filter-btn" aria-controls="filter-menu"></label>
+                            <!-- <img src="edit.svg" alt="edit-btn" > -->
+                            <select id="menu" name="menu" style="border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
+                                <option value="option1">Filter All Badges</option>
+                                <option value="option2">Wonderfull</option>
+                                <option value="option3">Excellent</option>
+                                <option value="option4">Great</option>
+                            </select>
+                        </div>
+                    </div>
+                    <ul class="badges-grid" role="list">
+                        <li class="badge-item">
+                            <img src="badge.png" alt="" width="100" height="100">
+                            <p>Quick Start: Build Your First Agent with Agentforce</p>
+                        </li>
+                        <li class="badge-item">
+                            <img src="badge.png" alt="" width="100" height="100">
+                            <p>Quick Start: Build Your First Agent with Agentforce</p>
+                        </li>
+                        <li class="badge-item">
+                            <img src="badge.png" alt="" width="100" height="100">
+                            <p>Quick Start: Build Your First Agent with Agentforce</p>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+
+            <aside class="profile-sidebar">
+                <section class="track-rank" aria-labelledby="track-title">
+                    <h2 id="track-title">Feedback Track</h2>
+                    <img src="level.png" alt="Track progress visualization" width="177" height="132">
+                    <div class="track-stats">
+                        <div class="stat-item">
+                            <p class="stat-value">1</p>
+                            <p class="stat-label">Badges</p>
+                        </div>
+                        <div class="stat-item">
+                            <p class="stat-value">500</p>
+                            <p class="stat-label">Score</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="connections" aria-labelledby="connections-title">
+                    <h2 id="connections-title">Connections</h2>
+                    <div class="connection-stats">
+                        <div class="stat-item">
+                            <p class="stat-value">0</p>
+                            <p class="stat-label">Followers</p>
+                        </div>
+                        <div class="stat-item">
+                            <p class="stat-value">0</p>
+                            <p class="stat-label">Following</p>
+                        </div>
+                        <div class="stat-item">
+                            <p class="stat-value">1</p>
+                            <p class="stat-label">Reviews</p>
+                        </div>
+                    </div>
+                </section>
+            </aside>
+        </div>
+    </main>
+    <footer class="footer2-container" role="contentinfo">
+        <div class="footer2-content">
+          <p class="copyright-text">© 2024, FeedBack Hub, Inc. Various trademarks held by their respective owners. FeedBack, Inc. Feedback Tower, 416 Mission Street, 8rd Floor, San Francisco, United States</p>
+          
+          <div class="footer2-links-container">
+            <nav class="footer2-nav" aria-label="footer2 navigation">
+              <a href="#" tabindex="0">Legal</a>
+              <a href="#" tabindex="0">Privacy Information</a>
+              <a href="#" tabindex="0">Responsible Disclosure</a>
+              <a href="#" tabindex="0">Terms of Use</a>
+              <a href="#" tabindex="0">Trust</a>
+              <a href="#" tabindex="0">Help</a>
+              <a href="#" tabindex="0">Contact</a>
+              <button type="button" tabindex="0">Cookie Preferences</button>
+            </nav>
+            
+            <div class="privacy-choices" role="complementary">
+              <img loading="lazy" src="/images/Index/right.png" alt="" class="privacy-icon" />
+              <span class="privacy-text">Your Privacy Choices</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+</body>
+</html>
