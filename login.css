@@ -1,466 +1,501 @@
 .login-frame {
-    align-self: center;
-    justify-self: center;
-    border-radius: 20px;
-    background-color: #fff;
-    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25);
-    display: flex;
-    max-width: 711px;
-    min-width: 700px;
-    flex-direction: column;
-    align-items: center;
-    font-family: var(--font-family-Font-1, "Segoe UI");
-    padding: 30px 30px 10px;
-    border: 2px solid rgba(188, 188, 188, 0.75);
-    margin-top: 100px ;
-    margin-bottom: 100px ;
-  }
-  
-  .logo {
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-  }
-  
-  .login-title {
-    color: var(--www-pinterest-com-mine-shaft, var(--color-grey-20, #333));
-    text-align: center;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    font-size: 30px;
-    font-weight: 600;
-    letter-spacing: -1.2px;
-    margin: 0 0;
-  }
-  
-  .login-form {
-    width: 465px;
-    max-width: 100%;
-    margin: 10px 0;
-  }
-  
-  .form-group {
-    margin: 6px 0;
-    width: 100%;
-    
+  align-self: center;
+  justify-self: center;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  max-width: 711px;
+  min-width: 700px;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-family-Font-1, "Segoe UI");
+  padding: 30px 30px 10px;
+  border: 2px solid rgba(188, 188, 188, 0.75);
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
-  .form-label {
-    color: #111;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 10px;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-  }
-  
-  .form-input {
-    width: 100%;
-    border-radius: 16px;
-    border: 1px solid #cdcdcd;
-    background: #fff;
-    min-height: 48px;
-    font-size: 16px;
-    color: #767676;
-    padding: 14px 18px;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    
+
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.login-title {
+  color: var(--www-pinterest-com-mine-shaft, var(--color-grey-20, #333));
+  text-align: center;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -1.2px;
+  margin: 0 0;
+}
+
+.login-form {
+  width: 465px;
+  max-width: 100%;
+  margin: 10px 0;
+}
+
+.form-group {
+  margin: 6px 0;
+  width: 100%;
+
+}
+
+.form-label {
+  color: #111;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 10px;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.form-input {
+  width: 100%;
+  border-radius: 16px;
+  border: 1px solid #cdcdcd;
+  background: #fff;
+  min-height: 48px;
+  font-size: 16px;
+  color: #767676;
+  padding: 14px 18px;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+
 }
 
 .forgot-password {
-    font-size: 14px;
-    color: #111;
-    font-weight: 600;
-    margin: 1px 0;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  font-size: 14px;
+  color: #111;
+  font-weight: 600;
+  margin: 1px 0;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .login-button {
-    border-radius: 24px;
-    background-color: #1FAEFF;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    width: 100%;
-    font-size: 16px;
-    color: #fff;
-    font-weight: 600;
-    text-align: center;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
+  border-radius: 24px;
+  background-color: #1FAEFF;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  font-size: 16px;
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin: 10px 0;
+}
+
+.login-button:hover {
+  background-color: #249ce2;
+}
+
+.divider {
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+  font-weight: 700;
+}
+
+.social-login {
+  width: 100%;
+  margin: 10px 0;
+}
+
+.google-login {
+  justify-self: center;
+  border-radius: 24px;
+  background-color: #fff;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 16px;
+  color: #4d4d4d;
+  font-weight: 600;
+  padding: 9px;
+  border: 1px solid #969696;
+  cursor: pointer;
+  margin-bottom: 10px;
+  margin: 0px 0;
+  width: 100%;
+}
+
+.google-login:hover {
+  background-color: #f2f2f2;
+}
+
+.google-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.separator {
+  width: 110px;
+  border-bottom: 0.8px solid #dedede;
+  margin: 10px auto;
+}
+
+.terms-text {
+  text-align: center;
+  font-size: 12px;
+  margin: 10px 0;
+}
+
+.terms-bold {
+  font-weight: 700;
+  color: #767676;
+}
+
+.signup-prompt {
+  color: #111;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  font: 600 14px "Segoe UI", sans-serif;
+  margin: 10px 0;
+}
+
+.signup-button {
+  border-radius: 24px;
+  background-color: #9DDCFF;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  width: 143px;
+  font-size: 16px;
+  color: #141A22;
+  font-weight: 600;
+  text-align: center;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  margin: 10px 0;
+  justify-self: center;
+}
+
+.signup-button:hover {
+  background-color: #7fc1f7;
+}
+
+.business-section {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #111;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.business-link {
+  font-weight: 600;
+  color: #111;
+  text-decoration: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 991px) {
+  .login-frame {
+    padding: 0 20px;
   }
-  .login-button:hover {
-    background-color: #249ce2;
-  }
-  
-  .divider {
-    text-align: center;
-    font-size: 14px;
-    color: #333;
-    font-weight: 700;
-  }
-  
+
+  .login-form,
   .social-login {
     width: 100%;
-    margin: 10px 0;
   }
-  
-  .google-login {
-    justify-self: center;
-    border-radius: 24px;
-    background-color: #fff;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    font-size: 16px;
-    color: #4d4d4d;
-    font-weight: 600;
-    padding: 9px;
-    border: 1px solid #969696;
-    cursor: pointer;
-    margin-bottom: 10px;
-    margin: 0px 0;
-    width: 100%;
+
+  .login-button,
+  .google-login,
+  .facebook-login {
+    padding: 10px 20px;
   }
-  .google-login:hover {
-    background-color: #f2f2f2;
-  }
-  
-  .google-icon {
-    width: 18px;
-    height: 18px;
-  }
-  
-  .separator {
-    width: 110px;
-    border-bottom: 0.8px solid #dedede;
-    margin: 10px auto;
-  }
-  
-  .terms-text {
-    text-align: center;
-    font-size: 12px;
-    margin: 10px 0;
-  }
-  
-  .terms-bold {
-    font-weight: 700;
-    color: #767676;
-  }
-  
-  .signup-prompt {
-    color: #111;
-    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    font: 600 14px "Segoe UI", sans-serif;
-    margin: 10px 0;
-  }
-  
-  .signup-button {
-    border-radius: 24px;
-    background-color: #9DDCFF;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-    width: 143px;
-    font-size: 16px;
-    color: #141A22;
-    font-weight: 600;
-    text-align: center;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    justify-self: center;
-  }
-  .signup-button:hover {
-    background-color: #7fc1f7;
-  }
-  
-  .business-section {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    color: #111;
-    justify-content: center;
-    margin: 10px 0;
-  }
-  
-  .business-link {
-    font-weight: 600;
-    color: #111;
-    text-decoration: none;
-  }
-  
-  .visually-hidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
-  
-  @media (max-width: 991px) {
-    .login-frame {
-      padding: 0 20px;
-    }
-    
-    .login-form,
-    .social-login {
-      width: 100%;
-    }
-    
-    .login-button,
-    .google-login,
-    .facebook-login {
-      padding: 10px 20px;
-    }
-  }
+}
+
+.sign-up-page {
+  border-radius: 20px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  min-height: 745px;
+  width: 711px;
+  max-width: 100%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  padding: 27px 30px;
+  border: 2px solid rgba(188, 188, 188, 0.75);
+}
+
+@media (max-width: 991px) {
   .sign-up-page {
-    border-radius: 20px;
-    background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
-    display: flex;
-    min-height: 745px;
-    width: 711px;
-    max-width: 100%;
-    flex-direction: column;
-    align-items: center;
-    justify-content: start;
-    padding: 27px 30px;
-    border: 2px solid rgba(188, 188, 188, 0.75);
+    padding: 0 20px;
   }
-  @media (max-width: 991px) {
-    .sign-up-page {
-      padding: 0 20px;
-    }
-  }
-  .img {
-    aspect-ratio: 0.99;
-    object-fit: contain;
-    object-position: center;
-    width: 80px;
-    box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.25);
-  }
+}
+
+.img {
+  aspect-ratio: 0.99;
+  object-fit: contain;
+  object-position: center;
+  width: 80px;
+  box-shadow: 0px 4px 7px rgba(0, 0, 0, 0.25);
+}
+
+.signup-heading {
+  color: var(--www-pinterest-com-mine-shaft, var(--color-grey-20, #333));
+  text-align: center;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  font-size: var(--font-size-32, 32px);
+  letter-spacing: var(--letter-spacing--1_2, -1.2px);
+  margin-top: 10px;
+}
+
+@media (max-width: 991px) {
   .signup-heading {
-    color: var(--www-pinterest-com-mine-shaft, var(--color-grey-20, #333));
-    text-align: center;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    font-size: var(--font-size-32, 32px);
-    letter-spacing: var(--letter-spacing--1_2, -1.2px);
-    margin-top: 10px;
-  }
-  @media (max-width: 991px) {
-    .signup-heading {
-      max-width: 100%;
-    }
-  }
-  .form-container {
-    display: flex;
-    margin-top: 10px;
-    width: 465px;
     max-width: 100%;
-    flex-direction: column;
-    font-weight: var(--font-weight-400, 400);
-    justify-content: start;
   }
-  .name-fields {
-    display: flex;
-    width: 100%;
-    gap: 13px;
-    padding: 3px 0;
-  }
-  .flex-column {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-  .label {
-    color: var(--www-pinterest-com-cod-gray, #111);
-    font-size: var(--font-size-14, 14px);
-    align-self: start;
-  }
-  .input-field {
-    width: 113px;
-    border-radius: 16px;
-    border: var(--stroke-weight-1, 1px) solid var(--color-grey-80, #cdcdcd);
-    background: var(--www-pinterest-com-white, #fff);
-    background-color: var(--www-pinterest-com-white, #fff);
-    min-height: var(--height-48, 48px);
-    margin-top: 10px;
-    overflow: hidden;
-    font-size: var(--font-size-16, 16px);
-    color: var(--www-pinterest-com-boulder, var(--color-grey-46, #767676));
-    padding: 14px 18px;
-  }
+}
+
+.form-container {
+  display: flex;
+  margin-top: 10px;
+  width: 465px;
+  max-width: 100%;
+  flex-direction: column;
+  font-weight: var(--font-weight-400, 400);
+  justify-content: start;
+}
+
+.name-fields {
+  display: flex;
+  width: 100%;
+  gap: 13px;
+  padding: 3px 0;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.label {
+  color: var(--www-pinterest-com-cod-gray, #111);
+  font-size: var(--font-size-14, 14px);
+  align-self: start;
+}
+
+.input-field {
+  width: 113px;
+  border-radius: 16px;
+  border: var(--stroke-weight-1, 1px) solid var(--color-grey-80, #cdcdcd);
+  background: var(--www-pinterest-com-white, #fff);
+  background-color: var(--www-pinterest-com-white, #fff);
+  min-height: var(--height-48, 48px);
+  margin-top: 10px;
+  overflow: hidden;
+  font-size: var(--font-size-16, 16px);
+  color: var(--www-pinterest-com-boulder, var(--color-grey-46, #767676));
+  padding: 14px 18px;
+}
+
+.email-field {
+  display: flex;
+  margin-top: 6px;
+  width: 100%;
+  max-width: 465px;
+  flex-direction: column;
+  white-space: nowrap;
+  padding: 3px 0;
+}
+
+@media (max-width: 991px) {
   .email-field {
-    display: flex;
-    margin-top: 6px;
-    width: 100%;
-    max-width: 465px;
-    flex-direction: column;
-    white-space: nowrap;
-    padding: 3px 0;
+    max-width: 100%;
+    white-space: initial;
   }
-  @media (max-width: 991px) {
-    .email-field {
-      max-width: 100%;
-      white-space: initial;
-    }
-  }
+}
+
+.password-field {
+  display: flex;
+  margin-top: 6px;
+  width: 100%;
+  max-width: 465px;
+  flex-direction: column;
+  white-space: nowrap;
+  padding: 3px 0;
+}
+
+@media (max-width: 991px) {
   .password-field {
-    display: flex;
-    margin-top: 6px;
-    width: 100%;
-    max-width: 465px;
-    flex-direction: column;
-    white-space: nowrap;
-    padding: 3px 0;
+    max-width: 100%;
+    white-space: initial;
   }
-  @media (max-width: 991px) {
-    .password-field {
-      max-width: 100%;
-      white-space: initial;
-    }
-  }
+}
+
+.contact-number-field {
+  display: flex;
+  margin-top: 6px;
+  width: 100%;
+  max-width: 465px;
+  flex-direction: column;
+  padding: 2px 0;
+}
+
+@media (max-width: 991px) {
   .contact-number-field {
-    display: flex;
-    margin-top: 6px;
-    width: 100%;
-    max-width: 465px;
-    flex-direction: column;
-    padding: 2px 0;
+    max-width: 100%;
   }
-  @media (max-width: 991px) {
-    .contact-number-field {
-      max-width: 100%;
-    }
-  }
+}
+
+.wide-input-field {
+  width: 271px;
+  border-radius: 16px;
+  border: var(--stroke-weight-1, 1px) solid var(--color-grey-80, #cdcdcd);
+  background: var(--www-pinterest-com-white, #fff);
+  background-color: var(--www-pinterest-com-white, #fff);
+  z-index: 10;
+  min-height: var(--height-48, 48px);
+  margin-top: 9px;
+  overflow: hidden;
+  font-size: var(--font-size-16, 16px);
+  color: var(--www-pinterest-com-boulder, var(--color-grey-46, #767676));
+  white-space: nowrap;
+  padding: 14px 18px;
+}
+
+@media (max-width: 991px) {
   .wide-input-field {
-    width: 271px;
-    border-radius: 16px;
-    border: var(--stroke-weight-1, 1px) solid var(--color-grey-80, #cdcdcd);
-    background: var(--www-pinterest-com-white, #fff);
-    background-color: var(--www-pinterest-com-white, #fff);
-    z-index: 10;
-    min-height: var(--height-48, 48px);
-    margin-top: 9px;
-    overflow: hidden;
-    font-size: var(--font-size-16, 16px);
-    color: var(--www-pinterest-com-boulder, var(--color-grey-46, #767676));
-    white-space: nowrap;
-    padding: 14px 18px;
+    white-space: initial;
   }
-  @media (max-width: 991px) {
-    .wide-input-field {
-      white-space: initial;
-    }
-  }
+}
+
+.sign-up-btn {
+  border-radius: 24px;
+  background-color: rgba(31, 174, 255, 1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 10px;
+  width: 465px;
+  max-width: 100%;
+  font-size: var(--font-size-16, 16px);
+  color: var(--www-pinterest-com-white, #fff);
+  text-align: center;
+  padding: 10px 70px;
+}
+
+@media (max-width: 991px) {
   .sign-up-btn {
-    border-radius: 24px;
-    background-color: rgba(31, 174, 255, 1);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-top: 10px;
-    width: 465px;
-    max-width: 100%;
-    font-size: var(--font-size-16, 16px);
-    color: var(--www-pinterest-com-white, #fff);
-    text-align: center;
-    padding: 10px 70px;
+    padding: 0 20px;
   }
-  @media (max-width: 991px) {
-    .sign-up-btn {
-      padding: 0 20px;
-    }
-  }
-  .horizontal-divider {
-    border-bottom: var(--stroke-weight-0_8, 0.8px) solid var(--color-grey-87, #dedede);
-    display: flex;
-    min-height: 1px;
-    margin-top: 10px;
-    width: 110px;
-    max-width: 100%;
-  }
+}
+
+.horizontal-divider {
+  border-bottom: var(--stroke-weight-0_8, 0.8px) solid var(--color-grey-87, #dedede);
+  display: flex;
+  min-height: 1px;
+  margin-top: 10px;
+  width: 110px;
+  max-width: 100%;
+}
+
+.google-signup-container {
+  border-radius: 24px;
+  background-color: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  display: flex;
+  margin-top: 10px;
+  width: 465px;
+  max-width: 100%;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--font-size-16, 16px);
+  color: #4d4d4d;
+  text-align: center;
+  justify-content: start;
+  padding: 9px 29px;
+  border: 1px solid rgba(150, 150, 150, 1);
+}
+
+@media (max-width: 991px) {
   .google-signup-container {
-    border-radius: 24px;
-    background-color: rgba(255, 255, 255, 1);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    display: flex;
-    margin-top: 10px;
-    width: 465px;
-    max-width: 100%;
-    align-items: center;
-    gap: 7px;
-    font-size: var(--font-size-16, 16px);
-    color: #4d4d4d;
-    text-align: center;
-    justify-content: start;
-    padding: 9px 29px;
-    border: 1px solid rgba(150, 150, 150, 1);
+    padding: 0 20px;
   }
-  @media (max-width: 991px) {
-    .google-signup-container {
-      padding: 0 20px;
-    }
-  }
-  .google-signup-content {
-    align-self: stretch;
-    display: flex;
-    width: 179px;
-    gap: 11px;
-    margin: auto 0;
-  }
-  .google-logo {
-    aspect-ratio: 1;
-    object-fit: contain;
-    object-position: center;
-    width: 18px;
-    margin: auto 0;
-  }
-  .google-text {
-    flex-grow: 1;
-    width: 146px;
-  }
-  .consent-text {
-    color: var(--color-grey-46, #767676);
-    text-align: center;
-    font-size: var(--font-size-12, 12px);
-    font-weight: var(--font-weight-400, 700);
-    margin-top: 10px;
-  }
-  .existing-user-text {
-    color: rgba(17, 17, 17, 1);
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    text-align: center;
-    margin-top: 10px;
-    font: 600 14px Segoe UI, sans-serif;
-  }
+}
+
+.google-signup-content {
+  align-self: stretch;
+  display: flex;
+  width: 179px;
+  gap: 11px;
+  margin: auto 0;
+}
+
+.google-logo {
+  aspect-ratio: 1;
+  object-fit: contain;
+  object-position: center;
+  width: 18px;
+  margin: auto 0;
+}
+
+.google-text {
+  flex-grow: 1;
+  width: 146px;
+}
+
+.consent-text {
+  color: var(--color-grey-46, #767676);
+  text-align: center;
+  font-size: var(--font-size-12, 12px);
+  font-weight: var(--font-weight-400, 700);
+  margin-top: 10px;
+}
+
+.existing-user-text {
+  color: rgba(17, 17, 17, 1);
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  margin-top: 10px;
+  font: 600 14px Segoe UI, sans-serif;
+}
+
+.log-in-btn {
+  border-radius: 24px;
+  background-color: rgba(157, 220, 255, 1);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 10px;
+  width: 167px;
+  max-width: 100%;
+  font-size: var(--font-size-16, 16px);
+  color: var(--feedbackhubforyou-netlify-app-mirage, var(--color-azure-11, #141a22));
+  text-align: center;
+  padding: 10px 42px;
+}
+
+@media (max-width: 991px) {
   .log-in-btn {
-    border-radius: 24px;
-    background-color: rgba(157, 220, 255, 1);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-top: 10px;
-    width: 167px;
-    max-width: 100%;
-    font-size: var(--font-size-16, 16px);
-    color: var(--feedbackhubforyou-netlify-app-mirage, var(--color-azure-11, #141a22));
-    text-align: center;
-    padding: 10px 42px;
+    padding: 0 20px;
   }
-  @media (max-width: 991px) {
-    .log-in-btn {
-      padding: 0 20px;
-    }
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    border: 0;
-  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

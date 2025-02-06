@@ -20,13 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setupEventListeners() {
             window.addEventListener('scroll', () => this.handleHeaderScroll());
-            
+
             this.filterButton?.addEventListener('click', (e) => this.toggleFilter(e));
-            
+
             this.notificationsBtn?.addEventListener('click', () => this.handleNotifications());
-            
+
             this.logoutBtn?.addEventListener('click', () => this.handleLogout());
-            
+
             this.privacyBtn?.addEventListener('click', () => this.handlePrivacyChoices());
 
             document.addEventListener('keydown', (e) => this.handleKeyboardNavigation(e));
@@ -72,10 +72,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const button = event.currentTarget;
             const expanded = button.getAttribute('aria-expanded') === 'true';
             button.setAttribute('aria-expanded', !expanded);
-            
+
             const menu = document.getElementById(button.getAttribute('aria-controls'));
             menu.hidden = expanded;
-            
+
             if (!expanded) {
                 requestAnimationFrame(() => {
                     menu.querySelector('button, [href], input').focus();
@@ -102,10 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 credentials: 'include'
             })
-            .then(() => {
-                window.location.href = '/login';
-            })
-            .catch(error => this.handleError(error));
+                .then(() => {
+                    window.location.href = '/login';
+                })
+                .catch(error => this.handleError(error));
         },
 
         handlePrivacyChoices() {
@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const focusableElements = dialog.querySelectorAll(
                     'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
                 );
-                
+
                 if (focusableElements.length) {
                     const firstFocusable = focusableElements[0];
                     const lastFocusable = focusableElements[focusableElements.length - 1];

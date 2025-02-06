@@ -1,4 +1,5 @@
 <style>
+
 /* Base styles */
 :root {
   --primary-color: #048149;
@@ -140,16 +141,16 @@
     flex-direction: column;
     padding: 20px;
   }
-  
+
   .header-content {
     padding: 20px;
   }
-  
+
   .profile-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .profile-avatar {
     width: 150px;
     height: 150px;
@@ -182,57 +183,8 @@
 .footer-link:focus {
   text-decoration: underline;
 }
-</style>
 
-<header class="main-header" role="banner">
-  <div class="header-content">
-    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/355c5b488f1f604487ee331f0e99e1b8c8ba1161d8e844ee133542df423c99bc?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="Feedback Hub Logo" class="logo">
-    
-    <nav class="main-nav" role="navigation" aria-label="Main navigation">
-      <a href="#" class="nav-link">Product</a>
-      <a href="#" class="nav-link">Reviews</a>
-      <a href="#" class="nav-link">Industry</a>
-      <a href="#" class="nav-link">Response</a>
-      <a href="#" class="nav-link">Support</a>
-      <a href="#" class="nav-link">About Us</a>
-    </nav>
-
-    <div class="profile-actions">
-      <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/d2aacbe2f39d8d54b29edbe787aad6f7a2c479d33ce379546068ae0ffba92ec1?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="User profile" class="profile-icon">
-      <button class="logout-btn">Log Out</button>
-    </div>
-  </div>
-</header>
-
-<main class="profile-layout" role="main">
-  <div class="profile-container">
-    <section class="profile-section" aria-labelledby="profile-title">
-      <h1 id="profile-title" class="visually-hidden">User Profile</h1>
-      
-      <div class="profile-header">
-        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/3e56478c32e66fbb2a11e0d641640e4e63d98e4ea8c7433df963218f3fc38d0f?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="Sahil Katariya's profile photo" class="profile-avatar">
-        <div class="profile-info">
-          <h2 class="profile-name">Sahil Katariya</h2>
-          <p class="profile-role">Customer</p>
-          <p class="profile-location">Gujarat, India</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Rest of sections following same pattern -->
-    
-  </div>
-</main>
-
-<footer class="main-footer" role="contentinfo">
-  <p>© 2024, FeedBack Hub, Inc. Various trademarks held by their respective owners.</p>
-  
-  <div class="footer-links">
-    <a href="#" class="footer-link">Legal</a>
-    <a href="#" class="footer-link">Privacy Information</a>
-    <a href="#" class="footer-link">Terms of Use</a>
-    <a href="#" class="footer-link">Trust</a>
-    <a href="#" class="footer-link">Help</a>
-    <a href="#" class="footer-link">Contact</a>
-  </div>
-</footer>
+</style><header class="main-header" role="banner"><div class="header-content"><img src="https://cdn.builder.io/api/v1/image/assets/TEMP/355c5b488f1f604487ee331f0e99e1b8c8ba1161d8e844ee133542df423c99bc?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="Feedback Hub Logo" class="logo"><nav class="main-nav" role="navigation" aria-label="Main navigation"><a href="#" class="nav-link">Product</a><a href="#" class="nav-link">Reviews</a><a href="#" class="nav-link">Industry</a><a href="#" class="nav-link">Response</a><a href="#" class="nav-link">Support</a><a href="#" class="nav-link">About Us</a></nav><div class="profile-actions"><img src="https://cdn.builder.io/api/v1/image/assets/TEMP/d2aacbe2f39d8d54b29edbe787aad6f7a2c479d33ce379546068ae0ffba92ec1?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="User profile" class="profile-icon"><button class="logout-btn">Log Out</button></div></div></header><main class="profile-layout" role="main"><div class="profile-container"><section class="profile-section" aria-labelledby="profile-title"><h1 id="profile-title" class="visually-hidden">User Profile</h1><div class="profile-header"><img src="https://cdn.builder.io/api/v1/image/assets/TEMP/3e56478c32e66fbb2a11e0d641640e4e63d98e4ea8c7433df963218f3fc38d0f?placeholderIfAbsent=true&apiKey=03580385e222404c8df236551c67226a" alt="Sahil Katariya's profile photo" class="profile-avatar"><div class="profile-info"><h2 class="profile-name">Sahil Katariya</h2><p class="profile-role">Customer</p><p class="profile-location">Gujarat,
+India</p></div></div></section>< !-- Rest of sections following same pattern --></div></main><footer class="main-footer" role="contentinfo"><p>© 2024,
+FeedBack Hub,
+Inc. Various trademarks held by their respective owners.</p><div class="footer-links"><a href="#" class="footer-link">Legal</a><a href="#" class="footer-link">Privacy Information</a><a href="#" class="footer-link">Terms of Use</a><a href="#" class="footer-link">Trust</a><a href="#" class="footer-link">Help</a><a href="#" class="footer-link">Contact</a></div></footer>

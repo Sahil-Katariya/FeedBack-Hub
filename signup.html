@@ -1,86 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="profile.css">
-    <link rel="stylesheet" href="login.css">
-    <link rel="icon" href="ico.ico" type="image/x-icon" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="profile.css">
+  <link rel="stylesheet" href="login.css">
+  <link rel="icon" href="ico.ico" type="image/x-icon" />
 
 </head>
+
 <body>
-    <a href="#main-content" class="skip-link">Skip to main content</a>
-    <header class="main-header" role="banner">
-        <div class="header-content">
-          <a href="/index.html" class="logo-link">
-            <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80" >
-          </a>
-          <div data-thq="navbar-nav" class="navbar-desktop-menu">
-            <nav class="navbar-links" role="navigation" aria-label="Main navigation">
-                <ul class="nav-list">
-                    <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
-                    <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
-                    <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
-                    <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
-                    <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
-                    <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
-                </ul>
-            </nav>            
-      </header>
-      
-<div class="login-frame">
-    <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/738b59a5da660f603ed60fd30288b5e87f937165143159c52cb9fdfebe69e310?placeholderIfAbsent=true&apiKey=7db10c3608e348699f001251f8255916" alt="FeedbackHub Logo" class="logo">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header class="main-header" role="banner">
+    <div class="header-content">
+      <a href="/index.html" class="logo-link">
+        <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80">
+      </a>
+      <div data-thq="navbar-nav" class="navbar-desktop-menu">
+        <nav class="navbar-links" role="navigation" aria-label="Main navigation">
+          <ul class="nav-list">
+            <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
+            <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
+            <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
+            <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
+            <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
+            <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
+          </ul>
+        </nav>
+  </header>
+
+  <div class="login-frame">
+    <img
+      src="https://cdn.builder.io/api/v1/image/assets/TEMP/738b59a5da660f603ed60fd30288b5e87f937165143159c52cb9fdfebe69e310?placeholderIfAbsent=true&apiKey=7db10c3608e348699f001251f8255916"
+      alt="FeedbackHub Logo" class="logo">
     <h1 class="signup-heading">Sign up to get more</h1>
-  <form class="login-form">
-    <div class="name-fields">
-      <div class="form-group">
-        <label for="firstName" class="form-label firstName">First Name</label>
-        <input type="text" id="firstName" class="form-input" aria-label="First Name" />
+    <form class="login-form">
+      <div class="name-fields">
+        <div class="form-group">
+          <label for="firstName" class="form-label firstName">First Name</label>
+          <input type="text" id="firstName" class="form-input" aria-label="First Name" />
+        </div>
+        <div class="form-group">
+          <label for="lastName" class="form-label">Last Name</label>
+          <input type="text" id="lastName" class="form-input" aria-label="Last Name" />
+        </div>
       </div>
-      <div class="form-group">
-        <label for="lastName" class="form-label">Last Name</label>
-        <input type="text" id="lastName" class="form-input" aria-label="Last Name" />
+      <div class="email-field">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" class="form-input" aria-label="Email" />
       </div>
-    </div>
-    <div class="email-field">
-      <label for="email" class="form-label">Email</label>
-      <input type="email" id="email" class="form-input" aria-label="Email" />
-    </div>
-    <div class="password-field">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" id="password" class="form-input" aria-label="Password" />
-    </div>
-    <div class="contact-number-field">
-      <label for="contactNumber" class="form-label">Contact Number</label>
-      <input type="contactNumber" id="contactNumber" class="form-input" aria-label="Contact Number" />
-    </div>
-    <button button type="submit" class="login-button">Sign Up</button>
-    
-  
-    <div class="divider">OR</div>
-  
-    <div class="social-login">
-      <button class="google-login">
-        <img src="/images/google.png" alt="" class="google-icon">
-        Continue with Google
-      </button>
-    </div>
-  
-    <div class="separator" role="separator"></div>
-  
-    <p class="terms-text">
-      By continuing, you agree to FeedbackHub's
-      <a href="" class="terms-bold">Terms of Service</a><br>
-      and acknowledge you've read our
-      <a href="" class="terms-bold">Privacy Policy</a>
-    </p>
-</form>
+      <div class="password-field">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" class="form-input" aria-label="Password" />
+      </div>
+      <div class="contact-number-field">
+        <label for="contactNumber" class="form-label">Contact Number</label>
+        <input type="contactNumber" id="contactNumber" class="form-input" aria-label="Contact Number" />
+      </div>
+      <button button type="submit" class="login-button">Sign Up</button>
+
+
+      <div class="divider">OR</div>
+
+      <div class="social-login">
+        <button class="google-login">
+          <img src="/images/google.png" alt="" class="google-icon">
+          Continue with Google
+        </button>
+      </div>
+
+      <div class="separator" role="separator"></div>
+
+      <p class="terms-text">
+        By continuing, you agree to FeedbackHub's
+        <a href="" class="terms-bold">Terms of Service</a><br>
+        and acknowledge you've read our
+        <a href="" class="terms-bold">Privacy Policy</a>
+      </p>
+    </form>
     <p class="signup-prompt">Already on FeedbackHub yet?</p>
     <a href="/login.html" button class="signup-button">Log In</a>
-  
+
     <div class="business-section">
       <span>Are you a business?</span>
       <a href="#" class="business-link">Get started here!</a>
@@ -89,8 +93,9 @@
 
   <footer class="footer2-container" role="contentinfo">
     <div class="footer2-content">
-      <p class="copyright-text">© 2024, FeedBack Hub, Inc. Various trademarks held by their respective owners. FeedBack, Inc. Feedback Tower, 416 Mission Street, 8rd Floor, San Francisco, United States</p>
-      
+      <p class="copyright-text">© 2024, FeedBack Hub, Inc. Various trademarks held by their respective owners. FeedBack,
+        Inc. Feedback Tower, 416 Mission Street, 8rd Floor, San Francisco, United States</p>
+
       <div class="footer2-links-container">
         <nav class="footer2-nav" aria-label="footer2 navigation">
           <a href="#" tabindex="0">Legal</a>
@@ -102,7 +107,7 @@
           <a href="#" tabindex="0">Contact</a>
           <button type="button" tabindex="0">Cookie Preferences</button>
         </nav>
-        
+
         <div class="privacy-choices" role="complementary">
           <img loading="lazy" src="/images/Index/right.png" alt="" class="privacy-icon" />
           <span class="privacy-text">Your Privacy Choices</span>
