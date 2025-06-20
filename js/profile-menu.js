@@ -339,10 +339,57 @@ class ProfileMenu {
   }
 
   async showNotifications() {
-    // Reuse the notifications functionality from dashboard
-    if (window.Dashboard && window.Dashboard.prototype.showNotifications) {
-      const dashboard = new window.Dashboard();
-      await dashboard.showNotifications();
+    // Use the unified profile page notifications functionality
+    if (window.UnifiedProfilePage) {
+      try {
+        const notifications = await api.getNotifications();
+
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Notifications</h2>
+            <div class="notifications-list">
+              ${notifications.length ?
+                notifications.map(notification => `
+                  <div class="notification-item ${notification.read ? 'read' : 'unread'}">
+                    <p>${notification.message}</p>
+                    <small>${new Date(notification.createdAt).toLocaleDateString()}</small>
+                    ${!notification.read ? `<button class="mark-read-btn" data-id="${notification._id}">Mark as Read</button>` : ''}
+                  </div>
+                `).join('') :
+                '<p>No notifications available.</p>'
+              }
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Close modal
+        modal.querySelector('.close').addEventListener('click', () => {
+          document.body.removeChild(modal);
+        });
+
+        // Mark as read functionality
+        modal.querySelectorAll('.mark-read-btn').forEach(button => {
+          button.addEventListener('click', async (e) => {
+            const notificationId = e.target.dataset.id;
+            try {
+              await api.markNotificationRead(notificationId);
+              e.target.parentElement.classList.add('read');
+              e.target.remove();
+            } catch (error) {
+              console.error('Error marking notification as read:', error);
+            }
+          });
+        });
+
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+        alert('Failed to load notifications.');
+      }
     } else {
       alert('Notifications feature will be available soon!');
     }

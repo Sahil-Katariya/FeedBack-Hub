@@ -51,10 +51,11 @@ Make sure you have the following installed:
 
 ### For Registered Users
 - **Sign Up:** Create a new account
-- **Login:** Access your dashboard
-- **Dashboard:** View products, reviews, and statistics
+- **Login:** Access your profile page
+- **Profile:** Unified page with dashboard functionality, personal info, and statistics
 - **Add Reviews:** Submit reviews for products
 - **Add Products:** Add new products to the platform
+- **Profile Settings:** Edit profile information and change password
 - **Notifications:** View system notifications
 
 ## Test the Application
@@ -68,24 +69,26 @@ Make sure you have the following installed:
    - Use your email and password
    - You'll be redirected to the dashboard
 
-3. **Explore the dashboard:**
-   - View available products
+3. **Explore the profile page:**
+   - View your personal information and statistics
+   - Browse available products
    - Add reviews for products
-   - Check your statistics
    - Add new products
+   - Edit your profile settings
 
 ## File Structure
 
 ```
 FeedBack Hub v1.1.0/
 ├── server.js              # Main server file
-├── dashboard.html          # User dashboard (uses profile.html layout)
+├── profile.html           # Unified profile page with dashboard functionality
 ├── login.html             # Login page
 ├── signup.html            # Registration page
 ├── index.html             # Landing page
 ├── js/
 │   ├── api.js            # API communication
-│   └── dashboard.js      # Dashboard functionality
+│   ├── profile-menu.js   # Profile dropdown menu and settings
+│   └── profile.js        # Unified profile page functionality
 ├── css/
 │   └── dashboard.css     # Dashboard styles
 ├── scripts/

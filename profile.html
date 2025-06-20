@@ -48,7 +48,6 @@
                             </div>
                             <div class="dropdown-divider"></div>
                             <ul class="dropdown-menu">
-                                <li><a href="/dashboard.html" class="dropdown-item"><i class="icon-dashboard"></i>Dashboard</a></li>
                                 <li><a href="/profile.html" class="dropdown-item"><i class="icon-profile"></i>Profile</a></li>
                                 <li><a href="#" class="dropdown-item" id="settings-btn"><i class="icon-settings"></i>Settings</a></li>
                                 <li><a href="#" class="dropdown-item" id="notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
@@ -77,15 +76,35 @@
                     </div>
                 </section>
 
-                <section class="reviews-section" aria-labelledby="reviews-title">
-                    <h2 id="reviews-title">Your Reviews</h2>
-                    <div class="add-review-card">
-                        <img src="stage.png" alt="" width="64" height="64">
-                        <div>
-                            <h3>Add Reviews</h3>
-                            <p>Learn how to add additional reviews, including flipkart, amazon, myntra to your profile.
-                            </p>
+                <section class="dashboard-stats-section" aria-labelledby="stats-title">
+                    <h2 id="stats-title">Dashboard Overview</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Reviews</h3>
+                            <p id="total-reviews">0</p>
                         </div>
+                        <div class="stat-card">
+                            <h3>Average Rating</h3>
+                            <p id="avg-rating">0.0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Products</h3>
+                            <p id="total-products">0</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="products-section" aria-labelledby="products-title">
+                    <h2 id="products-title">Available Products</h2>
+                    <div id="products-container" class="products-grid">
+                        <!-- Products will be loaded here -->
+                    </div>
+                </section>
+
+                <section class="reviews-section" aria-labelledby="reviews-title">
+                    <h2 id="reviews-title">Recent Reviews</h2>
+                    <div id="reviews-container" class="reviews-list">
+                        <!-- Reviews will be loaded here -->
                     </div>
                 </section>
                 <section class="badges-section" aria-labelledby="badges-title">
@@ -129,11 +148,11 @@
                     <img src="level.png" alt="Track progress visualization" width="177" height="132">
                     <div class="track-stats">
                         <div class="stat-item">
-                            <p class="stat-value">1</p>
+                            <p class="stat-value" id="user-badges">1</p>
                             <p class="stat-label">Badges</p>
                         </div>
                         <div class="stat-item">
-                            <p class="stat-value">500</p>
+                            <p class="stat-value" id="user-score">500</p>
                             <p class="stat-label">Score</p>
                         </div>
                     </div>
@@ -143,17 +162,35 @@
                     <h2 id="connections-title">Connections</h2>
                     <div class="connection-stats">
                         <div class="stat-item">
-                            <p class="stat-value">0</p>
+                            <p class="stat-value" id="user-followers">0</p>
                             <p class="stat-label">Followers</p>
                         </div>
                         <div class="stat-item">
-                            <p class="stat-value">0</p>
+                            <p class="stat-value" id="user-following">0</p>
                             <p class="stat-label">Following</p>
                         </div>
                         <div class="stat-item">
-                            <p class="stat-value">1</p>
+                            <p class="stat-value" id="user-reviews-count">1</p>
                             <p class="stat-label">Reviews</p>
                         </div>
+                    </div>
+                </section>
+
+                <section class="quick-actions" aria-labelledby="actions-title">
+                    <h2 id="actions-title">Quick Actions</h2>
+                    <div class="action-buttons">
+                        <button class="action-btn" id="add-product-btn">
+                            <i class="icon-plus"></i>
+                            <span>Add Product</span>
+                        </button>
+                        <button class="action-btn" id="view-notifications-btn">
+                            <i class="icon-notifications"></i>
+                            <span>Notifications</span>
+                        </button>
+                        <button class="action-btn" id="settings-btn">
+                            <i class="icon-settings"></i>
+                            <span>Settings</span>
+                        </button>
                     </div>
                 </section>
             </aside>

@@ -7,8 +7,7 @@ A comprehensive platform for product reviews and feedback aggregation.
 - **Product Reviews**: Browse and read detailed product reviews
 - **User Authentication**: Secure login and registration system
 - **Review Submission**: Submit your own product reviews
-- **Dashboard**: Personal dashboard for managing reviews using profile layout
-- **Dynamic Profile**: User profile page with real-time data and statistics
+- **Unified Profile**: Combined profile and dashboard functionality in one comprehensive page
 - **Profile Settings**: Edit profile information, change password, and upload avatar
 - **Profile Menu**: Dropdown menu with quick access to dashboard, profile, settings
 - **Responsive Design**: Works on desktop and mobile devices
@@ -69,8 +68,7 @@ npm run dev
 
 1. **Registration**: Create a new account using the signup form
 2. **Login**: Access your account with email and password
-3. **Dashboard**: View products, submit reviews, and manage your account
-4. **Profile**: View your profile with dynamic statistics and review history
+3. **Profile**: Unified page with dashboard functionality, personal info, and statistics
 5. **Profile Settings**: Edit your profile information and change password
 6. **Profile Menu**: Access quick actions via the profile icon dropdown
 7. **Submit Reviews**: Add reviews for products you've used
@@ -116,15 +114,14 @@ FeedBack Hub v1.1.0/
 ├── index.html            # Main landing page
 ├── login.html            # Login page
 ├── signup.html           # Registration page
-├── dashboard.html        # User dashboard
+├── profile.html          # Unified profile page with dashboard functionality
 ├── css/
 │   ├── dashboard.css     # Dashboard-specific styles
 │   └── profile-menu.css  # Profile menu and settings styles
 ├── js/
 │   ├── api.js           # API communication functions
-│   ├── dashboard.js     # Dashboard functionality
 │   ├── profile-menu.js  # Profile dropdown menu and settings
-│   └── profile.js       # Dynamic profile page functionality
+│   └── profile.js       # Unified profile page with dashboard functionality
 ├── scripts/
 │   └── seedData.js      # Database seeding script
 └── images/              # Static images and assets

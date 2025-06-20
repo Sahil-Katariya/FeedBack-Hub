@@ -114,7 +114,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       // Check if user is already logged in
       if (localStorage.getItem('token')) {
-        window.location.href = 'dashboard.html';
+        window.location.href = 'profile.html';
       }
 
       const loginForm = document.querySelector('.login-form');
@@ -136,7 +136,7 @@
           if (result.success) {
             localStorage.setItem('token', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
-            window.location.href = 'dashboard.html';
+            window.location.href = 'profile.html';
           } else {
             alert(result.error || 'Login failed');
           }
