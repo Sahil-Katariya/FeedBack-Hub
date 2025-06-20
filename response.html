@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>AI Response Hub - FeedBack Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta property="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="ico.ico" type="image/x-icon" />
+
+  <link rel="stylesheet" href="https://unpkg.com/animate.css@4.1.1/animate.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+    data-tag="font" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap"
+    data-tag="font" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;display=swap"
+    data-tag="font" />
+  <link rel="stylesheet" href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css" />
+  <link rel="stylesheet" href="./index.css">
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./profile.css">
+  <link rel="stylesheet" href="./css/profile-menu.css">
+  <link rel="stylesheet" href="./css/response-page.css">
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="home-container">
+    <header class="main-header" role="banner">
+      <div class="header-content">
+        <a href="/index.html" class="logo-link">
+          <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80" class="logo">
+        </a>
+        <div data-thq="navbar-nav" class="navbar-desktop-menu">
+          <nav class="navbar-links" role="navigation" aria-label="Main navigation">
+            <ul class="nav-list">
+              <li><a href="products.html" class="nav-link">Products</a></li>
+              <li><a href="reviews.html" class="nav-link">Reviews</a></li>
+              <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
+              <li><a href="response.html" class="nav-link active">Response</a></li>
+              <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
+              <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
+            </ul>
+          </nav>
+          <div class="user-actions" role="navigation" aria-label="User menu" id="guest-actions">
+            <a href="/login.html" button class="button-outline">
+              <span class="body-small">Log in</span>
+            </a>
+            <a href="/signup.html" button class="button-filled">
+              <span class="body-small">sign up</span>
+            </a>
+          </div>
+          <div class="user-actions" role="navigation" aria-label="User menu" id="user-actions" style="display: none;">
+            <a href="/profile.html" button class="button-outline">
+              <span class="body-small">Profile</span>
+            </a>
+            <div class="profile-menu-container">
+              <button class="profile-btn" aria-label="Profile Menu" id="profile-menu-btn">
+                <img src="profile_sml.png" alt="profile" width="43" height="43" id="profile-avatar">
+                <span class="visually-hidden">Profile Menu</span>
+              </button>
+              <div class="profile-dropdown" id="profile-dropdown">
+                <div class="dropdown-header">
+                  <img src="profile_sml.png" alt="" width="40" height="40" class="dropdown-avatar">
+                  <div class="dropdown-user-info">
+                    <span class="dropdown-name" id="dropdown-user-name">Loading...</span>
+                    <span class="dropdown-email" id="dropdown-user-email">Loading...</span>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <ul class="dropdown-menu">
+                  <li><a href="/profile.html" class="dropdown-item"><i class="icon-profile"></i>Profile</a></li>
+                  <li><a href="#" class="dropdown-item" id="settings-btn"><i class="icon-settings"></i>Settings</a></li>
+                  <li><a href="#" class="dropdown-item" id="notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
+                  <li class="dropdown-divider"></li>
+                  <li><a href="#" class="dropdown-item logout-item" id="logout-btn"><i class="icon-logout"></i>Log Out</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div data-thq="burger-menu" class="navbar-burger-menu">
+            <svg viewBox="0 0 1024 1024" class="navbar-icon">
+              <path
+                d="M128 554.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 298.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667zM128 810.667h768c23.552 0 42.667-19.115 42.667-42.667s-19.115-42.667-42.667-42.667h-768c-23.552 0-42.667 19.115-42.667 42.667s19.115 42.667 42.667 42.667z">
+              </path>
+            </svg>
+          </div>
+          <div data-thq="mobile-menu" class="navbar-mobile-menu">
+            <div class="navbar-nav">
+              <div class="navbar-top">
+                <img alt="Feedback Hub Logo" src="icon.png" class="navbar-logo">
+                <div data-thq="close-menu" class="navbar-close-menu">
+                  <svg viewBox="0 0 1024 1024" class="navbar-icon">
+                    <path
+                      d="M810 274l-238 238 238 238-60 60-238-238-238 238-60-60 238-238-238-238 60-60 238 238 238-238z">
+                    </path>
+                  </svg>
+                </div>
+              </div>
+              <nav class="navbar-links1">
+                <a href="index.html" class="link body-small">
+                  <span>Home</span>
+                </a>
+                <a href="products.html" class="link body-small">
+                  <span>Products</span>
+                </a>
+                <a href="reviews.html" class="link body-small">
+                  <span>Reviews</span>
+                </a>
+                <a href="response.html" class="link body-small">
+                  <span>Response</span>
+                </a>
+                <a href="index.html#about-us" class="link body-small">
+                  <span>About Us</span>
+                </a>
+                <a href="index.html#contact-contant" class="link body-small">
+                  <span>Contact Us</span>
+                </a>
+              </nav>
+            </div>
+            <div class="navbar-buttons">
+              <a href="/login.html" class="button-filled">Login</a>
+              <a href="/signup.html" class="button-outline">Register</a>
+            </div>
+          </div>
+        </div>
+    </header>
+  </div>
+
+  <div id="main-content" class="main-contant response-page">
+    <!-- Hero Section -->
+    <section class="response-hero section-padding">
+      <div class="section-max-width">
+        <div class="hero-content">
+          <h1 class="hero-text heading-1">
+            <span>🤖 AI Response Hub</span>
+          </h1>
+          <p class="hero-text1 body-large">
+            <span>
+              Get instant AI-powered responses to your product questions. Click on any product to start a conversation
+              and discover detailed insights from aggregated reviews and expert analysis.
+            </span>
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Layout -->
+    <div class="response-layout section-padding">
+      <div class="section-max-width">
+        <div class="response-container">
+          
+          <!-- Product Selection Sidebar -->
+          <aside class="product-sidebar">
+            <div class="sidebar-header">
+              <h2 class="heading-3">Select a Product</h2>
+              <div class="search-container">
+                <input type="text" id="product-search" placeholder="Search products..." class="search-input-small">
+                <button class="search-btn-small" id="search-products-btn">
+                  <svg viewBox="0 0 24 24" class="search-icon-small">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="products-list" id="products-list">
+              <!-- Products will be loaded here -->
+              <div class="loading-products">
+                <div class="loading-spinner-small"></div>
+                <p>Loading products...</p>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Chat Interface -->
+          <main class="chat-interface">
+            <div class="chat-header" id="chat-header">
+              <div class="chat-product-info" style="display: none;">
+                <img id="chat-product-image" src="" alt="" class="chat-product-img">
+                <div class="chat-product-details">
+                  <h3 id="chat-product-name">Select a product to start</h3>
+                  <p id="chat-product-category">Choose from the sidebar</p>
+                </div>
+              </div>
+              <div class="chat-welcome" id="chat-welcome">
+                <div class="welcome-icon">🤖</div>
+                <h3>Welcome to AI Response Hub</h3>
+                <p>Select a product from the sidebar to start a conversation and get AI-powered insights!</p>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chat-messages">
+              <!-- Chat messages will appear here -->
+            </div>
+
+            <div class="chat-input-container" id="chat-input-container" style="display: none;">
+              <div class="chat-input-wrapper">
+                <input type="text" id="chat-input" placeholder="Ask anything about this product..." class="chat-input">
+                <button class="send-btn" id="send-btn">
+                  <svg viewBox="0 0 24 24" class="send-icon">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="quick-questions" id="quick-questions">
+                <!-- Quick question buttons will appear here -->
+              </div>
+            </div>
+          </main>
+
+          <!-- Anonymous Chat Panel -->
+          <aside class="anonymous-chat-panel" id="anonymous-chat-panel">
+            <div class="chat-panel-header">
+              <div class="chat-tabs">
+                <button class="chat-tab active" id="summary-tab">📊 Summary</button>
+                <button class="chat-tab" id="community-tab">💬 Community</button>
+              </div>
+              <button class="close-panel" id="close-panel">×</button>
+            </div>
+
+            <!-- Summary Content -->
+            <div class="tab-content active" id="summary-content">
+              <div class="summary-stats">
+                <div class="stat-item">
+                  <span class="stat-label">AI Responses</span>
+                  <span class="stat-value" id="ai-responses-count">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">User Reviews</span>
+                  <span class="stat-value" id="user-reviews-count">0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Avg Rating</span>
+                  <span class="stat-value" id="summary-avg-rating">0.0</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-label">Online Users</span>
+                  <span class="stat-value" id="online-users-count">12</span>
+                </div>
+              </div>
+              <div class="summary-insights" id="summary-insights">
+                <!-- AI insights will appear here -->
+              </div>
+            </div>
+
+            <!-- Community Chat Content -->
+            <div class="tab-content" id="community-content">
+              <div class="community-chat-header">
+                <h4>Anonymous Community Chat</h4>
+                <div class="user-status">
+                  <span class="status-indicator online"></span>
+                  <span id="anonymous-username">Anonymous_User_123</span>
+                  <button class="change-username-btn" id="change-username-btn">🎲</button>
+                </div>
+              </div>
+
+              <div class="community-messages" id="community-messages">
+                <!-- Community messages will appear here -->
+              </div>
+
+              <div class="community-input-container">
+                <div class="community-input-wrapper">
+                  <input type="text" id="community-input" placeholder="Chat anonymously with the community..." class="community-input">
+                  <button class="community-send-btn" id="community-send-btn">
+                    <svg viewBox="0 0 24 24" class="send-icon">
+                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                  </button>
+                </div>
+                <div class="chat-options">
+                  <button class="option-btn" id="ask-ai-btn">🤖 Ask AI</button>
+                  <button class="option-btn" id="share-opinion-btn">💭 Share Opinion</button>
+                  <button class="option-btn" id="ask-community-btn">❓ Ask Community</button>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="floating-actions">
+      <button class="fab" id="clear-chat-btn" title="Clear Chat">
+        <svg viewBox="0 0 24 24">
+          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+        </svg>
+      </button>
+      <button class="fab" id="export-chat-btn" title="Export Chat">
+        <svg viewBox="0 0 24 24">
+          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+        </svg>
+      </button>
+      <button class="fab" id="toggle-summary-btn" title="Toggle Summary">
+        <svg viewBox="0 0 24 24">
+          <path d="M3,3H21V5H3V3M3,7H21V9H3V7M3,11H21V13H3V11M3,15H21V17H3V15M3,19H21V21H3V19Z"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <footer class="footer section-padding">
+    <div class="footer-max-width section-max-width">
+      <div class="footer-content">
+        <div class="footer-newsletter">
+          <img alt="Feedback Hub Logo" src="/icon_trans.png" class="footer-image ">
+          <span>CLARITY IN REVIEWS, CONFIDENCE IN CHOICE</span>
+          <span class="body-small">
+            Subscribe to our newsletter for the latest updates on new
+            features and product releases.
+          </span>
+        </div>
+        <div class="footer-links">
+          <div class="footer-column">
+            <strong class="body-large footer-column-title">
+              <span>Company</span>
+            </strong>
+            <div class="footer-footer-links">
+              <span class="body-small"><a href="#">Why Feedback Hub?</a></span>
+              <span class="body-small"><a href="#community-content">About Us</a></span>
+              <span class="body-small"><a href="/response.html">AI Response Hub</a></span>
+              <span class="body-small"><a href="/404.html">FAQs</a></span>
+              <span class="body-small"><a href="#">Privacy Policy</a></span>
+            </div>
+          </div>
+          <div class="footer-column">
+            <strong class="body-large footer-column-title"><span>Quick Links</span></strong>
+            <div class="footer-footer-links">
+              <span class="body-small"><span><a href="#contact-content">Term of Service</a></span></span>
+              <span class="body-small"><span><a href="/products.html">Product Catalog</a></span></span>
+              <span class="body-small"><span><a href="/login.html">Log In</a></span></span>
+              <span class="body-small"><span><a href="/signup.html">Sign Up</a></span></span>
+              <span class="body-small"><span><a href="#">Feedback Hub</a></span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
+  <script>
+    // Check if user is logged in and update navigation
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const guestActions = document.getElementById('guest-actions');
+      const userActions = document.getElementById('user-actions');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      if (token) {
+        // User is logged in
+        if (guestActions) guestActions.style.display = 'none';
+        if (userActions) userActions.style.display = 'flex';
+      } else {
+        // User is not logged in
+        if (guestActions) guestActions.style.display = 'flex';
+        if (userActions) userActions.style.display = 'none';
+      }
+
+      // Logout functionality
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+      }
+    });
+  </script>
+  <script src="js/api.js"></script>
+  <script src="js/profile-menu.js"></script>
+  <script src="js/response-page.js"></script>
+
+</body>
+
+</html>
