@@ -1,4 +1,4 @@
-# FeedBack Hub v1.1.0
+# FeedBack Hub 
 
 A comprehensive platform for product reviews and feedback aggregation.
 
@@ -32,10 +32,6 @@ A comprehensive platform for product reviews and feedback aggregation.
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone <repository-url>
-cd "FeedBack Hub v1.1.0"
-```
 
 2. Install dependencies:
 ```bash
@@ -136,18 +132,3 @@ FeedBack Hub v1.1.0/
 └── images/              # Static images and assets
 ```
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/new-feature`)
-3. Commit your changes (`git commit -am 'Add new feature'`)
-4. Push to the branch (`git push origin feature/new-feature`)
-5. Create a Pull Request
-
-## License
-
-This project is licensed under the ISC License.
-
-## Support
-
-For support, email contact@feedbackhub.com or create an issue in the repository.
