@@ -43,13 +43,18 @@ class Dashboard {
   
   renderUserInfo(user) {
     const userInfoElement = document.getElementById('user-info');
+    const profileTitle = document.getElementById('profile-title');
+
     if (userInfoElement) {
       userInfoElement.innerHTML = `
-        <div class="user-welcome">
-          <h3>Welcome, ${user.firstName}!</h3>
-          <p>${user.email}</p>
-        </div>
+        <h1 id="profile-title" class="profile-name">${user.firstName} ${user.lastName}</h1>
+        <p class="profile-role">Customer</p>
+        <p class="profile-location">${user.email}</p>
       `;
+    }
+
+    if (profileTitle) {
+      profileTitle.textContent = `${user.firstName} ${user.lastName}`;
     }
   }
 
@@ -115,14 +120,48 @@ class Dashboard {
         this.showReviewForm(productId);
       });
     });
-    
+
     // Logout button
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
-      logoutBtn.addEventListener('click', () => {
+      logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         window.location.href = 'login.html';
+      });
+    }
+
+    // Quick action buttons
+    const addProductBtn = document.getElementById('add-product-btn');
+    if (addProductBtn) {
+      addProductBtn.addEventListener('click', () => {
+        this.showAddProductForm();
+      });
+    }
+
+    const viewNotificationsBtn = document.getElementById('view-notifications-btn');
+    if (viewNotificationsBtn) {
+      viewNotificationsBtn.addEventListener('click', () => {
+        this.showNotifications();
+      });
+    }
+
+    // Settings button from profile menu
+    const settingsBtn = document.getElementById('settings-btn');
+    if (settingsBtn) {
+      settingsBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showSettingsModal();
+      });
+    }
+
+    // Notifications button from profile menu
+    const notificationsBtnMenu = document.getElementById('notifications-btn');
+    if (notificationsBtnMenu) {
+      notificationsBtnMenu.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.showNotifications();
       });
     }
   }
@@ -198,6 +237,143 @@ class Dashboard {
         alert('Failed to submit review. Please try again.');
       }
     });
+  }
+
+  showAddProductForm() {
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Add New Product</h2>
+        <form id="product-form">
+          <div class="form-group">
+            <label for="product-name">Product Name:</label>
+            <input type="text" id="product-name" required>
+          </div>
+          <div class="form-group">
+            <label for="product-description">Description:</label>
+            <textarea id="product-description" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="product-price">Price:</label>
+            <input type="number" id="product-price" step="0.01" required>
+          </div>
+          <div class="form-group">
+            <label for="product-category">Category:</label>
+            <select id="product-category" required>
+              <option value="Electronics">Electronics</option>
+              <option value="Computers">Computers</option>
+              <option value="Audio">Audio</option>
+              <option value="Gaming">Gaming</option>
+              <option value="Home Appliances">Home Appliances</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="product-image">Image URL:</label>
+            <input type="url" id="product-image">
+          </div>
+          <button type="submit" class="btn">Add Product</button>
+        </form>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Close modal
+    modal.querySelector('.close').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+
+    // Submit product
+    modal.querySelector('#product-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const productData = {
+        name: document.getElementById('product-name').value,
+        description: document.getElementById('product-description').value,
+        price: parseFloat(document.getElementById('product-price').value),
+        category: document.getElementById('product-category').value,
+        imageUrl: document.getElementById('product-image').value || 'placeholder1.jpg'
+      };
+
+      try {
+        await api.addProduct(productData);
+        document.body.removeChild(modal);
+
+        // Refresh products
+        this.products = await api.getProducts();
+        this.renderProducts();
+
+        alert('Product added successfully!');
+      } catch (error) {
+        console.error('Error adding product:', error);
+        alert('Failed to add product. Please try again.');
+      }
+    });
+  }
+
+  async showNotifications() {
+    try {
+      const notifications = await api.getNotifications();
+
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <h2>Notifications</h2>
+          <div class="notifications-list">
+            ${notifications.length ?
+              notifications.map(notification => `
+                <div class="notification-item ${notification.read ? 'read' : 'unread'}">
+                  <p>${notification.message}</p>
+                  <small>${new Date(notification.createdAt).toLocaleDateString()}</small>
+                  ${!notification.read ? `<button class="mark-read-btn" data-id="${notification._id}">Mark as Read</button>` : ''}
+                </div>
+              `).join('') :
+              '<p>No notifications available.</p>'
+            }
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      // Close modal
+      modal.querySelector('.close').addEventListener('click', () => {
+        document.body.removeChild(modal);
+      });
+
+      // Mark as read functionality
+      modal.querySelectorAll('.mark-read-btn').forEach(button => {
+        button.addEventListener('click', async (e) => {
+          const notificationId = e.target.dataset.id;
+          try {
+            await api.markNotificationRead(notificationId);
+            e.target.parentElement.classList.add('read');
+            e.target.remove();
+          } catch (error) {
+            console.error('Error marking notification as read:', error);
+          }
+        });
+      });
+
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      alert('Failed to load notifications.');
+    }
+  }
+
+  showSettingsModal() {
+    // Use the profile menu settings modal
+    if (window.ProfileMenu) {
+      const profileMenu = new window.ProfileMenu();
+      profileMenu.showSettingsModal();
+    } else {
+      alert('Settings will be available soon!');
+    }
   }
 }
 

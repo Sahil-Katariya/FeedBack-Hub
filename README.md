@@ -7,7 +7,10 @@ A comprehensive platform for product reviews and feedback aggregation.
 - **Product Reviews**: Browse and read detailed product reviews
 - **User Authentication**: Secure login and registration system
 - **Review Submission**: Submit your own product reviews
-- **Dashboard**: Personal dashboard for managing reviews
+- **Dashboard**: Personal dashboard for managing reviews using profile layout
+- **Dynamic Profile**: User profile page with real-time data and statistics
+- **Profile Settings**: Edit profile information, change password, and upload avatar
+- **Profile Menu**: Dropdown menu with quick access to dashboard, profile, settings
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## Technologies Used
@@ -66,9 +69,12 @@ npm run dev
 
 1. **Registration**: Create a new account using the signup form
 2. **Login**: Access your account with email and password
-3. **Browse Products**: View available products on the dashboard
-4. **Submit Reviews**: Add reviews for products you've used
-5. **View Reviews**: Read reviews from other users
+3. **Dashboard**: View products, submit reviews, and manage your account
+4. **Profile**: View your profile with dynamic statistics and review history
+5. **Profile Settings**: Edit your profile information and change password
+6. **Profile Menu**: Access quick actions via the profile icon dropdown
+7. **Submit Reviews**: Add reviews for products you've used
+8. **View Reviews**: Read reviews from other users
 
 ## API Endpoints
 
@@ -78,6 +84,9 @@ npm run dev
 
 ### Users
 - `GET /api/user` - Get current user profile (protected)
+- `PUT /api/user/profile` - Update user profile information (protected)
+- `PUT /api/user/password` - Update user password (protected)
+- `GET /api/user/stats` - Get user statistics and activity (protected)
 
 ### Products
 - `GET /api/products` - Get all products
@@ -109,10 +118,13 @@ FeedBack Hub v1.1.0/
 ├── signup.html           # Registration page
 ├── dashboard.html        # User dashboard
 ├── css/
-│   └── dashboard.css     # Dashboard-specific styles
+│   ├── dashboard.css     # Dashboard-specific styles
+│   └── profile-menu.css  # Profile menu and settings styles
 ├── js/
 │   ├── api.js           # API communication functions
-│   └── dashboard.js     # Dashboard functionality
+│   ├── dashboard.js     # Dashboard functionality
+│   ├── profile-menu.js  # Profile dropdown menu and settings
+│   └── profile.js       # Dynamic profile page functionality
 ├── scripts/
 │   └── seedData.js      # Database seeding script
 └── images/              # Static images and assets

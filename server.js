@@ -19,10 +19,6 @@ app.use(express.static('public'));
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/feedbackhub', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => {
-  console.log("MongoDB connected!");
-}).catch(err => {
-  console.error("MongoDB connection error:", err);
 });
 
 // User Schema
@@ -31,6 +27,9 @@ const userSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  profilePicture: { type: String, default: 'profile photo.svg' },
+  location: { type: String, default: '' },
+  bio: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -168,6 +167,94 @@ app.get('/api/user', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/user/profile', auth, async (req, res) => {
+  try {
+    const { firstName, lastName, email, profilePicture, location, bio } = req.body;
+
+    // Check if email is being changed and if it's already in use
+    if (email) {
+      const existingUser = await User.findOne({ email, _id: { $ne: req.user.id } });
+      if (existingUser) {
+        return res.status(400).json({ error: 'Email already in use' });
+      }
+    }
+
+    const updateData = {};
+    if (firstName) updateData.firstName = firstName;
+    if (lastName) updateData.lastName = lastName;
+    if (email) updateData.email = email;
+    if (profilePicture) updateData.profilePicture = profilePicture;
+    if (location) updateData.location = location;
+    if (bio) updateData.bio = bio;
+
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      updateData,
+      { new: true }
+    ).select('-password');
+
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.put('/api/user/password', auth, async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Current password is incorrect' });
+    }
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await User.findByIdAndUpdate(req.user.id, { password: hashedPassword });
+
+    res.json({ success: true, message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.get('/api/user/stats', auth, async (req, res) => {
+  try {
+    const userReviews = await Review.find({ userId: req.user.id });
+    const totalReviews = userReviews.length;
+
+    const avgRating = totalReviews > 0
+      ? userReviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+      : 0;
+
+    // Get user's badges/achievements (placeholder for now)
+    const badges = 4; // This could be calculated based on user activity
+
+    // Get followers/following (placeholder for future social features)
+    const followers = 0;
+    const following = 0;
+
+    res.json({
+      totalReviews,
+      avgRating: Math.round(avgRating * 10) / 10,
+      badges,
+      followers,
+      following,
+      score: totalReviews * 100 + Math.round(avgRating * 50) // Simple scoring system
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

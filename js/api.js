@@ -177,6 +177,63 @@ const api = {
       console.error('Get product reviews API error:', error);
       throw error;
     }
+  },
+
+  updateProfile: async (profileData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': getToken()
+        },
+        body: JSON.stringify(profileData)
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Update profile API error:', error);
+      throw error;
+    }
+  },
+
+  updatePassword: async (passwordData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': getToken()
+        },
+        body: JSON.stringify(passwordData)
+      });
+      if (!response.ok) {
+        throw new Error('Failed to update password');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Update password API error:', error);
+      throw error;
+    }
+  },
+
+  getUserStats: async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/stats`, {
+        headers: {
+          'x-auth-token': getToken()
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch user stats');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Get user stats API error:', error);
+      throw error;
+    }
   }
 };
 
