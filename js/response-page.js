@@ -3,8 +3,11 @@ class ResponsePage {
     this.products = [];
     this.currentProduct = null;
     this.chatHistory = [];
+    this.communityMessages = [];
     this.aiResponses = 0;
     this.userReviews = 0;
+    this.anonymousUsername = this.generateAnonymousUsername();
+    this.onlineUsers = 12;
     this.init();
   }
 
@@ -13,6 +16,8 @@ class ResponsePage {
       await this.loadProducts();
       this.setupEventListeners();
       this.renderProducts();
+      this.initializeCommunityChat();
+      this.startCommunitySimulation();
     } catch (error) {
       console.error('Error initializing response page:', error);
       this.showError('Failed to load products. Please try again later.');
@@ -122,22 +127,68 @@ class ResponsePage {
       this.sendMessage();
     });
 
+    // Community chat input
+    const communityInput = document.getElementById('community-input');
+    const communitySendBtn = document.getElementById('community-send-btn');
+
+    communityInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        this.sendCommunityMessage();
+      }
+    });
+
+    communitySendBtn.addEventListener('click', () => {
+      this.sendCommunityMessage();
+    });
+
+    // Chat tabs
+    document.getElementById('summary-tab').addEventListener('click', () => {
+      this.switchTab('summary');
+    });
+
+    document.getElementById('community-tab').addEventListener('click', () => {
+      this.switchTab('community');
+    });
+
     // Floating action buttons
     document.getElementById('clear-chat-btn').addEventListener('click', () => {
       this.clearChat();
     });
-    
+
     document.getElementById('export-chat-btn').addEventListener('click', () => {
       this.exportChat();
     });
-    
-    document.getElementById('toggle-summary-btn').addEventListener('click', () => {
-      this.toggleSummary();
+
+    document.getElementById('toggle-panel-btn').addEventListener('click', () => {
+      this.togglePanel();
     });
 
-    // Close summary
-    document.getElementById('close-summary').addEventListener('click', () => {
-      this.closeSummary();
+    document.getElementById('join-community-btn').addEventListener('click', () => {
+      this.joinCommunityChat();
+    });
+
+    // Close panel
+    document.getElementById('close-panel').addEventListener('click', () => {
+      this.closePanel();
+    });
+
+    // Change username
+    document.getElementById('change-username-btn').addEventListener('click', () => {
+      this.changeAnonymousUsername();
+    });
+
+    // Chat option buttons
+    document.getElementById('ask-ai-btn').addEventListener('click', () => {
+      this.askAIInCommunity();
+    });
+
+    document.getElementById('share-opinion-btn').addEventListener('click', () => {
+      this.shareOpinion();
+    });
+
+    document.getElementById('ask-community-btn').addEventListener('click', () => {
+      this.askCommunity();
     });
   }
 
@@ -506,6 +557,258 @@ class ResponsePage {
         </button>
       </div>
     `;
+  }
+
+  // Community Chat Methods
+  generateAnonymousUsername() {
+    const adjectives = ['Cool', 'Smart', 'Quick', 'Bright', 'Sharp', 'Swift', 'Bold', 'Wise', 'Kind', 'Calm'];
+    const nouns = ['User', 'Reviewer', 'Buyer', 'Expert', 'Critic', 'Fan', 'Shopper', 'Guide', 'Helper', 'Advisor'];
+    const numbers = Math.floor(Math.random() * 999) + 1;
+
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+
+    return `${adjective}_${noun}_${numbers}`;
+  }
+
+  initializeCommunityChat() {
+    document.getElementById('anonymous-username').textContent = this.anonymousUsername;
+    document.getElementById('online-users-count').textContent = this.onlineUsers;
+
+    // Add some initial community messages
+    this.addInitialCommunityMessages();
+  }
+
+  addInitialCommunityMessages() {
+    const initialMessages = [
+      {
+        type: 'user',
+        username: 'Tech_Guru_456',
+        content: 'Has anyone tried the new iPhone 15 Pro? Thinking about upgrading from my 13.',
+        timestamp: new Date(Date.now() - 300000) // 5 minutes ago
+      },
+      {
+        type: 'ai',
+        username: 'AI Assistant',
+        content: 'The iPhone 15 Pro offers significant improvements in camera quality and performance. Based on user reviews, 89% of upgraders from iPhone 13 are satisfied with the upgrade.',
+        timestamp: new Date(Date.now() - 240000) // 4 minutes ago
+      },
+      {
+        type: 'user',
+        username: 'Budget_Shopper_789',
+        content: 'What about the price though? Is it worth the extra cost?',
+        timestamp: new Date(Date.now() - 180000) // 3 minutes ago
+      }
+    ];
+
+    initialMessages.forEach(msg => {
+      this.communityMessages.push(msg);
+    });
+
+    this.renderCommunityMessages();
+  }
+
+  startCommunitySimulation() {
+    // Simulate other users joining and chatting
+    setInterval(() => {
+      if (Math.random() < 0.3) { // 30% chance every 30 seconds
+        this.simulateUserMessage();
+      }
+    }, 30000);
+
+    // Update online users count occasionally
+    setInterval(() => {
+      this.onlineUsers = Math.floor(Math.random() * 20) + 8; // 8-28 users
+      document.getElementById('online-users-count').textContent = this.onlineUsers;
+    }, 60000);
+  }
+
+  simulateUserMessage() {
+    const simulatedUsers = [
+      'Product_Expert_123', 'Deal_Hunter_456', 'Tech_Lover_789',
+      'Smart_Buyer_321', 'Review_Reader_654', 'Gadget_Fan_987'
+    ];
+
+    const simulatedMessages = [
+      'Just got this product and loving it so far!',
+      'Anyone know if there are any deals coming up?',
+      'The reviews on this are really mixed, what do you think?',
+      'Compared to the competition, this seems like a solid choice.',
+      'Has anyone had any issues with durability?',
+      'The AI recommendations here are pretty helpful!',
+      'Worth waiting for the next version or buy now?',
+      'Customer service experience has been great with this brand.'
+    ];
+
+    const username = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
+    const content = simulatedMessages[Math.floor(Math.random() * simulatedMessages.length)];
+
+    const message = {
+      type: 'user',
+      username: username,
+      content: content,
+      timestamp: new Date()
+    };
+
+    this.communityMessages.push(message);
+    this.renderCommunityMessages();
+
+    // Sometimes AI responds to simulated messages
+    if (Math.random() < 0.4) {
+      setTimeout(() => {
+        this.generateAICommunityResponse(content);
+      }, 2000 + Math.random() * 3000);
+    }
+  }
+
+  switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.chat-tab').forEach(tab => {
+      tab.classList.remove('active');
+    });
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+
+    // Update tab content
+    document.querySelectorAll('.tab-content').forEach(content => {
+      content.classList.remove('active');
+    });
+    document.getElementById(`${tabName}-content`).classList.add('active');
+  }
+
+  sendCommunityMessage() {
+    const input = document.getElementById('community-input');
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    const communityMessage = {
+      type: 'own',
+      username: this.anonymousUsername,
+      content: message,
+      timestamp: new Date()
+    };
+
+    this.communityMessages.push(communityMessage);
+    this.renderCommunityMessages();
+
+    input.value = '';
+
+    // Sometimes trigger AI response
+    if (message.includes('?') || message.toLowerCase().includes('ai') || Math.random() < 0.3) {
+      setTimeout(() => {
+        this.generateAICommunityResponse(message);
+      }, 1000 + Math.random() * 2000);
+    }
+  }
+
+  generateAICommunityResponse(userMessage) {
+    const aiResponses = [
+      'Based on the reviews I\'ve analyzed, that\'s a great question! Most users report positive experiences with that aspect.',
+      'I can help with that! From aggregated data, here\'s what users typically experience...',
+      'That\'s a common concern. Looking at user feedback, about 85% of buyers are satisfied with that feature.',
+      'Great point! The data shows mixed opinions on that, but the majority lean positive.',
+      'I\'ve processed thousands of reviews on this topic. The consensus seems to be quite favorable.',
+      'Interesting question! Based on price comparisons and user satisfaction, it offers good value.',
+      'From what I can see in the review data, that\'s definitely worth considering before purchasing.'
+    ];
+
+    const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+
+    const aiMessage = {
+      type: 'ai',
+      username: 'AI Assistant',
+      content: response,
+      timestamp: new Date()
+    };
+
+    this.communityMessages.push(aiMessage);
+    this.renderCommunityMessages();
+  }
+
+  renderCommunityMessages() {
+    const container = document.getElementById('community-messages');
+
+    container.innerHTML = this.communityMessages.map(msg => {
+      const time = msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const avatarText = msg.type === 'ai' ? '🤖' : msg.username.charAt(0).toUpperCase();
+
+      return `
+        <div class="community-message ${msg.type}">
+          <div class="community-avatar ${msg.type}">${avatarText}</div>
+          <div class="community-message-content">
+            <p class="community-message-text">${msg.content}</p>
+            <div class="community-message-meta">
+              <span class="community-username">${msg.username}</span>
+              <span class="community-time">${time}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    container.scrollTop = container.scrollHeight;
+  }
+
+  changeAnonymousUsername() {
+    this.anonymousUsername = this.generateAnonymousUsername();
+    document.getElementById('anonymous-username').textContent = this.anonymousUsername;
+  }
+
+  askAIInCommunity() {
+    const input = document.getElementById('community-input');
+    input.value = '🤖 AI, what do you think about ';
+    input.focus();
+  }
+
+  shareOpinion() {
+    const input = document.getElementById('community-input');
+    input.value = '💭 In my opinion, ';
+    input.focus();
+  }
+
+  askCommunity() {
+    const input = document.getElementById('community-input');
+    input.value = '❓ Has anyone here ';
+    input.focus();
+  }
+
+  joinCommunityChat() {
+    this.switchTab('community');
+    document.getElementById('anonymous-chat-panel').style.display = 'flex';
+
+    // Add join message
+    const joinMessage = {
+      type: 'ai',
+      username: 'System',
+      content: `${this.anonymousUsername} joined the community chat! 👋`,
+      timestamp: new Date()
+    };
+
+    this.communityMessages.push(joinMessage);
+    this.renderCommunityMessages();
+  }
+
+  togglePanel() {
+    const panel = document.getElementById('anonymous-chat-panel');
+    if (panel.style.display === 'none' || !panel.style.display) {
+      panel.style.display = 'flex';
+      this.updateSummaryInsights();
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+
+  closePanel() {
+    document.getElementById('anonymous-chat-panel').style.display = 'none';
+  }
+
+  // Update existing methods
+  toggleSummary() {
+    this.togglePanel();
+  }
+
+  closeSummary() {
+    this.closePanel();
   }
 }
 

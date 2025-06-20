@@ -33,12 +33,7 @@ class ProductPage {
 
   async loadProduct(productId) {
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`);
-      if (!response.ok) {
-        throw new Error('Product not found');
-      }
-      
-      this.currentProduct = await response.json();
+      this.currentProduct = await api.getProduct(productId);
       this.renderProductInfo();
     } catch (error) {
       console.error('Error loading product:', error);
@@ -48,12 +43,7 @@ class ProductPage {
 
   async loadReviews(productId) {
     try {
-      const response = await fetch(`http://localhost:5000/api/reviews/product/${productId}`);
-      if (!response.ok) {
-        throw new Error('Failed to load reviews');
-      }
-      
-      this.currentReviews = await response.json();
+      this.currentReviews = await api.getProductReviews(productId);
       this.filteredReviews = [...this.currentReviews];
       this.updateRatingSummary();
     } catch (error) {
