@@ -46,21 +46,24 @@
                 <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
               </ul>
             </nav>
-            <div class="user-actions" role="navigation" aria-label="User menu" hidden>
-              <a href="/profile.html" button class="button-outline">
+            <div class="user-actions" role="navigation" aria-label="User menu" id="guest-actions">
+              <a href="/login.html" button class="button-outline">
                 <span class="body-small">Log in</span>
               </a>
-              <a href="/signin.html" button class="button-filled">
+              <a href="/signup.html" button class="button-filled">
                 <span class="body-small">sign up</span>
               </a>
             </div>
-            <div class="user-actions" role="navigation" aria-label="User menu">
+            <div class="user-actions" role="navigation" aria-label="User menu" id="user-actions" style="display: none;">
+              <a href="/dashboard.html" button class="button-outline">
+                <span class="body-small">Dashboard</span>
+              </a>
               <button class="notifications-btn" aria-label="Notifications">
-                <a href="/profile.html" aria-label="Notifications">
+                <a href="/dashboard.html" aria-label="Dashboard">
                   <img src="profile_sml.png" alt="profile" width="43" height="43">
-                  <span class="visually-hidden">Notifications</span></a>
+                  <span class="visually-hidden">Dashboard</span></a>
               </button>
-              <!-- <a href="/index.html" class="logout-btn" aria-label="Log out">Log Out</a> -->
+              <a href="#" class="logout-btn" aria-label="Log out" id="logout-btn">Log Out</a>
             </div>
 
             <div data-thq="burger-menu" class="navbar-burger-menu">
@@ -678,6 +681,35 @@
     </div>
   </div>
   <script data-section-id="navbar" src="https://unpkg.com/@teleporthq/teleport-custom-scripts"></script>
+  <script>
+    // Check if user is logged in and update navigation
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('token');
+      const guestActions = document.getElementById('guest-actions');
+      const userActions = document.getElementById('user-actions');
+      const logoutBtn = document.getElementById('logout-btn');
+
+      if (token) {
+        // User is logged in
+        guestActions.style.display = 'none';
+        userActions.style.display = 'flex';
+      } else {
+        // User is not logged in
+        guestActions.style.display = 'flex';
+        userActions.style.display = 'none';
+      }
+
+      // Logout functionality
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.reload();
+        });
+      }
+    });
+  </script>
 
 </body>
 

@@ -115,3 +115,64 @@
       </div>
     </div>
   </footer>
+
+  <script src="js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check if user is already logged in
+      if (localStorage.getItem('token')) {
+        window.location.href = 'dashboard.html';
+      }
+
+      const signupForm = document.querySelector('.login-form');
+
+      signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const contactNumber = document.getElementById('contactNumber').value;
+
+        // Basic validation
+        if (!firstName || !lastName || !email || !password) {
+          alert('Please fill in all required fields');
+          return;
+        }
+
+        // Show loading state
+        const submitButton = document.querySelector('.login-button');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Signing up...';
+        submitButton.disabled = true;
+
+        try {
+          const userData = {
+            firstName,
+            lastName,
+            email,
+            password,
+            contactNumber
+          };
+
+          const result = await api.register(userData);
+          if (result.success) {
+            alert('Registration successful! Please log in.');
+            window.location.href = 'login.html';
+          } else {
+            alert(result.error || 'Registration failed');
+          }
+        } catch (error) {
+          console.error('Registration error:', error);
+          alert('An error occurred during registration. Please try again.');
+        } finally {
+          // Reset button state
+          submitButton.textContent = originalText;
+          submitButton.disabled = false;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
