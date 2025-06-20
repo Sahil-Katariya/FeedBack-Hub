@@ -8,6 +8,7 @@ A comprehensive platform for product reviews and feedback aggregation.
 - **User Authentication**: Secure login and registration system
 - **Review Submission**: Submit your own product reviews
 - **Unified Profile**: Combined profile and dashboard functionality in one comprehensive page
+- **AI Product Review Aggregator**: Advanced AI-powered analysis of product reviews
 - **Profile Settings**: Edit profile information, change password, and upload avatar
 - **Profile Menu**: Dropdown menu with quick access to dashboard, profile, settings
 - **Responsive Design**: Works on desktop and mobile devices
@@ -69,10 +70,11 @@ npm run dev
 1. **Registration**: Create a new account using the signup form
 2. **Login**: Access your account with email and password
 3. **Profile**: Unified page with dashboard functionality, personal info, and statistics
-5. **Profile Settings**: Edit your profile information and change password
-6. **Profile Menu**: Access quick actions via the profile icon dropdown
-7. **Submit Reviews**: Add reviews for products you've used
-8. **View Reviews**: Read reviews from other users
+5. **AI Product Analysis**: View detailed AI-powered analysis of product reviews
+6. **Profile Settings**: Edit your profile information and change password
+7. **Profile Menu**: Access quick actions via the profile icon dropdown
+8. **Submit Reviews**: Add reviews for products you've used
+9. **View Reviews**: Read reviews from other users
 
 ## API Endpoints
 
@@ -103,6 +105,9 @@ npm run dev
 - `GET /api/notifications` - Get user notifications (protected)
 - `PUT /api/notifications/:id/read` - Mark notification as read (protected)
 
+### AI Product Analysis
+- `GET /api/products/:id/analytics` - Get comprehensive product analytics and review insights
+
 ## Project Structure
 
 ```
@@ -115,13 +120,17 @@ FeedBack Hub v1.1.0/
 ├── login.html            # Login page
 ├── signup.html           # Registration page
 ├── profile.html          # Unified profile page with dashboard functionality
+├── product.html          # AI-powered product review analysis page
 ├── css/
 │   ├── dashboard.css     # Dashboard-specific styles
-│   └── profile-menu.css  # Profile menu and settings styles
+│   ├── profile-menu.css  # Profile menu and settings styles
+│   └── product.css       # Product page and AI analysis styles
 ├── js/
 │   ├── api.js           # API communication functions
 │   ├── profile-menu.js  # Profile dropdown menu and settings
-│   └── profile.js       # Unified profile page with dashboard functionality
+│   ├── profile.js       # Unified profile page with dashboard functionality
+│   ├── ai-analysis.js   # AI review analysis engine
+│   └── product.js       # Product page functionality
 ├── scripts/
 │   └── seedData.js      # Database seeding script
 └── images/              # Static images and assets

@@ -234,6 +234,32 @@ const api = {
       console.error('Get user stats API error:', error);
       throw error;
     }
+  },
+
+  getProduct: async (productId) => {
+    try {
+      const response = await fetch(`${API_URL}/api/products/${productId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Get product API error:', error);
+      throw error;
+    }
+  },
+
+  getProductAnalytics: async (productId) => {
+    try {
+      const response = await fetch(`${API_URL}/api/products/${productId}/analytics`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch product analytics');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Get product analytics API error:', error);
+      throw error;
+    }
   }
 };
 

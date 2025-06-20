@@ -118,7 +118,10 @@ class UnifiedProfilePage {
           <h3>${product.name}</h3>
           <p>${product.description.substring(0, 100)}...</p>
           <p class="price">$${product.price.toFixed(2)}</p>
-          <button class="btn review-btn" data-id="${product._id}">Add Review</button>
+          <div class="product-actions">
+            <a href="product.html?id=${product._id}" class="btn btn-outline">View Details</a>
+            <button class="btn review-btn" data-id="${product._id}">Add Review</button>
+          </div>
         </div>
       `).join('') :
       '<p>No products available.</p>';

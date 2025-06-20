@@ -113,6 +113,30 @@
   background: #0056b3;
 }
 
+.product-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 1rem 1rem;
+}
+
+.product-actions .btn {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #007bff;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.btn-outline:hover {
+  background: #007bff;
+  color: white;
+}
+
 /* Review Cards */
 .review-card {
   background: #f9f9f9;
@@ -562,13 +586,13 @@
 }
 
 .profile-name {
-  color: white !important;
+  color: rgba(45, 45, 45, 0.9) !important;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .profile-role,
-.profile-location {
-  color: rgba(255,255,255,0.9) !important;
+.profile-location  {
+  color: rgba(45, 45, 45, 0.9) !important;
 }
 
 /* Dashboard Stats Grid Enhancement */

@@ -292,6 +292,100 @@ app.get('/api/products/:id', async (req, res) => {
   }
 });
 
+app.get('/api/products/:id/analytics', async (req, res) => {
+  try {
+    const productId = req.params.id;
+
+    // Get product
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Get all reviews for this product
+    const reviews = await Review.find({ productId })
+      .populate('userId', 'firstName lastName')
+      .sort({ createdAt: -1 });
+
+    // Calculate analytics
+    const totalReviews = reviews.length;
+    const ratings = reviews.map(r => r.rating).filter(r => r > 0);
+    const avgRating = ratings.length > 0 ? ratings.reduce((sum, r) => sum + r, 0) / ratings.length : 0;
+
+    // Rating distribution
+    const ratingDistribution = {
+      5: reviews.filter(r => r.rating === 5).length,
+      4: reviews.filter(r => r.rating === 4).length,
+      3: reviews.filter(r => r.rating === 3).length,
+      2: reviews.filter(r => r.rating === 2).length,
+      1: reviews.filter(r => r.rating === 1).length
+    };
+
+    // Recent reviews (last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const recentReviews = reviews.filter(r => new Date(r.createdAt) > thirtyDaysAgo);
+
+    // Source distribution
+    const sourceDistribution = {};
+    reviews.forEach(review => {
+      sourceDistribution[review.source] = (sourceDistribution[review.source] || 0) + 1;
+    });
+
+    res.json({
+      product,
+      analytics: {
+        totalReviews,
+        avgRating: Math.round(avgRating * 10) / 10,
+        ratingDistribution,
+        recentReviewsCount: recentReviews.length,
+        sourceDistribution,
+        reviewTrend: this.calculateReviewTrend(reviews)
+      },
+      reviews: reviews.slice(0, 10) // Latest 10 reviews
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Helper function to calculate review trend
+function calculateReviewTrend(reviews) {
+  const now = new Date();
+  const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+  const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const lastMonthReviews = reviews.filter(r => {
+    const reviewDate = new Date(r.createdAt);
+    return reviewDate >= lastMonth && reviewDate < thisMonth;
+  });
+
+  const thisMonthReviews = reviews.filter(r => {
+    const reviewDate = new Date(r.createdAt);
+    return reviewDate >= thisMonth;
+  });
+
+  const lastMonthAvg = lastMonthReviews.length > 0
+    ? lastMonthReviews.reduce((sum, r) => sum + r.rating, 0) / lastMonthReviews.length
+    : 0;
+
+  const thisMonthAvg = thisMonthReviews.length > 0
+    ? thisMonthReviews.reduce((sum, r) => sum + r.rating, 0) / thisMonthReviews.length
+    : 0;
+
+  return {
+    lastMonth: {
+      count: lastMonthReviews.length,
+      avgRating: Math.round(lastMonthAvg * 10) / 10
+    },
+    thisMonth: {
+      count: thisMonthReviews.length,
+      avgRating: Math.round(thisMonthAvg * 10) / 10
+    },
+    trend: thisMonthAvg > lastMonthAvg ? 'improving' : thisMonthAvg < lastMonthAvg ? 'declining' : 'stable'
+  };
+}
+
 // Review Routes
 app.get('/api/reviews', async (req, res) => {
   try {
