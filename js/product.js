@@ -6,10 +6,28 @@ class ProductPage {
     this.aiAnalyzer = new AIReviewAnalyzer();
     this.currentPage = 1;
     this.reviewsPerPage = 10;
+    this.isAnalyzing = false;
+    this.analysisResults = null;
+    this.activeFilters = {
+      sentiment: 'all',
+      source: 'all',
+      rating: 'all'
+    };
+    this.sortBy = 'newest';
+    this.userInteractions = {
+      favorites: JSON.parse(localStorage.getItem('favorites') || '[]'),
+      wishlist: JSON.parse(localStorage.getItem('wishlist') || '[]'),
+      viewHistory: JSON.parse(localStorage.getItem('viewHistory') || '[]'),
+      comparisons: JSON.parse(localStorage.getItem('comparisons') || '[]')
+    };
+    this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
     this.init();
   }
 
   async init() {
+    // Initialize user authentication state
+    this.initializeUserState();
+
     // Get product ID from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get('id');
@@ -24,7 +42,10 @@ class ProductPage {
       await this.loadProduct(productId);
       await this.loadReviews(productId);
       this.setupEventListeners();
+      this.setupDynamicFeatures();
+      this.addToViewHistory();
       this.renderReviews();
+      this.loadUserInteractions();
     } catch (error) {
       console.error('Error initializing product page:', error);
       this.showError('Failed to load product information.');
@@ -125,14 +146,27 @@ class ProductPage {
       this.showAddReviewModal();
     });
 
+    // Product action buttons
+    const compareBtn = document.getElementById('compare-btn');
+    const wishlistBtn = document.getElementById('wishlist-btn');
+    const favoriteBtn = document.getElementById('favorite-btn');
+    const shareBtn = document.getElementById('share-btn');
+    const zoomBtn = document.getElementById('zoom-btn');
+
+    compareBtn?.addEventListener('click', () => this.toggleComparePanel());
+    wishlistBtn?.addEventListener('click', () => this.toggleWishlist());
+    favoriteBtn?.addEventListener('click', () => this.toggleFavorite());
+    shareBtn?.addEventListener('click', () => this.shareProduct());
+    zoomBtn?.addEventListener('click', () => this.zoomImage());
+
     // Review filter and sort
     const reviewFilter = document.getElementById('review-filter');
     const reviewSort = document.getElementById('review-sort');
-    
+
     reviewFilter.addEventListener('change', () => {
       this.filterReviews();
     });
-    
+
     reviewSort.addEventListener('change', () => {
       this.sortReviews();
     });
@@ -143,13 +177,38 @@ class ProductPage {
       this.loadMoreReviews();
     });
 
-    // Image gallery
+    // Image gallery with enhanced interactions
     const galleryBtns = document.querySelectorAll('.gallery-btn');
     galleryBtns.forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const imageSrc = e.currentTarget.dataset.image;
-        document.getElementById('product-image').src = imageSrc;
+        this.changeProductImage(e.currentTarget.dataset.image);
       });
+    });
+
+    // Interactive stars
+    const interactiveStars = document.querySelector('.interactive-stars');
+    if (interactiveStars) {
+      this.setupInteractiveStars(interactiveStars);
+    }
+
+    // Tab navigation for user interaction panel
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        this.switchTab(e.target.dataset.tab);
+      });
+    });
+
+    // Auto-refresh checkbox
+    const autoRefresh = document.getElementById('auto-refresh');
+    autoRefresh?.addEventListener('change', (e) => {
+      this.autoRefreshEnabled = e.target.checked;
+    });
+
+    // Save analysis button
+    const saveAnalysisBtn = document.getElementById('save-analysis-btn');
+    saveAnalysisBtn?.addEventListener('click', () => {
+      this.saveAnalysisToProfile();
     });
   }
 
@@ -411,22 +470,552 @@ class ProductPage {
     }
   }
 
-  showError(message) {
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.innerHTML = `
-      <div class="alert alert-danger">
-        <strong>Error:</strong> ${message}
+  // Dynamic User Interaction Methods
+  initializeUserState() {
+    // Authentication is now handled by universal-auth.js
+    // Just update current user reference
+    this.currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+  }
+
+  setupDynamicFeatures() {
+    // Add real-time search for comparison
+    this.setupComparisonSearch();
+
+    // Load user's wishlist and favorites
+    this.updateButtonStates();
+
+    // Setup keyboard shortcuts
+    this.setupKeyboardShortcuts();
+
+    // Initialize tooltips
+    this.initializeTooltips();
+  }
+
+  addToViewHistory() {
+    if (!this.currentProduct) return;
+
+    const history = this.userInteractions.viewHistory;
+    const productId = this.currentProduct._id;
+
+    // Remove if already exists
+    const existingIndex = history.findIndex(item => item.id === productId);
+    if (existingIndex > -1) {
+      history.splice(existingIndex, 1);
+    }
+
+    // Add to beginning
+    history.unshift({
+      id: productId,
+      name: this.currentProduct.name,
+      price: this.currentProduct.price,
+      imageUrl: this.currentProduct.imageUrl,
+      viewedAt: new Date().toISOString()
+    });
+
+    // Keep only last 10 items
+    if (history.length > 10) {
+      history.splice(10);
+    }
+
+    localStorage.setItem('viewHistory', JSON.stringify(history));
+  }
+
+  toggleComparePanel() {
+    const panel = document.getElementById('interaction-panel');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+      this.switchTab('compare');
+      panel.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+
+  toggleWishlist() {
+    if (!this.currentProduct) return;
+
+    const wishlist = this.userInteractions.wishlist;
+    const productId = this.currentProduct._id;
+    const existingIndex = wishlist.findIndex(item => item.id === productId);
+
+    if (existingIndex > -1) {
+      // Remove from wishlist
+      wishlist.splice(existingIndex, 1);
+      this.showNotification('Removed from wishlist', 'info');
+    } else {
+      // Add to wishlist
+      wishlist.push({
+        id: productId,
+        name: this.currentProduct.name,
+        price: this.currentProduct.price,
+        imageUrl: this.currentProduct.imageUrl,
+        addedAt: new Date().toISOString()
+      });
+      this.showNotification('Added to wishlist', 'success');
+    }
+
+    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+    this.updateButtonStates();
+    this.renderWishlist();
+  }
+
+  toggleFavorite() {
+    if (!this.currentProduct) return;
+
+    const favorites = this.userInteractions.favorites;
+    const productId = this.currentProduct._id;
+    const existingIndex = favorites.findIndex(item => item.id === productId);
+    const favoriteBtn = document.getElementById('favorite-btn');
+
+    if (existingIndex > -1) {
+      // Remove from favorites
+      favorites.splice(existingIndex, 1);
+      favoriteBtn.innerHTML = '♡';
+      favoriteBtn.classList.remove('favorited');
+      this.showNotification('Removed from favorites', 'info');
+    } else {
+      // Add to favorites
+      favorites.push({
+        id: productId,
+        name: this.currentProduct.name,
+        addedAt: new Date().toISOString()
+      });
+      favoriteBtn.innerHTML = '♥';
+      favoriteBtn.classList.add('favorited');
+      this.showNotification('Added to favorites', 'success');
+    }
+
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }
+
+  shareProduct() {
+    if (!this.currentProduct) return;
+
+    const shareData = {
+      title: this.currentProduct.name,
+      text: `Check out this product: ${this.currentProduct.name}`,
+      url: window.location.href
+    };
+
+    if (navigator.share) {
+      navigator.share(shareData);
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        this.showNotification('Product link copied to clipboard!', 'success');
+      });
+    }
+  }
+
+  zoomImage() {
+    const productImage = document.getElementById('product-image');
+    const modal = document.createElement('div');
+    modal.className = 'image-zoom-modal';
+    modal.innerHTML = `
+      <div class="zoom-modal-content">
+        <span class="close-zoom">&times;</span>
+        <img src="${productImage.src}" alt="${productImage.alt}" class="zoomed-image">
       </div>
     `;
-    
-    document.querySelector('.product-page').prepend(errorDiv);
-    
-    setTimeout(() => {
-      if (errorDiv.parentNode) {
-        errorDiv.remove();
+
+    document.body.appendChild(modal);
+
+    // Close modal
+    modal.querySelector('.close-zoom').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        document.body.removeChild(modal);
       }
+    });
+  }
+
+  showError(message) {
+    this.showNotification(message, 'error');
+  }
+
+  showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+      <div class="notification-content">
+        <span class="notification-message">${message}</span>
+        <button class="notification-close">×</button>
+      </div>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Animate in
+    setTimeout(() => notification.classList.add('show'), 100);
+
+    // Auto remove
+    setTimeout(() => {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
     }, 5000);
+
+    // Manual close
+    notification.querySelector('.notification-close').addEventListener('click', () => {
+      notification.classList.remove('show');
+      setTimeout(() => notification.remove(), 300);
+    });
+  }
+}
+
+  // Additional Dynamic Methods
+  changeProductImage(imageSrc) {
+    const productImage = document.getElementById('product-image');
+
+    // Add fade out effect
+    productImage.style.opacity = '0';
+
+    setTimeout(() => {
+      productImage.src = imageSrc;
+      productImage.style.opacity = '1';
+    }, 200);
+
+    // Update active gallery button
+    document.querySelectorAll('.gallery-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-image="${imageSrc}"]`).classList.add('active');
+  }
+
+  setupInteractiveStars(starsElement) {
+    const stars = starsElement.textContent;
+    starsElement.innerHTML = '';
+
+    for (let i = 0; i < 5; i++) {
+      const star = document.createElement('span');
+      star.className = 'interactive-star';
+      star.textContent = stars[i] || '☆';
+      star.addEventListener('mouseenter', () => {
+        this.highlightStars(starsElement, i + 1);
+      });
+      star.addEventListener('mouseleave', () => {
+        this.resetStars(starsElement);
+      });
+      starsElement.appendChild(star);
+    }
+  }
+
+  highlightStars(container, rating) {
+    const stars = container.querySelectorAll('.interactive-star');
+    stars.forEach((star, index) => {
+      star.textContent = index < rating ? '★' : '☆';
+      star.style.color = index < rating ? '#ffd700' : '#ccc';
+    });
+  }
+
+  resetStars(container) {
+    const originalRating = parseFloat(document.getElementById('overall-rating').textContent);
+    this.highlightStars(container, originalRating);
+  }
+
+  switchTab(tabName) {
+    // Update active tab button
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+    // Update active tab content
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+
+    // Load tab-specific content
+    switch (tabName) {
+      case 'wishlist':
+        this.renderWishlist();
+        break;
+      case 'history':
+        this.renderHistory();
+        break;
+      case 'recommendations':
+        this.loadRecommendations();
+        break;
+    }
+  }
+
+  renderWishlist() {
+    const container = document.getElementById('wishlist-container');
+    const wishlist = this.userInteractions.wishlist;
+
+    if (wishlist.length === 0) {
+      container.innerHTML = '<p class="body-small">Your wishlist is empty</p>';
+      return;
+    }
+
+    container.innerHTML = wishlist.map(item => `
+      <div class="wishlist-item">
+        <img src="${item.imageUrl || 'placeholder1.jpg'}" alt="${item.name}" class="wishlist-image">
+        <div class="wishlist-info">
+          <h4 class="body-large">${item.name}</h4>
+          <p class="body-small">$${item.price.toFixed(2)}</p>
+          <button class="button-outline remove-wishlist" data-id="${item.id}">Remove</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Add remove functionality
+    container.querySelectorAll('.remove-wishlist').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const productId = e.target.dataset.id;
+        const index = wishlist.findIndex(item => item.id === productId);
+        if (index > -1) {
+          wishlist.splice(index, 1);
+          localStorage.setItem('wishlist', JSON.stringify(wishlist));
+          this.renderWishlist();
+        }
+      });
+    });
+  }
+
+  renderHistory() {
+    const container = document.getElementById('history-container');
+    const history = this.userInteractions.viewHistory;
+
+    if (history.length === 0) {
+      container.innerHTML = '<p class="body-small">No recent products</p>';
+      return;
+    }
+
+    container.innerHTML = history.map(item => `
+      <div class="history-item">
+        <img src="${item.imageUrl || 'placeholder1.jpg'}" alt="${item.name}" class="history-image">
+        <div class="history-info">
+          <h4 class="body-large">${item.name}</h4>
+          <p class="body-small">$${item.price.toFixed(2)}</p>
+          <p class="body-small">Viewed: ${new Date(item.viewedAt).toLocaleDateString()}</p>
+          <a href="product.html?id=${item.id}" class="button-outline">View Again</a>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  updateButtonStates() {
+    if (!this.currentProduct) return;
+
+    const productId = this.currentProduct._id;
+    const wishlistBtn = document.getElementById('wishlist-btn');
+    const favoriteBtn = document.getElementById('favorite-btn');
+
+    // Update wishlist button
+    const isInWishlist = this.userInteractions.wishlist.some(item => item.id === productId);
+    if (wishlistBtn) {
+      wishlistBtn.innerHTML = `<span class="body-small">${isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}</span>`;
+      wishlistBtn.classList.toggle('active', isInWishlist);
+    }
+
+    // Update favorite button
+    const isFavorited = this.userInteractions.favorites.some(item => item.id === productId);
+    if (favoriteBtn) {
+      favoriteBtn.innerHTML = isFavorited ? '♥' : '♡';
+      favoriteBtn.classList.toggle('favorited', isFavorited);
+    }
+  }
+
+  setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+      // ESC to close modals
+      if (e.key === 'Escape') {
+        const modals = document.querySelectorAll('.modal, .image-zoom-modal');
+        modals.forEach(modal => modal.remove());
+      }
+
+      // Ctrl+Enter to trigger analysis
+      if (e.key === 'Enter' && e.ctrlKey) {
+        if (!this.isAnalyzing) {
+          this.performAIAnalysis();
+        }
+      }
+
+      // F for favorite
+      if (e.key === 'f' || e.key === 'F') {
+        if (!e.ctrlKey && !e.altKey) {
+          this.toggleFavorite();
+        }
+      }
+
+      // W for wishlist
+      if (e.key === 'w' || e.key === 'W') {
+        if (!e.ctrlKey && !e.altKey) {
+          this.toggleWishlist();
+        }
+      }
+    });
+  }
+
+  initializeTooltips() {
+    const tooltipElements = document.querySelectorAll('[title]');
+    tooltipElements.forEach(element => {
+      element.addEventListener('mouseenter', (e) => {
+        this.showTooltip(e.target, e.target.title);
+      });
+      element.addEventListener('mouseleave', () => {
+        this.hideTooltip();
+      });
+    });
+  }
+
+  showTooltip(element, text) {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tooltip';
+    tooltip.textContent = text;
+    document.body.appendChild(tooltip);
+
+    const rect = element.getBoundingClientRect();
+    tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+    tooltip.style.top = rect.top - tooltip.offsetHeight - 5 + 'px';
+
+    setTimeout(() => tooltip.classList.add('show'), 10);
+  }
+
+  hideTooltip() {
+    const tooltip = document.querySelector('.tooltip');
+    if (tooltip) {
+      tooltip.remove();
+    }
+  }
+
+  loadUserInteractions() {
+    // Load and display user-specific data
+    this.updateButtonStates();
+
+    // Auto-load recommendations if user is logged in
+    if (this.currentUser.email) {
+      this.loadRecommendations();
+    }
+  }
+
+  async loadRecommendations() {
+    const container = document.getElementById('recommendations-container');
+    container.innerHTML = '<p class="body-small">Loading recommendations...</p>';
+
+    try {
+      // Simulate API call for recommendations
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Mock recommendations based on current product category
+      const recommendations = [
+        { id: '1', name: 'Similar Product 1', price: 299.99, imageUrl: 'placeholder1.jpg' },
+        { id: '2', name: 'Similar Product 2', price: 399.99, imageUrl: 'placeholder2.jpg' },
+        { id: '3', name: 'Similar Product 3', price: 199.99, imageUrl: 'placeholder3.jpg' }
+      ];
+
+      container.innerHTML = recommendations.map(item => `
+        <div class="recommendation-item">
+          <img src="${item.imageUrl}" alt="${item.name}" class="recommendation-image">
+          <div class="recommendation-info">
+            <h4 class="body-large">${item.name}</h4>
+            <p class="body-small">$${item.price.toFixed(2)}</p>
+            <a href="product.html?id=${item.id}" class="button-outline">View Product</a>
+          </div>
+        </div>
+      `).join('');
+
+    } catch (error) {
+      container.innerHTML = '<p class="body-small">Failed to load recommendations</p>';
+    }
+  }
+
+  setupComparisonSearch() {
+    const searchInput = document.getElementById('compare-search');
+    const resultsContainer = document.getElementById('compare-results');
+
+    if (!searchInput) return;
+
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        this.searchProductsForComparison(e.target.value);
+      }, 300);
+    });
+  }
+
+  async searchProductsForComparison(query) {
+    const resultsContainer = document.getElementById('compare-results');
+
+    if (!query.trim()) {
+      resultsContainer.innerHTML = '';
+      return;
+    }
+
+    try {
+      // Mock search results
+      const results = [
+        { id: '1', name: 'iPhone 15 Pro', price: 999.99 },
+        { id: '2', name: 'Samsung Galaxy S24', price: 899.99 },
+        { id: '3', name: 'Google Pixel 8', price: 699.99 }
+      ].filter(product =>
+        product.name.toLowerCase().includes(query.toLowerCase())
+      );
+
+      resultsContainer.innerHTML = results.map(product => `
+        <div class="search-result-item" data-id="${product.id}">
+          <span class="body-small">${product.name} - $${product.price}</span>
+          <button class="button-outline add-to-compare">Compare</button>
+        </div>
+      `).join('');
+
+      // Add comparison functionality
+      resultsContainer.querySelectorAll('.add-to-compare').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const productId = e.target.closest('.search-result-item').dataset.id;
+          this.addToComparison(productId);
+        });
+      });
+
+    } catch (error) {
+      resultsContainer.innerHTML = '<p class="body-small">Search failed</p>';
+    }
+  }
+
+  addToComparison(productId) {
+    // Add product to comparison list
+    const comparisons = this.userInteractions.comparisons;
+    if (!comparisons.includes(productId)) {
+      comparisons.push(productId);
+      localStorage.setItem('comparisons', JSON.stringify(comparisons));
+      this.showNotification('Product added to comparison', 'success');
+      this.renderComparisonTable();
+    }
+  }
+
+  renderComparisonTable() {
+    const container = document.getElementById('comparison-table');
+    const comparisons = this.userInteractions.comparisons;
+
+    if (comparisons.length === 0) {
+      container.innerHTML = '<p class="body-small">Select products to compare</p>';
+      return;
+    }
+
+    // Mock comparison data
+    container.innerHTML = `
+      <div class="comparison-grid">
+        <div class="comparison-header">
+          <h4 class="body-large">Comparing ${comparisons.length} products</h4>
+          <button class="button-outline clear-comparison">Clear All</button>
+        </div>
+        <div class="comparison-items">
+          ${comparisons.map(id => `
+            <div class="comparison-item">
+              <h5 class="body-large">Product ${id}</h5>
+              <p class="body-small">Price: $${(Math.random() * 1000).toFixed(2)}</p>
+              <p class="body-small">Rating: ${(Math.random() * 5).toFixed(1)}/5</p>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+
+    // Add clear functionality
+    container.querySelector('.clear-comparison')?.addEventListener('click', () => {
+      this.userInteractions.comparisons = [];
+      localStorage.setItem('comparisons', JSON.stringify([]));
+      this.renderComparisonTable();
+    });
   }
 }
 

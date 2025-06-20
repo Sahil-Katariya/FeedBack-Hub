@@ -8,10 +8,14 @@
     <link rel="stylesheet" href="https://unpkg.com/animate.css@4.1.1/animate.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" data-tag="font" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap" data-tag="font" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;display=swap" data-tag="font" />
+    <link rel="stylesheet" href="https://unpkg.com/@teleporthq/teleport-custom-scripts/dist/style.css" />
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="css/profile-menu.css">
     <link rel="stylesheet" href="css/product.css">
+    <link rel="stylesheet" href="./profile.css">
 </head>
 <body>
     <a href="#main-content" class="skip-link">Skip to main content</a>
@@ -20,60 +24,50 @@
             <a href="/index.html" class="logo-link">
                 <img src="icon_trans.png" alt="Feedback Hub" width="184" height="80" class="logo">
             </a>
-            <nav class="navbar-links" role="navigation" aria-label="Main navigation">
-                <ul class="nav-list">
-                    <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
-                    <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
-                    <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
-                    <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
-                    <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
-                    <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
-                </ul>
-            </nav>
-            <div class="user-actions" role="navigation" aria-label="User menu" id="guest-actions">
-                <a href="/login.html" button class="button-outline">
-                    <span class="body-small">Log in</span>
-                </a>
-                <a href="/signup.html" button class="button-filled">
-                    <span class="body-small">sign up</span>
-                </a>
-            </div>
-            <div class="user-actions" role="navigation" aria-label="User menu" id="user-actions" style="display: none;">
-                <a href="/profile.html" button class="button-outline">
-                    <span class="body-small">Profile</span>
-                </a>
-                <div class="profile-menu-container">
-                    <button class="profile-btn" aria-label="Profile Menu" id="profile-menu-btn">
-                        <img src="profile_sml.png" alt="profile" width="43" height="43" id="profile-avatar">
-                        <span class="visually-hidden">Profile Menu</span>
-                    </button>
-                    <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="dropdown-header">
-                            <img src="profile_sml.png" alt="" width="40" height="40" class="dropdown-avatar">
-                            <div class="dropdown-user-info">
-                                <span class="dropdown-name" id="dropdown-user-name">Loading...</span>
-                                <span class="dropdown-email" id="dropdown-user-email">Loading...</span>
+            <div data-thq="navbar-nav" class="navbar-desktop-menu">
+                <nav class="navbar-links" role="navigation" aria-label="Main navigation">
+                    <ul class="nav-list">
+                        <li><a href="index.html#hero-container" class="nav-link">Product</a></li>
+                        <li><a href="index.html#features-content" class="nav-link">Reviews</a></li>
+                        <li><a href="index.html#community-content" class="nav-link">Industry</a></li>
+                        <li><a href="index.html#feedback-reviews" class="nav-link">Response</a></li>
+                        <li><a href="index.html#contact-contant" class="nav-link">Support</a></li>
+                        <li><a href="index.html#about-us" class="nav-link">About Us</a></li>
+                    </ul>
+                </nav>
+                <div class="user-actions" role="navigation" aria-label="User menu">
+                    <div class="profile-menu-container">
+                        <button class="profile-btn" aria-label="Profile Menu" id="profile-menu-btn">
+                            <img src="profile_sml.png" alt="" width="43" height="43" id="profile-avatar">
+                            <span class="visually-hidden">Profile Menu</span>
+                        </button>
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <div class="dropdown-header">
+                                <img src="profile_sml.png" alt="" width="40" height="40" class="dropdown-avatar">
+                                <div class="dropdown-user-info">
+                                    <span class="dropdown-name" id="dropdown-user-name">Loading...</span>
+                                    <span class="dropdown-email" id="dropdown-user-email">Loading...</span>
+                                </div>
                             </div>
+                            <div class="dropdown-divider"></div>
+                            <ul class="dropdown-menu">
+                                <li><a href="/profile.html" class="dropdown-item"><i class="icon-profile"></i>Profile</a></li>
+                                <li><a href="#" class="dropdown-item" id="settings-btn"><i class="icon-settings"></i>Settings</a></li>
+                                <li><a href="#" class="dropdown-item" id="notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
+                                <li class="dropdown-divider"></li>
+                                <li><a href="#" class="dropdown-item logout-item" id="logout-btn"><i class="icon-logout"></i>Log Out</a></li>
+                            </ul>
                         </div>
-                        <div class="dropdown-divider"></div>
-                        <ul class="dropdown-menu">
-                            <li><a href="/profile.html" class="dropdown-item"><i class="icon-profile"></i>Profile</a></li>
-                            <li><a href="#" class="dropdown-item" id="settings-btn"><i class="icon-settings"></i>Settings</a></li>
-                            <li><a href="#" class="dropdown-item" id="notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
-                            <li class="dropdown-divider"></li>
-                            <li><a href="#" class="dropdown-item logout-item" id="logout-btn"><i class="icon-logout"></i>Log Out</a></li>
-                        </ul>
                     </div>
                 </div>
-            </div>
-        </div>
     </header>
 
-    <main id="main-content" class="product-page" role="main">
-        <!-- Product Header Section -->
-        <section class="product-header">
-            <div class="container">
-                <div class="product-info">
+    <div class="home-container">
+        <main id="main-content" class="main-contant product-page" role="main">
+            <!-- Product Header Section -->
+            <section class="product-header section-padding">
+                <div class="section-max-width">
+                    <div class="product-info">
                     <div class="product-image">
                         <img id="product-image" src="placeholder1.jpg" alt="Product Image" />
                         <div class="image-gallery">
@@ -102,57 +96,58 @@
                                 </div>
                                 <span class="rating-count" id="rating-count">(0 reviews)</span>
                             </div>
-                            <button class="btn btn-primary" id="add-review-btn">Add Your Review</button>
+                            <button class="button-filled" id="add-review-btn">
+                                <span class="body-small">Add Your Review</span>
+                            </button>
                         </div>
                         <div class="product-description">
-                            <p id="product-description">Loading product description...</p>
+                            <p id="product-description" class="body-large">Loading product description...</p>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- AI Analysis Section -->
-        <section class="ai-analysis-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>🤖 AI-Powered Review Analysis</h2>
-                    <button class="btn btn-secondary" id="analyze-reviews-btn">
-                        <span class="btn-text">Analyze Reviews</span>
-                        <span class="btn-loading" style="display: none;">Analyzing...</span>
-                    </button>
-                </div>
-                
-                <div class="analysis-grid">
-                    <!-- AI Summary -->
-                    <div class="analysis-card summary-card">
-                        <h3>🔹 AI Summary Review</h3>
-                        <div class="summary-content" id="ai-summary">
-                            <p class="placeholder-text">Click "Analyze Reviews" to generate AI-powered insights from all product reviews.</p>
-                        </div>
+            <!-- AI Analysis Section -->
+            <section class="ai-analysis-section section-padding">
+                <div class="section-max-width">
+                    <div class="section-header">
+                        <h2 class="heading-2">🤖 AI-Powered Review Analysis</h2>
+                        <button class="button-filled" id="analyze-reviews-btn">
+                            <span class="btn-text body-small">Analyze Reviews</span>
+                            <span class="btn-loading body-small" style="display: none;">Analyzing...</span>
+                        </button>
                     </div>
 
-                    <!-- Pros and Cons -->
-                    <div class="analysis-card pros-cons-card">
-                        <div class="pros-cons-grid">
-                            <div class="pros-section">
-                                <h3>✅ Pros</h3>
-                                <ul id="pros-list">
-                                    <li class="placeholder-text">Analysis pending...</li>
-                                </ul>
-                            </div>
-                            <div class="cons-section">
-                                <h3>❌ Cons</h3>
-                                <ul id="cons-list">
-                                    <li class="placeholder-text">Analysis pending...</li>
-                                </ul>
+                    <div class="analysis-grid grid-auto-300">
+                        <!-- AI Summary -->
+                        <div class="analysis-card summary-card flex-card">
+                            <h3 class="heading-3">🔹 AI Summary Review</h3>
+                            <div class="summary-content" id="ai-summary">
+                                <p class="placeholder-text body-small">Click "Analyze Reviews" to generate AI-powered insights from all product reviews.</p>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Sentiment Analysis -->
-                    <div class="analysis-card sentiment-card">
-                        <h3>📊 Sentiment Analysis</h3>
+                        <!-- Pros and Cons -->
+                        <div class="analysis-card pros-cons-card flex-card">
+                            <div class="pros-cons-grid grid-2">
+                                <div class="pros-section">
+                                    <h3 class="heading-3">✅ Pros</h3>
+                                    <ul id="pros-list">
+                                        <li class="placeholder-text body-small">Analysis pending...</li>
+                                    </ul>
+                                </div>
+                                <div class="cons-section">
+                                    <h3 class="heading-3">❌ Cons</h3>
+                                    <ul id="cons-list">
+                                        <li class="placeholder-text body-small">Analysis pending...</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sentiment Analysis -->
+                        <div class="analysis-card sentiment-card flex-card">
+                            <h3 class="heading-3">📊 Sentiment Analysis</h3>
                         <div class="sentiment-chart">
                             <div class="sentiment-bar">
                                 <div class="sentiment-segment positive" id="positive-bar" style="width: 0%">
@@ -168,12 +163,12 @@
                                     <span class="sentiment-percentage" id="negative-percentage">0%</span>
                                 </div>
                             </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Average Rating -->
-                    <div class="analysis-card rating-card">
-                        <h3>⭐ Average Rating</h3>
+                        <!-- Average Rating -->
+                        <div class="analysis-card rating-card flex-card">
+                            <h3 class="heading-3">⭐ Average Rating</h3>
                         <div class="rating-analysis">
                             <div class="rating-breakdown">
                                 <div class="rating-item">
@@ -189,12 +184,12 @@
                                     <span id="total-ratings">0</span>
                                 </div>
                             </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Aspect Ratings -->
-                    <div class="analysis-card aspect-card">
-                        <h3>📈 Aspect Ratings (out of 5)</h3>
+                        <!-- Aspect Ratings -->
+                        <div class="analysis-card aspect-card flex-card">
+                            <h3 class="heading-3">📈 Aspect Ratings (out of 5)</h3>
                         <div class="aspect-ratings">
                             <div class="aspect-item">
                                 <span class="aspect-label">Build Quality:</span>
@@ -231,45 +226,48 @@
                                     <span class="aspect-score" id="ease-of-use-score">N/A</span>
                                 </div>
                             </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Reviews Section -->
-        <section class="reviews-section">
-            <div class="container">
-                <div class="section-header">
-                    <h2>📝 Product Reviews</h2>
-                    <div class="review-controls">
-                        <select id="review-filter" class="form-select">
-                            <option value="all">All Reviews</option>
-                            <option value="positive">Positive</option>
-                            <option value="neutral">Neutral</option>
-                            <option value="negative">Negative</option>
-                        </select>
-                        <select id="review-sort" class="form-select">
-                            <option value="newest">Newest First</option>
-                            <option value="oldest">Oldest First</option>
-                            <option value="highest">Highest Rated</option>
-                            <option value="lowest">Lowest Rated</option>
-                        </select>
+            <!-- Reviews Section -->
+            <section class="reviews-section section-padding">
+                <div class="section-max-width">
+                    <div class="section-header">
+                        <h2 class="heading-2">📝 Product Reviews</h2>
+                        <div class="review-controls">
+                            <select id="review-filter" class="select">
+                                <option value="all">All Reviews</option>
+                                <option value="positive">Positive</option>
+                                <option value="neutral">Neutral</option>
+                                <option value="negative">Negative</option>
+                            </select>
+                            <select id="review-sort" class="select">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="highest">Highest Rated</option>
+                                <option value="lowest">Lowest Rated</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="reviews-container" id="reviews-container">
+                        <div class="loading-reviews">
+                            <p class="body-large">Loading reviews...</p>
+                        </div>
+                    </div>
+
+                    <div class="load-more-container">
+                        <button class="button-outline" id="load-more-reviews">
+                            <span class="body-small">Load More Reviews</span>
+                        </button>
                     </div>
                 </div>
-                
-                <div class="reviews-container" id="reviews-container">
-                    <div class="loading-reviews">
-                        <p>Loading reviews...</p>
-                    </div>
-                </div>
-                
-                <div class="load-more-container">
-                    <button class="btn btn-outline" id="load-more-reviews">Load More Reviews</button>
-                </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
+    </div>
 
     <footer class="footer2-container" role="contentinfo">
         <div class="footer2-content">
