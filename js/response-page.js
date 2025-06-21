@@ -26,18 +26,28 @@ class ResponsePage {
 
   async loadProducts() {
     try {
+      console.log('Attempting to load products from server...');
       // Try to load from API first
-      const response = await fetch('http://localhost:5000/api/products');
+      const response = await fetch('http://localhost:5001/api/products');
       if (response.ok) {
-        this.products = await response.json();
+        const serverProducts = await response.json();
+        if (serverProducts && serverProducts.length > 0) {
+          this.products = serverProducts;
+          console.log('✅ Loaded products from server:', this.products.length);
+        } else {
+          throw new Error('No products found on server');
+        }
       } else {
-        throw new Error('API not available');
+        throw new Error(`Server responded with status: ${response.status}`);
       }
     } catch (error) {
-      console.log('API not available, using sample data');
+      console.log('⚠️ Server not available or no data, using sample data:', error.message);
       // Fallback to sample data
       this.products = this.getSampleProducts();
+      console.log('📦 Using sample products:', this.products.length);
     }
+
+    this.renderProducts();
   }
 
   getSampleProducts() {
@@ -45,7 +55,7 @@ class ResponsePage {
       {
         _id: '1',
         name: 'iPhone 15 Pro',
-        description: 'Latest iPhone with advanced camera system',
+        description: 'Latest iPhone with advanced camera system and A17 Pro chip',
         price: 999.99,
         category: 'Electronics',
         imageUrl: 'placeholder1.jpg',
@@ -55,7 +65,7 @@ class ResponsePage {
       {
         _id: '2',
         name: 'Samsung Galaxy S24 Ultra',
-        description: 'Premium Android smartphone with S Pen',
+        description: 'Premium Android smartphone with S Pen and AI features',
         price: 1199.99,
         category: 'Electronics',
         imageUrl: 'placeholder2.jpg',
@@ -65,9 +75,9 @@ class ResponsePage {
       {
         _id: '3',
         name: 'MacBook Air M3',
-        description: 'Ultra-thin laptop with M3 chip',
-        price: 1299.99,
-        category: 'Electronics',
+        description: 'Ultra-thin laptop with M3 chip and 18-hour battery',
+        price: 1099.99,
+        category: 'Computers',
         imageUrl: 'placeholder3.jpg',
         rating: 4.9,
         reviewCount: 2100
@@ -75,32 +85,72 @@ class ResponsePage {
       {
         _id: '4',
         name: 'Sony WH-1000XM5',
-        description: 'Industry-leading noise canceling headphones',
+        description: 'Industry-leading noise canceling wireless headphones',
         price: 399.99,
-        category: 'Electronics',
+        category: 'Audio',
         imageUrl: 'placeholder4.jpg',
         rating: 4.6,
         reviewCount: 1580
       },
       {
         _id: '5',
-        name: 'Nike Air Max 270',
-        description: 'Comfortable running shoes with Max Air',
-        price: 149.99,
-        category: 'Fashion',
+        name: 'iPad Pro 12.9',
+        description: 'Most advanced iPad with M2 chip and Liquid Retina XDR display',
+        price: 1099.99,
+        category: 'Tablets',
         imageUrl: 'placeholder5.jpg',
-        rating: 4.4,
-        reviewCount: 750
+        rating: 4.8,
+        reviewCount: 1850
       },
       {
         _id: '6',
-        name: 'Instant Pot Duo 7-in-1',
-        description: 'Multi-functional pressure cooker',
-        price: 89.99,
-        category: 'Home & Garden',
+        name: 'Nintendo Switch OLED',
+        description: 'Gaming console with vibrant OLED screen and enhanced audio',
+        price: 349.99,
+        category: 'Gaming',
         imageUrl: 'placeholder6.jpg',
         rating: 4.5,
         reviewCount: 3200
+      },
+      {
+        _id: '7',
+        name: 'Tesla Model 3',
+        description: 'Electric vehicle with autopilot and long range',
+        price: 38990.00,
+        category: 'Automotive',
+        imageUrl: 'placeholder7.jpg',
+        rating: 4.7,
+        reviewCount: 2500
+      },
+      {
+        _id: '8',
+        name: 'Dyson V15 Detect',
+        description: 'Cordless vacuum with laser dust detection technology',
+        price: 749.99,
+        category: 'Home Appliances',
+        imageUrl: 'placeholder8.jpg',
+        rating: 4.6,
+        reviewCount: 1200
+      },
+      {
+        _id: '9',
+        name: 'Apple Watch Series 9',
+        description: 'Advanced smartwatch with health monitoring and fitness tracking',
+        price: 399.99,
+        category: 'Wearables',
+        imageUrl: 'placeholder9.jpg',
+        rating: 4.5,
+        reviewCount: 1750
+      },
+      {
+        _id: '10',
+        name: 'Canon EOS R5',
+        description: 'Professional mirrorless camera with 45MP sensor and 8K video',
+        price: 3899.99,
+        category: 'Photography',
+        imageUrl: 'placeholder10.jpg',
+        rating: 4.9,
+        reviewCount: 650
       }
     ];
   }
@@ -195,7 +245,13 @@ class ResponsePage {
   renderProducts() {
     const container = document.getElementById('products-list');
     const searchTerm = document.getElementById('product-search').value.toLowerCase();
-    
+
+    // Hide loading indicator
+    const loadingElement = container.querySelector('.loading-products');
+    if (loadingElement) {
+      loadingElement.style.display = 'none';
+    }
+
     const filteredProducts = this.products.filter(product =>
       product.name.toLowerCase().includes(searchTerm) ||
       product.category.toLowerCase().includes(searchTerm)
@@ -212,7 +268,8 @@ class ResponsePage {
 
     container.innerHTML = filteredProducts.map(product => `
       <div class="product-item" data-product-id="${product._id}">
-        <img src="${product.imageUrl}" alt="${product.name}" class="product-item-img">
+        <img src="${product.imageUrl}" alt="${product.name}" class="product-item-img"
+             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzBDOTQuNDc3MiA3MCA5MCA3NC40NzcyIDkwIDgwVjEyMEM5MCA5NC40NzcyIDk0LjQ3NzIgOTAgMTAwIDkwSDEwMEMxMDUuNTIzIDkwIDExMCA5NC40NzcyIDExMCAxMDBWMTIwQzExMCAxMjUuNTIzIDEwNS41MjMgMTMwIDEwMCAxMzBIOTBWMTQwSDExMEMxMTYuNjI3IDE0MCA5MiAxMzMuMzczIDkyIDEyNlY4MEMxMDAgNzMuMzczIDEwNi42MjcgNzAgMTAwIDcwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K'; this.onerror=null;">
         <div class="product-item-info">
           <h4>${product.name}</h4>
           <p>${product.category} • $${product.price.toFixed(2)}</p>
@@ -220,11 +277,15 @@ class ResponsePage {
       </div>
     `).join('');
 
+    // Add loaded class for animation
+    container.classList.add('loaded');
+
     // Add click listeners
     container.querySelectorAll('.product-item').forEach(item => {
       item.addEventListener('click', () => {
         const productId = item.dataset.productId;
         this.selectProduct(productId);
+        
       });
     });
   }
@@ -251,6 +312,7 @@ class ResponsePage {
     this.startConversation();
     
     // Show chat input
+    // Always show chat input container (no matter if a product is selected)
     document.getElementById('chat-input-container').style.display = 'block';
   }
 
