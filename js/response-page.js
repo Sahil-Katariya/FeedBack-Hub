@@ -122,7 +122,7 @@ class ResponsePage {
         this.sendMessage();
       }
     });
-    
+
     sendBtn.addEventListener('click', () => {
       this.sendMessage();
     });
@@ -431,31 +431,31 @@ class ResponsePage {
     
     if (lowerMessage.includes('pros') || lowerMessage.includes('cons')) {
       return [
-        `Based on aggregated reviews for ${product.name}:\n\n**Pros:**\n• Excellent build quality and premium materials\n• Outstanding performance for the price range\n• Great user experience and intuitive interface\n• Strong battery life and fast charging\n\n**Cons:**\n• Higher price point compared to competitors\n• Limited color options available\n• Some users report minor software quirks\n• Accessories sold separately`
+        `Based on aggregated reviews for ${product.name}:\n\n Pros: \n• Excellent build quality and premium materials\n• Outstanding performance for the price range\n• Great user experience and intuitive interface\n• Strong battery life and fast charging\n\n Cons: \n• Higher price point compared to competitors\n• Limited color options available\n• Some users report minor software quirks\n• Accessories sold separately`
       ];
     }
     
     if (lowerMessage.includes('compare') || lowerMessage.includes('competitor')) {
       return [
-        `${product.name} stands out in several key areas:\n\n**vs Competitors:**\n• Superior build quality and materials\n• Better performance benchmarks\n• More comprehensive feature set\n• Higher customer satisfaction ratings (${product.rating}/5)\n\n**Price Comparison:**\nAt $${product.price}, it's positioned as a premium option but offers excellent value for the features provided. Most competitors in this range lack some of the advanced features included here.`
+        `${product.name} stands out in several key areas:\n\n vs Competitors: \n• Superior build quality and materials\n• Better performance benchmarks\n• More comprehensive feature set\n• Higher customer satisfaction ratings (${product.rating}/5)\n\n Price Comparison: \nAt $${product.price}, it's positioned as a premium option but offers excellent value for the features provided. Most competitors in this range lack some of the advanced features included here.`
       ];
     }
     
     if (lowerMessage.includes('quality') || lowerMessage.includes('review')) {
       return [
-        `Review analysis for ${product.name} (${product.reviewCount} reviews):\n\n**Quality Highlights:**\n• 89% of users rate build quality as "Excellent"\n• Durability tests show above-average performance\n• Materials feel premium and well-constructed\n• Quality control appears consistent across units\n\n**Common Praise:**\n• "Feels solid and well-made"\n• "Attention to detail is impressive"\n• "Worth the investment for the quality"`
+        `Review analysis for ${product.name} (${product.reviewCount} reviews):\n\n Quality Highlights: \n• 89% of users rate build quality as "Excellent"\n• Durability tests show above-average performance\n• Materials feel premium and well-constructed\n• Quality control appears consistent across units\n\n Common Praise: \n• "Feels solid and well-made"\n• "Attention to detail is impressive"\n• "Worth the investment for the quality"`
       ];
     }
     
     if (lowerMessage.includes('price') || lowerMessage.includes('worth')) {
       return [
-        `Price Analysis for ${product.name}:\n\n**Value Assessment:**\n• Current price: $${product.price}\n• Market average for similar products: $${(product.price * 0.85).toFixed(2)}\n• Price-to-feature ratio: Excellent\n\n**Is it worth it?**\nBased on user feedback and feature comparison, 87% of buyers say "yes" - the premium price is justified by the quality, features, and long-term reliability. Consider it an investment rather than just a purchase.`
+        `Price Analysis for ${product.name}:\n\n Value Assessment: \n• Current price: $${product.price}\n• Market average for similar products: $${(product.price * 0.85).toFixed(2)}\n• Price-to-feature ratio: Excellent\n\n Is it worth it? \nBased on user feedback and feature comparison, 87% of buyers say "yes" - the premium price is justified by the quality, features, and long-term reliability. Consider it an investment rather than just a purchase.`
       ];
     }
     
     if (lowerMessage.includes('issue') || lowerMessage.includes('problem')) {
       return [
-        `Common Issues Analysis for ${product.name}:\n\n**Reported Issues (frequency):**\n• Minor software glitches (8% of users)\n• Initial setup complexity (5% of users)\n• Compatibility with older accessories (3% of users)\n\n**Solutions Available:**\n• Most software issues resolved with updates\n• Setup guides and video tutorials available\n• Adapter options for compatibility\n\n**Overall Reliability:** 94% issue-free experience rate`
+        `Common Issues Analysis for ${product.name}:\n\n Reported Issues (frequency): \n• Minor software glitches (8% of users)\n• Initial setup complexity (5% of users)\n• Compatibility with older accessories (3% of users)\n\n Solutions Available: \n• Most software issues resolved with updates\n• Setup guides and video tutorials available\n• Adapter options for compatibility\n\n Overall Reliability:  94% issue-free experience rate`
       ];
     }
     
