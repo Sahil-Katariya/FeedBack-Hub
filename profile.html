@@ -51,7 +51,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="/profile.html" class="dropdown-item"><i class="icon-profile"></i>Profile</a></li>
                                 <li><a href="#" class="dropdown-item" id="settings-btn"><i class="icon-settings"></i>Settings</a></li>
-                                <li><a href="#" class="dropdown-item" id="notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
+                                <li><a href="#" class="dropdown-item" id="view-notifications-btn"><i class="icon-notifications"></i>Notifications</a></li>
                                 <li class="dropdown-divider"></li>
                                 <li><a href="#" class="dropdown-item logout-item" id="logout-btn"><i class="icon-logout"></i>Log Out</a></li>
                             </ul>
@@ -67,12 +67,6 @@
                     <div class="profile-info">
                         <div class="avatar-container">
                             <img src="profile photo.svg" alt="" class="profile-avatar" width="207" height="162" id="main-profile-avatar">
-                            <div class="avatar-overlay">
-                                <button class="change-avatar-btn" id="change-avatar-btn">
-                                    <i class="icon-camera"></i>
-                                    Change Photo
-                                </button>
-                            </div>
                             <div class="online-status" id="online-status">
                                 <span class="status-indicator online"></span>
                                 <span class="status-text">Online</span>
@@ -104,7 +98,6 @@
                         <div class="profile-actions">
                             <button class="edit-profile-btn" aria-label="Edit profile">
                                 <img src="edit.svg" alt="edit-btn">
-                                <span>Edit Profile</span>
                             </button>
                             <button class="share-profile-btn" id="share-profile-btn">
                                 <i class="icon-share"></i>
@@ -260,15 +253,15 @@
                         <!-- Pagination will be added here -->
                     </div>
                 </section>
-                <section class="badges-section" aria-labelledby="badges-title">
+                <!-- <section class="badges-section" aria-labelledby="badges-title">
                     <div class="badges-header">
                         <h2 id="badges-title">4 Badges</h2>
                         <div class="badges-filter">
-                            <!-- <button class="filter-btn" aria-expanded="true" aria-controls="filter-menu">
+                            <button class="filter-btn" aria-expanded="true" aria-controls="filter-menu">
                                 Filter by All Badges
-                            </button> -->
+                            </button>
                             <label for="menu" class="filter-btn" aria-controls="filter-menu"></label>
-                            <!-- <img src="edit.svg" alt="edit-btn" > -->
+                            <img src="edit.svg" alt="edit-btn" >
                             <select id="menu" name="menu"
                                 style="border: 1px solid #ccc; padding: 5px; border-radius: 5px;">
                                 <option value="option1">Filter All Badges</option>
@@ -292,7 +285,7 @@
                             <p>Quick Start: Build Your First Agent with Agentforce</p>
                         </li>
                     </ul>
-                </section>
+                </section> -->
             </div>
 
             <aside class="profile-sidebar">

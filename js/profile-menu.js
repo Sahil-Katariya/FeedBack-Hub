@@ -13,7 +13,7 @@ class ProfileMenu {
     const profileBtn = document.getElementById('profile-menu-btn');
     const dropdown = document.getElementById('profile-dropdown');
     const settingsBtn = document.getElementById('settings-btn');
-    const notificationsBtn = document.getElementById('notifications-btn');
+    const viewNotificationsBtn = document.getElementById('notifications-btn');
     const logoutBtn = document.getElementById('logout-btn');
 
     if (profileBtn) {
@@ -40,14 +40,12 @@ class ProfileMenu {
     }
 
     // Notifications button
-    if (notificationsBtn) {
-      notificationsBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.closeDropdown();
+    if (viewNotificationsBtn) {
+      viewNotificationsBtn.addEventListener('click', () => {
         this.showNotifications();
+        this.closeDropdown();
       });
     }
-
     // Logout button
     if (logoutBtn) {
       logoutBtn.addEventListener('click', (e) => {

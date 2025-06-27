@@ -507,6 +507,7 @@ class UnifiedProfilePage {
     if (viewNotificationsBtn) {
       viewNotificationsBtn.addEventListener('click', () => {
         this.showNotifications();
+        // this.closeDropdown();
       });
     }
 
@@ -884,7 +885,9 @@ class UnifiedProfilePage {
           <div class="profile-avatar-section">
             <img src="profile photo.svg" alt="Profile Avatar" class="profile-avatar-preview" id="avatar-preview">
             <br>
-            <button class="avatar-upload-btn" id="avatar-upload-btn">Change Avatar</button>
+            <button class="avatar-upload-btn" id="change-avatar-btn">
+             Change Photo
+            </button>
             <input type="file" id="avatar-input" accept="image/*" style="display: none;">
           </div>
 
