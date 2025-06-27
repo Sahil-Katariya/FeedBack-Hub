@@ -74,15 +74,39 @@ const Notification = mongoose.model('Notification', notificationSchema);
 const auth = (req, res, next) => {
   try {
     const token = req.header('x-auth-token');
+    console.log('🔐 Auth middleware - Token received:', token ? token.substring(0, 20) + '...' : 'No token');
+
     if (!token) {
-      return res.status(401).json({ error: 'No token, authorization denied' });
+      console.log('❌ Auth middleware - No token provided');
+      return res.status(401).json({
+        error: 'No token, authorization denied',
+        message: 'Authentication token is required'
+      });
     }
-    
+
     const decoded = jwt.verify(token, JWT_SECRET);
+    console.log('✅ Auth middleware - Token verified for user:', decoded.id);
     req.user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Token is not valid' });
+    console.error('❌ Auth middleware - Token verification failed:', error.message);
+
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        error: 'Token expired',
+        message: 'Your session has expired. Please login again.'
+      });
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        error: 'Invalid token',
+        message: 'Authentication token is invalid'
+      });
+    } else {
+      return res.status(401).json({
+        error: 'Token verification failed',
+        message: 'Authentication failed'
+      });
+    }
   }
 };
 
@@ -165,10 +189,25 @@ app.post('/api/auth/login', async (req, res) => {
 // User Routes
 app.get('/api/user', auth, async (req, res) => {
   try {
+    console.log('🔄 Fetching user data for ID:', req.user.id);
     const user = await User.findById(req.user.id).select('-password');
+
+    if (!user) {
+      console.log('❌ User not found for ID:', req.user.id);
+      return res.status(404).json({
+        error: 'User not found',
+        message: 'User account no longer exists'
+      });
+    }
+
+    console.log('✅ User data found:', user.email);
     res.json(user);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error fetching user data:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch user data'
+    });
   }
 });
 
@@ -233,6 +272,7 @@ app.put('/api/user/password', auth, async (req, res) => {
 
 app.get('/api/user/stats', auth, async (req, res) => {
   try {
+    console.log('🔄 Fetching user stats for ID:', req.user.id);
     const userReviews = await Review.find({ userId: req.user.id });
     const totalReviews = userReviews.length;
 
@@ -247,16 +287,23 @@ app.get('/api/user/stats', auth, async (req, res) => {
     const followers = 0;
     const following = 0;
 
-    res.json({
+    const userStats = {
       totalReviews,
       avgRating: Math.round(avgRating * 10) / 10,
       badges,
       followers,
       following,
       score: totalReviews * 100 + Math.round(avgRating * 50) // Simple scoring system
-    });
+    };
+
+    console.log('✅ User stats calculated:', userStats);
+    res.json(userStats);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error fetching user stats:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch user statistics'
+    });
   }
 });
 
@@ -340,7 +387,7 @@ app.get('/api/products/:id/analytics', async (req, res) => {
         ratingDistribution,
         recentReviewsCount: recentReviews.length,
         sourceDistribution,
-        reviewTrend: this.calculateReviewTrend(reviews)
+        reviewTrend: calculateReviewTrend(reviews)
       },
       reviews: reviews.slice(0, 10) // Latest 10 reviews
     });
@@ -456,23 +503,32 @@ app.put('/api/notifications/:id/read', auth, async (req, res) => {
 // Dashboard Stats Route
 app.get('/api/dashboard/stats', auth, async (req, res) => {
   try {
+    console.log('🔄 Fetching dashboard stats for user:', req.user.id);
+
     const totalProducts = await Product.countDocuments();
     const totalReviews = await Review.countDocuments();
     const userReviews = await Review.countDocuments({ userId: req.user.id });
-    
+
     const avgRatingResult = await Review.aggregate([
       { $group: { _id: null, avgRating: { $avg: '$rating' } } }
     ]);
     const avgRating = avgRatingResult.length > 0 ? avgRatingResult[0].avgRating : 0;
-    
-    res.json({
+
+    const dashboardStats = {
       totalProducts,
       totalReviews,
       userReviews,
       avgRating: Math.round(avgRating * 10) / 10
-    });
+    };
+
+    console.log('✅ Dashboard stats calculated:', dashboardStats);
+    res.json(dashboardStats);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error fetching dashboard stats:', error);
+    res.status(500).json({
+      error: 'Internal server error',
+      message: 'Failed to fetch dashboard statistics'
+    });
   }
 });
 

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Fix Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Profile Fix Verification Test</h1>
+        <p>This test verifies that all the profile page fixes are working correctly.</p>
+        
+        <div class="test-section">
+            <h3>1. Server Connection Test</h3>
+            <p>Status: <span id="server-status" class="status info">Testing...</span></p>
+            <button onclick="testServerConnection()">Test Server</button>
+            <div id="server-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Authentication Test</h3>
+            <p>Status: <span id="auth-status" class="status info">Ready</span></p>
+            <button onclick="testLogin()">Test Login</button>
+            <button onclick="testTokenValidation()">Test Token Validation</button>
+            <button onclick="clearAuth()">Clear Auth</button>
+            <div id="auth-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. API Endpoints Test</h3>
+            <p>Status: <span id="api-status" class="status info">Ready</span></p>
+            <button onclick="testAllAPIs()">Test All APIs</button>
+            <div id="api-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Profile Page Test</h3>
+            <p>Status: <span id="profile-status" class="status info">Ready</span></p>
+            <button onclick="testProfilePage()">Test Profile Loading</button>
+            <button onclick="openProfilePage()">Open Profile Page</button>
+            <div id="profile-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Error Handling Test</h3>
+            <p>Status: <span id="error-status" class="status info">Ready</span></p>
+            <button onclick="testErrorHandling()">Test Error Scenarios</button>
+            <div id="error-results" class="test-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>Console Log</h3>
+            <div id="console-log" class="log">Test output will appear here...</div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script>
+        // Console capture
+        const originalLog = console.log;
+        const originalError = console.error;
+        const logElement = document.getElementById('console-log');
+        
+        function addToLog(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? 'red' : type === 'warn' ? 'orange' : 'black';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToLog(args.join(' '), 'error');
+        };
+
+        // Test functions
+        async function testServerConnection() {
+            const statusEl = document.getElementById('server-status');
+            const resultsEl = document.getElementById('server-results');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Testing server connection...');
+                const response = await fetch('http://localhost:5000/api/products');
+                
+                if (response.ok) {
+                    const products = await response.json();
+                    statusEl.textContent = 'Connected';
+                    statusEl.className = 'status success';
+                    resultsEl.innerHTML = `<div class="success">✅ Server is running and responding. Found ${products.length} products.</div>`;
+                    console.log('Server connection successful');
+                } else {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+                resultsEl.innerHTML = `<div class="error">❌ Server connection failed: ${error.message}</div>`;
+                console.error('Server connection failed:', error);
+            }
+        }
+
+        async function testLogin() {
+            const statusEl = document.getElementById('auth-status');
+            const resultsEl = document.getElementById('auth-results');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Testing login...');
+                const result = await api.login('Sahil@gmail.com', 'password123');
+                
+                if (result.success) {
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('user', JSON.stringify(result.user));
+                    
+                    statusEl.textContent = 'Logged In';
+                    statusEl.className = 'status success';
+                    resultsEl.innerHTML = `<div class="success">✅ Login successful for ${result.user.firstName} ${result.user.lastName}</div>`;
+                    console.log('Login successful');
+                } else {
+                    throw new Error(result.error || 'Login failed');
+                }
+            } catch (error) {
+                statusEl.textContent = 'Login Failed';
+                statusEl.className = 'status error';
+                resultsEl.innerHTML = `<div class="error">❌ Login failed: ${error.message}</div>`;
+                console.error('Login failed:', error);
+            }
+        }
+
+        async function testTokenValidation() {
+            const resultsEl = document.getElementById('auth-results');
+            
+            try {
+                console.log('Testing token validation...');
+                const user = await api.getUser();
+                resultsEl.innerHTML += `<div class="success">✅ Token is valid. User: ${user.firstName} ${user.lastName}</div>`;
+                console.log('Token validation successful');
+            } catch (error) {
+                resultsEl.innerHTML += `<div class="error">❌ Token validation failed: ${error.message}</div>`;
+                console.error('Token validation failed:', error);
+            }
+        }
+
+        async function testAllAPIs() {
+            const statusEl = document.getElementById('api-status');
+            const resultsEl = document.getElementById('api-results');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            resultsEl.innerHTML = '';
+            
+            const tests = [
+                { name: 'User Data', fn: () => api.getUser() },
+                { name: 'User Stats', fn: () => api.getUserStats() },
+                { name: 'Dashboard Stats', fn: () => api.getDashboardStats() },
+                { name: 'Reviews', fn: () => api.getReviews() },
+                { name: 'Products', fn: () => api.getProducts() }
+            ];
+            
+            let passed = 0;
+            let failed = 0;
+            
+            for (const test of tests) {
+                try {
+                    console.log(`Testing ${test.name} API...`);
+                    const result = await test.fn();
+                    resultsEl.innerHTML += `<div class="success">✅ ${test.name}: Success</div>`;
+                    passed++;
+                } catch (error) {
+                    resultsEl.innerHTML += `<div class="error">❌ ${test.name}: ${error.message}</div>`;
+                    failed++;
+                }
+            }
+            
+            if (failed === 0) {
+                statusEl.textContent = 'All Passed';
+                statusEl.className = 'status success';
+            } else {
+                statusEl.textContent = `${passed}/${tests.length} Passed`;
+                statusEl.className = 'status warning';
+            }
+        }
+
+        async function testProfilePage() {
+            const statusEl = document.getElementById('profile-status');
+            const resultsEl = document.getElementById('profile-results');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Testing profile page simulation...');
+                
+                // Simulate profile page loading
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    throw new Error('No authentication token found');
+                }
+                
+                // Test all required data loading
+                const user = await api.getUser();
+                const userStats = await api.getUserStats();
+                const dashboardStats = await api.getDashboardStats();
+                
+                statusEl.textContent = 'Working';
+                statusEl.className = 'status success';
+                resultsEl.innerHTML = `
+                    <div class="success">✅ Profile page data loading successful</div>
+                    <div class="info">User: ${user.firstName} ${user.lastName}</div>
+                    <div class="info">Reviews: ${userStats.totalReviews}</div>
+                    <div class="info">Score: ${userStats.score}</div>
+                `;
+                console.log('Profile page test successful');
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+                resultsEl.innerHTML = `<div class="error">❌ Profile page test failed: ${error.message}</div>`;
+                console.error('Profile page test failed:', error);
+            }
+        }
+
+        function testErrorHandling() {
+            const statusEl = document.getElementById('error-status');
+            const resultsEl = document.getElementById('error-results');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            // Test with invalid token
+            const originalToken = localStorage.getItem('token');
+            localStorage.setItem('token', 'invalid_token_123');
+            
+            api.getUser().then(() => {
+                resultsEl.innerHTML = `<div class="error">❌ Error handling failed - should have rejected invalid token</div>`;
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+            }).catch((error) => {
+                resultsEl.innerHTML = `<div class="success">✅ Error handling working - correctly rejected invalid token: ${error.message}</div>`;
+                statusEl.textContent = 'Working';
+                statusEl.className = 'status success';
+                
+                // Restore original token
+                if (originalToken) {
+                    localStorage.setItem('token', originalToken);
+                } else {
+                    localStorage.removeItem('token');
+                }
+            });
+        }
+
+        function clearAuth() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            document.getElementById('auth-status').textContent = 'Cleared';
+            document.getElementById('auth-status').className = 'status info';
+            document.getElementById('auth-results').innerHTML = '<div class="info">Authentication data cleared</div>';
+            console.log('Authentication data cleared');
+        }
+
+        function openProfilePage() {
+            window.open('profile.html', '_blank');
+        }
+
+        function clearLog() {
+            logElement.innerHTML = 'Test output will appear here...';
+        }
+
+        // Auto-run server test on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Profile Fix Test Page Loaded');
+            testServerConnection();
+        });
+    </script>
+</body>
+</html>

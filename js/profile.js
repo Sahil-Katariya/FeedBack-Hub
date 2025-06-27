@@ -10,42 +10,125 @@ class UnifiedProfilePage {
   }
 
   async init() {
+    console.log('🚀 Initializing profile page...');
+
     // Check authentication
-    if (!localStorage.getItem('token')) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.log('❌ No token found, redirecting to login');
       window.location.href = 'login.html';
       return;
     }
+    console.log('✅ Token found:', token.substring(0, 20) + '...');
 
     try {
-      // Load all data in parallel
-      const [user, userStats, dashboardStats, allReviews, products] = await Promise.all([
-        api.getUser(),
-        api.getUserStats(),
-        api.getDashboardStats(),
-        api.getReviews(),
-        api.getProducts()
-      ]);
+      console.log('📡 Loading user data...');
 
-      this.user = user;
-      this.userStats = userStats;
-      this.dashboardStats = dashboardStats;
-      this.allReviews = allReviews;
-      this.products = products;
+      // Load critical data first (user info)
+      console.log('🔄 Loading user information...');
+      this.user = await api.getUser();
+      console.log('✅ User data loaded:', this.user);
 
-      // Filter user's reviews
-      this.userReviews = allReviews.filter(review =>
-        review.userId._id === user._id || review.userId === user._id
-      );
+      // Load other data with individual error handling
+      const dataPromises = [
+        this.loadUserStats(),
+        this.loadDashboardStats(),
+        this.loadReviews(),
+        this.loadProducts()
+      ];
 
+      // Wait for all data loading attempts
+      await Promise.allSettled(dataPromises);
+
+      // Filter user's reviews if we have both user and reviews data
+      if (this.user && this.allReviews.length > 0) {
+        this.userReviews = this.allReviews.filter(review =>
+          review.userId._id === this.user._id || review.userId === this.user._id
+        );
+        console.log('✅ User reviews filtered:', this.userReviews.length, 'user reviews');
+      }
+
+      console.log('🎨 Rendering profile...');
       this.renderProfile();
       this.setupEventListeners();
+      console.log('✅ Profile initialization complete!');
     } catch (error) {
-      console.error('Profile initialization error:', error);
-      if (error.message === 'Failed to fetch user data') {
+      console.error('❌ Profile initialization error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+
+      // Handle different types of errors
+      if (error.message.includes('Authentication failed') ||
+          error.message.includes('token expired') ||
+          error.message.includes('401')) {
+        console.log('🔄 Authentication failed, clearing storage and redirecting...');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        window.location.href = 'login.html';
+        this.showErrorMessage('Session expired. Redirecting to login...', 'warning');
+        setTimeout(() => {
+          window.location.href = 'login.html';
+        }, 2000);
+      } else if (error.message.includes('Cannot connect to server')) {
+        console.log('🔄 Server connection failed');
+        this.showErrorMessage('Cannot connect to server. Please check your connection and try again.', 'error');
+        this.showRetryButton();
+      } else {
+        // Show error message to user with retry option
+        console.log('🔄 General error occurred');
+        this.showErrorMessage('Failed to load profile data. Please try again.', 'error');
+        this.showRetryButton();
       }
+    }
+  }
+
+  async loadUserStats() {
+    try {
+      console.log('🔄 Loading user stats...');
+      this.userStats = await api.getUserStats();
+      console.log('✅ User stats loaded:', this.userStats);
+    } catch (error) {
+      console.error('❌ Failed to load user stats:', error);
+      this.userStats = { totalReviews: 0, avgRating: 0, badges: 4, followers: 0, following: 0, score: 500 };
+      this.showErrorMessage('Failed to load user statistics', 'warning');
+    }
+  }
+
+  async loadDashboardStats() {
+    try {
+      console.log('🔄 Loading dashboard stats...');
+      this.dashboardStats = await api.getDashboardStats();
+      console.log('✅ Dashboard stats loaded:', this.dashboardStats);
+    } catch (error) {
+      console.error('❌ Failed to load dashboard stats:', error);
+      this.dashboardStats = { totalReviews: 0, avgRating: 0, totalProducts: 0, userReviews: 0 };
+      this.showErrorMessage('Failed to load dashboard statistics', 'warning');
+    }
+  }
+
+  async loadReviews() {
+    try {
+      console.log('🔄 Loading reviews...');
+      this.allReviews = await api.getReviews();
+      console.log('✅ Reviews loaded:', this.allReviews.length, 'reviews');
+    } catch (error) {
+      console.error('❌ Failed to load reviews:', error);
+      this.allReviews = [];
+      this.showErrorMessage('Failed to load reviews', 'warning');
+    }
+  }
+
+  async loadProducts() {
+    try {
+      console.log('🔄 Loading products...');
+      this.products = await api.getProducts();
+      console.log('✅ Products loaded:', this.products.length, 'products');
+    } catch (error) {
+      console.error('❌ Failed to load products:', error);
+      this.products = [];
+      this.showErrorMessage('Failed to load products', 'warning');
     }
   }
 
@@ -59,40 +142,144 @@ class UnifiedProfilePage {
   }
 
   renderUserInfo() {
+    console.log('🎨 Rendering user info...', this.user);
+
     const profileName = document.getElementById('profile-title');
     const profileRole = document.querySelector('.profile-role');
     const profileLocation = document.querySelector('.profile-location');
     const profileAvatar = document.querySelector('.profile-avatar');
 
     if (profileName) {
-      profileName.textContent = `${this.user.firstName} ${this.user.lastName}`;
+      const fullName = `${this.user.firstName} ${this.user.lastName}`;
+      profileName.textContent = fullName;
+      console.log('✅ Profile name set to:', fullName);
+    } else {
+      console.log('❌ Profile name element not found');
     }
 
     if (profileRole) {
       profileRole.textContent = 'Customer';
+      console.log('✅ Profile role set');
+    } else {
+      console.log('❌ Profile role element not found');
     }
 
     if (profileLocation) {
-      profileLocation.textContent = this.user.location || 'Location not set';
+      const location = this.user.location || 'Location not set';
+      profileLocation.textContent = location;
+      console.log('✅ Profile location set to:', location);
+    } else {
+      console.log('❌ Profile location element not found');
     }
 
-    if (profileAvatar && this.user.profilePicture) {
-      profileAvatar.src = this.user.profilePicture;
+    if (profileAvatar) {
+      const avatarSrc = this.user.profilePicture || 'profile photo.svg';
+      profileAvatar.src = avatarSrc;
+      console.log('✅ Profile avatar set to:', avatarSrc);
+    } else {
+      console.log('❌ Profile avatar element not found');
     }
   }
 
+  showErrorMessage(message, type = 'error') {
+    // Remove any existing error messages
+    const existingErrors = document.querySelectorAll('.error-message');
+    existingErrors.forEach(error => error.remove());
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+
+    const backgroundColor = type === 'warning' ? '#ff9800' : type === 'error' ? '#ff4444' : '#4CAF50';
+
+    errorDiv.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${backgroundColor};
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      z-index: 1000;
+      max-width: 350px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.4;
+    `;
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+
+    // Auto-remove after 8 seconds for errors, 3 seconds for warnings
+    const timeout = type === 'warning' ? 3000 : 8000;
+    setTimeout(() => {
+      if (errorDiv.parentNode) {
+        errorDiv.parentNode.removeChild(errorDiv);
+      }
+    }, timeout);
+  }
+
+  showRetryButton() {
+    // Remove any existing retry buttons
+    const existingRetry = document.querySelectorAll('.retry-button');
+    existingRetry.forEach(button => button.remove());
+
+    const retryDiv = document.createElement('div');
+    retryDiv.className = 'retry-button';
+    retryDiv.style.cssText = `
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: #2196F3;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 1000;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    `;
+    retryDiv.textContent = '🔄 Retry Loading';
+    retryDiv.addEventListener('click', () => {
+      retryDiv.remove();
+      this.init();
+    });
+    document.body.appendChild(retryDiv);
+  }
+
   renderDashboardStats() {
+    console.log('📊 Rendering dashboard stats...', this.dashboardStats);
+
     // Update dashboard overview stats
     const totalReviewsElement = document.getElementById('total-reviews');
     const avgRatingElement = document.getElementById('avg-rating');
     const totalProductsElement = document.getElementById('total-products');
 
-    if (totalReviewsElement) totalReviewsElement.textContent = this.dashboardStats.totalReviews || 0;
-    if (avgRatingElement) avgRatingElement.textContent = this.dashboardStats.avgRating || '0.0';
-    if (totalProductsElement) totalProductsElement.textContent = this.dashboardStats.totalProducts || 0;
+    if (totalReviewsElement) {
+      totalReviewsElement.textContent = this.dashboardStats.totalReviews || 0;
+      console.log('✅ Total reviews set to:', this.dashboardStats.totalReviews || 0);
+    } else {
+      console.log('❌ Total reviews element not found');
+    }
+
+    if (avgRatingElement) {
+      avgRatingElement.textContent = this.dashboardStats.avgRating || '0.0';
+      console.log('✅ Avg rating set to:', this.dashboardStats.avgRating || '0.0');
+    } else {
+      console.log('❌ Avg rating element not found');
+    }
+
+    if (totalProductsElement) {
+      totalProductsElement.textContent = this.dashboardStats.totalProducts || 0;
+      console.log('✅ Total products set to:', this.dashboardStats.totalProducts || 0);
+    } else {
+      console.log('❌ Total products element not found');
+    }
   }
 
   renderUserStats() {
+    console.log('👤 Rendering user stats...', this.userStats);
+
     // Update sidebar user stats
     const userBadges = document.getElementById('user-badges');
     const userScore = document.getElementById('user-score');
@@ -100,11 +287,40 @@ class UnifiedProfilePage {
     const userFollowing = document.getElementById('user-following');
     const userReviewsCount = document.getElementById('user-reviews-count');
 
-    if (userBadges) userBadges.textContent = this.userStats.badges || 4;
-    if (userScore) userScore.textContent = this.userStats.score || 500;
-    if (userFollowers) userFollowers.textContent = this.userStats.followers || 0;
-    if (userFollowing) userFollowing.textContent = this.userStats.following || 0;
-    if (userReviewsCount) userReviewsCount.textContent = this.userStats.totalReviews || 0;
+    if (userBadges) {
+      userBadges.textContent = this.userStats.badges || 4;
+      console.log('✅ User badges set to:', this.userStats.badges || 4);
+    } else {
+      console.log('❌ User badges element not found');
+    }
+
+    if (userScore) {
+      userScore.textContent = this.userStats.score || 500;
+      console.log('✅ User score set to:', this.userStats.score || 500);
+    } else {
+      console.log('❌ User score element not found');
+    }
+
+    if (userFollowers) {
+      userFollowers.textContent = this.userStats.followers || 0;
+      console.log('✅ User followers set to:', this.userStats.followers || 0);
+    } else {
+      console.log('❌ User followers element not found');
+    }
+
+    if (userFollowing) {
+      userFollowing.textContent = this.userStats.following || 0;
+      console.log('✅ User following set to:', this.userStats.following || 0);
+    } else {
+      console.log('❌ User following element not found');
+    }
+
+    if (userReviewsCount) {
+      userReviewsCount.textContent = this.userStats.totalReviews || 0;
+      console.log('✅ User reviews count set to:', this.userStats.totalReviews || 0);
+    } else {
+      console.log('❌ User reviews count element not found');
+    }
   }
 
   renderProducts() {
