@@ -33,54 +33,17 @@ const api = {
 
   getUser: async () => {
     try {
-      console.log('🔄 Fetching user data from:', `${API_URL}/api/user`);
-      const token = getToken();
-      console.log('🔑 Using token:', token ? token.substring(0, 20) + '...' : 'No token');
-
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       const response = await fetch(`${API_URL}/api/user`, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token
+          'x-auth-token': getToken()
         }
       });
-
-      console.log('📡 Response status:', response.status, response.statusText);
-
-      if (response.status === 401) {
-        console.log('🔄 Token expired or invalid, clearing storage');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        throw new Error('Authentication failed - token expired');
-      }
-
       if (!response.ok) {
-        let errorText;
-        try {
-          const errorData = await response.json();
-          errorText = errorData.error || errorData.message || 'Unknown error';
-        } catch {
-          errorText = await response.text();
-        }
-        console.error('❌ API Error Response:', errorText);
-        throw new Error(`Failed to fetch user data: ${response.status} - ${errorText}`);
+        throw new Error('Failed to fetch user data');
       }
-
-      const userData = await response.json();
-      console.log('✅ User data received:', userData);
-      return userData;
+      return await response.json();
     } catch (error) {
-      console.error('❌ Get user API error:', error);
-
-      // If it's a network error, provide a more helpful message
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Cannot connect to server. Please check if the server is running.');
-      }
-
+      console.error('Get user API error:', error);
       throw error;
     }
   },
@@ -188,52 +151,17 @@ const api = {
 
   getDashboardStats: async () => {
     try {
-      console.log('🔄 Fetching dashboard stats from:', `${API_URL}/api/dashboard/stats`);
-      const token = getToken();
-
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       const response = await fetch(`${API_URL}/api/dashboard/stats`, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token
+          'x-auth-token': getToken()
         }
       });
-
-      console.log('📡 Dashboard stats response status:', response.status);
-
-      if (response.status === 401) {
-        console.log('🔄 Token expired or invalid for dashboard stats');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        throw new Error('Authentication failed - token expired');
-      }
-
       if (!response.ok) {
-        let errorText;
-        try {
-          const errorData = await response.json();
-          errorText = errorData.error || errorData.message || 'Unknown error';
-        } catch {
-          errorText = await response.text();
-        }
-        console.error('❌ Dashboard stats API Error:', errorText);
-        throw new Error(`Failed to fetch dashboard stats: ${response.status} - ${errorText}`);
+        throw new Error('Failed to fetch dashboard stats');
       }
-
-      const dashboardStats = await response.json();
-      console.log('✅ Dashboard stats received:', dashboardStats);
-      return dashboardStats;
+      return await response.json();
     } catch (error) {
-      console.error('❌ Get dashboard stats API error:', error);
-
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Cannot connect to server for dashboard stats');
-      }
-
+      console.error('Get dashboard stats API error:', error);
       throw error;
     }
   },
@@ -293,52 +221,17 @@ const api = {
 
   getUserStats: async () => {
     try {
-      console.log('🔄 Fetching user stats from:', `${API_URL}/api/user/stats`);
-      const token = getToken();
-
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-
       const response = await fetch(`${API_URL}/api/user/stats`, {
-        method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'x-auth-token': token
+          'x-auth-token': getToken()
         }
       });
-
-      console.log('📡 User stats response status:', response.status);
-
-      if (response.status === 401) {
-        console.log('🔄 Token expired or invalid for user stats');
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        throw new Error('Authentication failed - token expired');
-      }
-
       if (!response.ok) {
-        let errorText;
-        try {
-          const errorData = await response.json();
-          errorText = errorData.error || errorData.message || 'Unknown error';
-        } catch {
-          errorText = await response.text();
-        }
-        console.error('❌ User stats API Error:', errorText);
-        throw new Error(`Failed to fetch user stats: ${response.status} - ${errorText}`);
+        throw new Error('Failed to fetch user stats');
       }
-
-      const userStats = await response.json();
-      console.log('✅ User stats received:', userStats);
-      return userStats;
+      return await response.json();
     } catch (error) {
-      console.error('❌ Get user stats API error:', error);
-
-      if (error.name === 'TypeError' && error.message.includes('fetch')) {
-        throw new Error('Cannot connect to server for user stats');
-      }
-
+      console.error('Get user stats API error:', error);
       throw error;
     }
   },

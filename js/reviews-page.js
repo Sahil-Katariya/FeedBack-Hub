@@ -10,34 +10,77 @@ class ReviewsPage {
 
   async init() {
     try {
+      console.log('🚀 Initializing Reviews Page...');
+
+      console.log('📡 Step 1: Loading reviews...');
       await this.loadReviews();
+
+      console.log('🎛️ Step 2: Setting up event listeners...');
       this.setupEventListeners();
+
+      console.log('🎨 Step 3: Rendering reviews...');
       this.renderReviews();
+
+      console.log('⭐ Step 4: Rendering featured reviews...');
       this.renderFeaturedReviews();
+
+      console.log('📊 Step 5: Updating statistics...');
       this.updateStatistics();
+
+      console.log('🔧 Step 6: Populating product filter...');
       this.populateProductFilter();
+
+      console.log('✅ Reviews page initialization complete!');
     } catch (error) {
-      console.error('Error initializing reviews page:', error);
-      this.showError('Failed to load reviews. Please try again later.');
+      console.error('❌ Error initializing reviews page:', error);
+      console.error('Error details:', {
+        message: error.message,
+        stack: error.stack,
+        name: error.name
+      });
+      this.showError(`Failed to load reviews: ${error.message}`);
     }
   }
 
   async loadReviews() {
     try {
+      console.log('🔄 Loading reviews from API...');
+
       // Try to load from API first
       const response = await fetch('http://localhost:5000/api/reviews');
+      console.log('📡 API Response status:', response.status);
+
       if (response.ok) {
-        this.reviews = await response.json();
+        const reviewsData = await response.json();
+        console.log('✅ Reviews loaded from API:', reviewsData.length, 'reviews');
+        console.log('📊 Sample review data:', reviewsData[0]);
+
+        this.reviews = reviewsData;
+
+        // Validate review data structure
+        if (this.reviews.length > 0) {
+          const sampleReview = this.reviews[0];
+          if (!sampleReview.productId || !sampleReview.userId) {
+            console.warn('⚠️ Review data structure issue detected');
+            console.log('Sample review structure:', sampleReview);
+          }
+        }
       } else {
-        throw new Error('API not available');
+        const errorText = await response.text();
+        console.error('❌ API Error:', response.status, errorText);
+        throw new Error(`API returned ${response.status}: ${errorText}`);
       }
     } catch (error) {
-      console.log('API not available, using sample data');
+      console.error('❌ Failed to load reviews from API:', error);
+      console.log('🔄 Falling back to sample data...');
+
       // Fallback to sample data
       this.reviews = this.getSampleReviews();
+      console.log('✅ Sample data loaded:', this.reviews.length, 'reviews');
     }
-    
+
     this.filteredReviews = [...this.reviews];
+    console.log('✅ Filtered reviews initialized:', this.filteredReviews.length, 'reviews');
   }
 
   getSampleReviews() {
@@ -178,56 +221,128 @@ class ReviewsPage {
   }
 
   setupEventListeners() {
-    // Search functionality
-    const searchInput = document.getElementById('review-search');
-    const searchBtn = document.getElementById('search-btn');
-    
-    searchInput.addEventListener('input', () => {
-      this.debounce(() => this.filterReviews(), 300)();
-    });
-    
-    searchBtn.addEventListener('click', () => {
-      this.filterReviews();
-    });
+    try {
+      console.log('🎛️ Setting up event listeners...');
 
-    // Filter controls
-    document.getElementById('product-filter').addEventListener('change', () => {
-      this.filterReviews();
-    });
-    
-    document.getElementById('source-filter').addEventListener('change', () => {
-      this.filterReviews();
-    });
-    
-    document.getElementById('rating-filter').addEventListener('change', () => {
-      this.filterReviews();
-    });
-    
-    document.getElementById('sort-by').addEventListener('change', () => {
-      this.sortReviews();
-    });
+      // Search functionality
+      const searchInput = document.getElementById('review-search');
+      const searchBtn = document.getElementById('search-btn');
 
-    // View toggle
-    document.getElementById('view-toggle').addEventListener('click', () => {
-      this.toggleView();
-    });
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          this.debounce(() => this.filterReviews(), 300)();
+        });
+        console.log('✅ Search input listener added');
+      } else {
+        console.warn('⚠️ Search input element not found');
+      }
 
-    // Load more reviews
-    document.getElementById('load-more-reviews').addEventListener('click', () => {
-      this.loadMoreReviews();
-    });
+      if (searchBtn) {
+        searchBtn.addEventListener('click', () => {
+          this.filterReviews();
+        });
+        console.log('✅ Search button listener added');
+      } else {
+        console.warn('⚠️ Search button element not found');
+      }
+
+      // Filter controls
+      const filterElements = [
+        { id: 'product-filter', name: 'Product filter' },
+        { id: 'source-filter', name: 'Source filter' },
+        { id: 'rating-filter', name: 'Rating filter' }
+      ];
+
+      filterElements.forEach(({ id, name }) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.addEventListener('change', () => {
+            this.filterReviews();
+          });
+          console.log(`✅ ${name} listener added`);
+        } else {
+          console.warn(`⚠️ ${name} element not found`);
+        }
+      });
+
+      const sortBy = document.getElementById('sort-by');
+      if (sortBy) {
+        sortBy.addEventListener('change', () => {
+          this.sortReviews();
+        });
+        console.log('✅ Sort by listener added');
+      } else {
+        console.warn('⚠️ Sort by element not found');
+      }
+
+      // View toggle
+      const viewToggle = document.getElementById('view-toggle');
+      if (viewToggle) {
+        viewToggle.addEventListener('click', () => {
+          this.toggleView();
+        });
+        console.log('✅ View toggle listener added');
+      } else {
+        console.warn('⚠️ View toggle element not found');
+      }
+
+      // Load more reviews
+      const loadMoreBtn = document.getElementById('load-more-reviews');
+      if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', () => {
+          this.loadMoreReviews();
+        });
+        console.log('✅ Load more button listener added');
+      } else {
+        console.warn('⚠️ Load more button element not found');
+      }
+
+      console.log('✅ Event listeners setup complete');
+    } catch (error) {
+      console.error('❌ Error setting up event listeners:', error);
+    }
   }
 
   populateProductFilter() {
-    const productFilter = document.getElementById('product-filter');
-    const uniqueProducts = [...new Set(this.reviews.map(review => review.productId.name))];
-    
-    uniqueProducts.forEach(productName => {
-      const option = document.createElement('option');
-      option.value = productName;
-      option.textContent = productName;
-      productFilter.appendChild(option);
-    });
+    try {
+      console.log('🔧 Populating product filter...');
+      const productFilter = document.getElementById('product-filter');
+
+      if (!productFilter) {
+        console.warn('⚠️ Product filter element not found');
+        return;
+      }
+
+      if (!this.reviews || this.reviews.length === 0) {
+        console.warn('⚠️ No reviews available for product filter');
+        return;
+      }
+
+      // Clear existing options (except the first "All Products" option)
+      while (productFilter.children.length > 1) {
+        productFilter.removeChild(productFilter.lastChild);
+      }
+
+      // Extract unique product names safely
+      const uniqueProducts = [...new Set(
+        this.reviews
+          .filter(review => review.productId && review.productId.name)
+          .map(review => review.productId.name)
+      )];
+
+      console.log('📦 Found unique products:', uniqueProducts);
+
+      uniqueProducts.forEach(productName => {
+        const option = document.createElement('option');
+        option.value = productName;
+        option.textContent = productName;
+        productFilter.appendChild(option);
+      });
+
+      console.log('✅ Product filter populated with', uniqueProducts.length, 'products');
+    } catch (error) {
+      console.error('❌ Error populating product filter:', error);
+    }
   }
 
   filterReviews() {
@@ -286,71 +401,135 @@ class ReviewsPage {
   }
 
   renderReviews() {
-    const container = document.getElementById('reviews-grid');
-    const reviewsToShow = this.filteredReviews.slice(0, this.currentPage * this.reviewsPerPage);
+    try {
+      console.log('🎨 Rendering reviews...');
+      const container = document.getElementById('reviews-grid');
 
-    if (reviewsToShow.length === 0) {
-      container.innerHTML = `
-        <div class="loading-reviews">
-          <p class="body-large">No reviews found matching your criteria.</p>
-          <button class="button-outline" onclick="location.reload()">
-            <span class="body-small">Reset Filters</span>
-          </button>
-        </div>
-      `;
-      return;
+      if (!container) {
+        console.error('❌ Reviews grid container not found');
+        return;
+      }
+
+      const reviewsToShow = this.filteredReviews.slice(0, this.currentPage * this.reviewsPerPage);
+      console.log('📊 Reviews to show:', reviewsToShow.length, 'of', this.filteredReviews.length);
+
+      if (reviewsToShow.length === 0) {
+        container.innerHTML = `
+          <div class="loading-reviews">
+            <p class="body-large">No reviews found matching your criteria.</p>
+            <button class="button-outline" onclick="location.reload()">
+              <span class="body-small">Reset Filters</span>
+            </button>
+          </div>
+        `;
+        console.log('📝 No reviews message displayed');
+        return;
+      }
+
+      // Render review cards with error handling
+      const reviewCards = reviewsToShow.map(review => {
+        try {
+          return this.createReviewCard(review);
+        } catch (error) {
+          console.error('❌ Error creating review card:', error, review);
+          return `<div class="review-card error">Error loading review</div>`;
+        }
+      }).join('');
+
+      container.innerHTML = reviewCards;
+      console.log('✅ Reviews rendered successfully');
+
+      // Update load more button visibility
+      const loadMoreBtn = document.getElementById('load-more-reviews');
+      if (loadMoreBtn) {
+        if (reviewsToShow.length >= this.filteredReviews.length) {
+          loadMoreBtn.style.display = 'none';
+        } else {
+          loadMoreBtn.style.display = 'block';
+        }
+      }
+
+      // Add click event listeners to review cards
+      this.addReviewCardListeners();
+
+      // Update reviews count
+      this.updateReviewsCount();
+    } catch (error) {
+      console.error('❌ Error rendering reviews:', error);
+      const container = document.getElementById('reviews-grid');
+      if (container) {
+        container.innerHTML = `
+          <div class="loading-reviews">
+            <p class="body-large" style="color: #e74c3c;">Error loading reviews: ${error.message}</p>
+            <button class="button-outline" onclick="location.reload()">
+              <span class="body-small">Try Again</span>
+            </button>
+          </div>
+        `;
+      }
     }
-
-    container.innerHTML = reviewsToShow.map(review => this.createReviewCard(review)).join('');
-
-    // Update load more button visibility
-    const loadMoreBtn = document.getElementById('load-more-reviews');
-    if (reviewsToShow.length >= this.filteredReviews.length) {
-      loadMoreBtn.style.display = 'none';
-    } else {
-      loadMoreBtn.style.display = 'block';
-    }
-
-    // Add click event listeners to review cards
-    this.addReviewCardListeners();
   }
 
   createReviewCard(review) {
-    const stars = this.generateStars(review.rating);
-    const date = new Date(review.createdAt).toLocaleDateString();
-    const verifiedBadge = review.verified ? '<span class="verified-badge">✓ Verified</span>' : '';
-    
-    return `
-      <div class="review-card" data-product-id="${review.productId._id}">
-        <div class="review-header">
-          <div class="review-product-info">
-            <h3 class="review-product-name">${review.productId.name}</h3>
-            <div class="review-meta">
-              <div class="review-rating">
-                <span class="rating-stars">${stars}</span>
-                <span class="rating-value">${review.rating}/5</span>
+    try {
+      // Safely extract data with fallbacks
+      const productId = review.productId?._id || review.productId || 'unknown';
+      const productName = review.productId?.name || 'Unknown Product';
+      const rating = review.rating || 0;
+      const content = review.content || 'No review content available';
+      const source = review.source || 'Unknown Source';
+      const helpfulCount = review.helpfulCount || 0;
+      const createdAt = review.createdAt || new Date().toISOString();
+      const verified = review.verified || false;
+
+      const stars = this.generateStars(rating);
+      const date = new Date(createdAt).toLocaleDateString();
+      const verifiedBadge = verified ? '<span class="verified-badge">✓ Verified</span>' : '';
+
+      return `
+        <div class="review-card" data-product-id="${productId}">
+          <div class="review-header">
+            <div class="review-product-info">
+              <h3 class="review-product-name">${productName}</h3>
+              <div class="review-meta">
+                <div class="review-rating">
+                  <span class="rating-stars">${stars}</span>
+                  <span class="rating-value">${rating}/5</span>
+                </div>
+                <span class="review-source">${source}</span>
+                ${verifiedBadge}
               </div>
-              <span class="review-source">${review.source}</span>
-              ${verifiedBadge}
+            </div>
+            <span class="review-date">${date}</span>
+          </div>
+          <div class="review-content">
+            <p class="review-text">${content}</p>
+            <div class="review-actions">
+              <div class="review-helpful">
+                <span>👍</span>
+                <span class="helpful-count">${helpfulCount}</span>
+                <span>found this helpful</span>
+              </div>
+              <button class="btn-view-product" onclick="window.location.href='product.html?id=${productId}'">
+                View Product
+              </button>
             </div>
           </div>
-          <span class="review-date">${date}</span>
         </div>
-        <div class="review-content">
-          <p class="review-text">${review.content}</p>
-          <div class="review-actions">
-            <div class="review-helpful">
-              <span>👍</span>
-              <span class="helpful-count">${review.helpfulCount}</span>
-              <span>found this helpful</span>
-            </div>
-            <button class="btn-view-product" onclick="window.location.href='product.html?id=${review.productId._id}'">
-              View Product
-            </button>
+      `;
+    } catch (error) {
+      console.error('❌ Error creating review card:', error, review);
+      return `
+        <div class="review-card error">
+          <div class="review-header">
+            <h3>Error Loading Review</h3>
+          </div>
+          <div class="review-content">
+            <p>Unable to display this review due to data issues.</p>
           </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   renderFeaturedReviews() {
@@ -424,15 +603,49 @@ class ReviewsPage {
   }
 
   updateStatistics() {
-    const totalReviews = this.reviews.length;
-    const avgRating = this.reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews;
-    const uniqueProducts = new Set(this.reviews.map(review => review.productId._id)).size;
-    const uniqueSources = new Set(this.reviews.map(review => review.source)).size;
+    try {
+      console.log('📊 Updating statistics...');
 
-    document.getElementById('total-reviews').textContent = totalReviews;
-    document.getElementById('avg-rating').textContent = avgRating.toFixed(1);
-    document.getElementById('total-products').textContent = uniqueProducts;
-    document.getElementById('total-sources').textContent = uniqueSources;
+      if (!this.reviews || this.reviews.length === 0) {
+        console.warn('⚠️ No reviews available for statistics');
+        return;
+      }
+
+      const totalReviews = this.reviews.length;
+      const avgRating = this.reviews.reduce((sum, review) => sum + (review.rating || 0), 0) / totalReviews;
+      const uniqueProducts = new Set(
+        this.reviews
+          .filter(review => review.productId && review.productId._id)
+          .map(review => review.productId._id)
+      ).size;
+      const uniqueSources = new Set(
+        this.reviews
+          .filter(review => review.source)
+          .map(review => review.source)
+      ).size;
+
+      // Update statistics with safe element access
+      const elements = [
+        { id: 'total-reviews', value: totalReviews },
+        { id: 'avg-rating', value: avgRating.toFixed(1) },
+        { id: 'total-products', value: uniqueProducts },
+        { id: 'total-sources', value: uniqueSources }
+      ];
+
+      elements.forEach(({ id, value }) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = value;
+          console.log(`✅ Updated ${id}: ${value}`);
+        } else {
+          console.warn(`⚠️ Element ${id} not found`);
+        }
+      });
+
+      console.log('✅ Statistics updated successfully');
+    } catch (error) {
+      console.error('❌ Error updating statistics:', error);
+    }
   }
 
   debounce(func, wait) {

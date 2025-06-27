@@ -6,129 +6,55 @@ class UnifiedProfilePage {
     this.userReviews = [];
     this.allReviews = [];
     this.products = [];
+    this.filteredProducts = [];
+    this.filteredReviews = [];
+    this.currentProductPage = 1;
+    this.currentReviewPage = 1;
+    this.productsPerPage = 6;
+    this.reviewsPerPage = 5;
+    this.autoRefreshInterval = null;
+    this.lastUpdateTime = Date.now();
+    this.recentActivities = [];
     this.init();
   }
 
   async init() {
-    console.log('🚀 Initializing profile page...');
-
     // Check authentication
-    const token = localStorage.getItem('token');
-    if (!token) {
-      console.log('❌ No token found, redirecting to login');
+    if (!localStorage.getItem('token')) {
       window.location.href = 'login.html';
       return;
     }
-    console.log('✅ Token found:', token.substring(0, 20) + '...');
 
     try {
-      console.log('📡 Loading user data...');
+      // Load all data in parallel
+      const [user, userStats, dashboardStats, allReviews, products] = await Promise.all([
+        api.getUser(),
+        api.getUserStats(),
+        api.getDashboardStats(),
+        api.getReviews(),
+        api.getProducts()
+      ]);
 
-      // Load critical data first (user info)
-      console.log('🔄 Loading user information...');
-      this.user = await api.getUser();
-      console.log('✅ User data loaded:', this.user);
+      this.user = user;
+      this.userStats = userStats;
+      this.dashboardStats = dashboardStats;
+      this.allReviews = allReviews;
+      this.products = products;
 
-      // Load other data with individual error handling
-      const dataPromises = [
-        this.loadUserStats(),
-        this.loadDashboardStats(),
-        this.loadReviews(),
-        this.loadProducts()
-      ];
+      // Filter user's reviews
+      this.userReviews = allReviews.filter(review =>
+        review._id === user._id || review.userId === user._id
+      );
 
-      // Wait for all data loading attempts
-      await Promise.allSettled(dataPromises);
-
-      // Filter user's reviews if we have both user and reviews data
-      if (this.user && this.allReviews.length > 0) {
-        this.userReviews = this.allReviews.filter(review =>
-          review.userId._id === this.user._id || review.userId === this.user._id
-        );
-        console.log('✅ User reviews filtered:', this.userReviews.length, 'user reviews');
-      }
-
-      console.log('🎨 Rendering profile...');
       this.renderProfile();
       this.setupEventListeners();
-      console.log('✅ Profile initialization complete!');
     } catch (error) {
-      console.error('❌ Profile initialization error:', error);
-      console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
-        name: error.name
-      });
-
-      // Handle different types of errors
-      if (error.message.includes('Authentication failed') ||
-          error.message.includes('token expired') ||
-          error.message.includes('401')) {
-        console.log('🔄 Authentication failed, clearing storage and redirecting...');
+      console.error('Profile initialization error:', error);
+      if (error.message === 'Failed to fetch user data') {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        this.showErrorMessage('Session expired. Redirecting to login...', 'warning');
-        setTimeout(() => {
-          window.location.href = 'login.html';
-        }, 2000);
-      } else if (error.message.includes('Cannot connect to server')) {
-        console.log('🔄 Server connection failed');
-        this.showErrorMessage('Cannot connect to server. Please check your connection and try again.', 'error');
-        this.showRetryButton();
-      } else {
-        // Show error message to user with retry option
-        console.log('🔄 General error occurred');
-        this.showErrorMessage('Failed to load profile data. Please try again.', 'error');
-        this.showRetryButton();
+        window.location.href = 'login.html';
       }
-    }
-  }
-
-  async loadUserStats() {
-    try {
-      console.log('🔄 Loading user stats...');
-      this.userStats = await api.getUserStats();
-      console.log('✅ User stats loaded:', this.userStats);
-    } catch (error) {
-      console.error('❌ Failed to load user stats:', error);
-      this.userStats = { totalReviews: 0, avgRating: 0, badges: 4, followers: 0, following: 0, score: 500 };
-      this.showErrorMessage('Failed to load user statistics', 'warning');
-    }
-  }
-
-  async loadDashboardStats() {
-    try {
-      console.log('🔄 Loading dashboard stats...');
-      this.dashboardStats = await api.getDashboardStats();
-      console.log('✅ Dashboard stats loaded:', this.dashboardStats);
-    } catch (error) {
-      console.error('❌ Failed to load dashboard stats:', error);
-      this.dashboardStats = { totalReviews: 0, avgRating: 0, totalProducts: 0, userReviews: 0 };
-      this.showErrorMessage('Failed to load dashboard statistics', 'warning');
-    }
-  }
-
-  async loadReviews() {
-    try {
-      console.log('🔄 Loading reviews...');
-      this.allReviews = await api.getReviews();
-      console.log('✅ Reviews loaded:', this.allReviews.length, 'reviews');
-    } catch (error) {
-      console.error('❌ Failed to load reviews:', error);
-      this.allReviews = [];
-      this.showErrorMessage('Failed to load reviews', 'warning');
-    }
-  }
-
-  async loadProducts() {
-    try {
-      console.log('🔄 Loading products...');
-      this.products = await api.getProducts();
-      console.log('✅ Products loaded:', this.products.length, 'products');
-    } catch (error) {
-      console.error('❌ Failed to load products:', error);
-      this.products = [];
-      this.showErrorMessage('Failed to load products', 'warning');
     }
   }
 
@@ -139,147 +65,69 @@ class UnifiedProfilePage {
     this.renderProducts();
     this.renderReviews();
     this.renderBadges();
+    this.renderProgressTracker();
+    this.renderRecentActivity();
+    this.setupAutoRefresh();
+    this.updateOnlineStatus();
   }
 
   renderUserInfo() {
-    console.log('🎨 Rendering user info...', this.user);
-
     const profileName = document.getElementById('profile-title');
     const profileRole = document.querySelector('.profile-role');
-    const profileLocation = document.querySelector('.profile-location');
-    const profileAvatar = document.querySelector('.profile-avatar');
+    const locationText = document.getElementById('location-text');
+    const bioText = document.getElementById('bio-text');
+    const profileAvatar = document.getElementById('main-profile-avatar');
+    const miniReviews = document.getElementById('mini-reviews');
+    const miniRating = document.getElementById('mini-rating');
+    const joinDate = document.getElementById('join-date');
 
     if (profileName) {
-      const fullName = `${this.user.firstName} ${this.user.lastName}`;
-      profileName.textContent = fullName;
-      console.log('✅ Profile name set to:', fullName);
-    } else {
-      console.log('❌ Profile name element not found');
+      profileName.innerHTML = `${this.user.firstName} ${this.user.lastName}`;
     }
 
     if (profileRole) {
       profileRole.textContent = 'Customer';
-      console.log('✅ Profile role set');
-    } else {
-      console.log('❌ Profile role element not found');
     }
 
-    if (profileLocation) {
-      const location = this.user.location || 'Location not set';
-      profileLocation.textContent = location;
-      console.log('✅ Profile location set to:', location);
-    } else {
-      console.log('❌ Profile location element not found');
+    if (locationText) {
+      locationText.textContent = this.user.location || 'Location not set';
+    }
+
+    if (bioText) {
+      bioText.textContent = this.user.bio || 'No bio available';
     }
 
     if (profileAvatar) {
-      const avatarSrc = this.user.profilePicture || 'profile photo.svg';
-      profileAvatar.src = avatarSrc;
-      console.log('✅ Profile avatar set to:', avatarSrc);
-    } else {
-      console.log('❌ Profile avatar element not found');
+      profileAvatar.src = this.user.profilePicture || 'profile photo.svg';
+    }
+
+    // Update mini stats
+    if (miniReviews && this.userStats) {
+      miniReviews.textContent = this.userStats.totalReviews || 0;
+    }
+
+    if (miniRating && this.userStats) {
+      miniRating.textContent = this.userStats.avgRating || '0.0';
+    }
+
+    if (joinDate && this.user.createdAt) {
+      const date = new Date(this.user.createdAt);
+      joinDate.textContent = date.getFullYear();
     }
   }
 
-  showErrorMessage(message, type = 'error') {
-    // Remove any existing error messages
-    const existingErrors = document.querySelectorAll('.error-message');
-    existingErrors.forEach(error => error.remove());
-
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-
-    const backgroundColor = type === 'warning' ? '#ff9800' : type === 'error' ? '#ff4444' : '#4CAF50';
-
-    errorDiv.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: ${backgroundColor};
-      color: white;
-      padding: 15px 20px;
-      border-radius: 8px;
-      z-index: 1000;
-      max-width: 350px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      line-height: 1.4;
-    `;
-    errorDiv.textContent = message;
-    document.body.appendChild(errorDiv);
-
-    // Auto-remove after 8 seconds for errors, 3 seconds for warnings
-    const timeout = type === 'warning' ? 3000 : 8000;
-    setTimeout(() => {
-      if (errorDiv.parentNode) {
-        errorDiv.parentNode.removeChild(errorDiv);
-      }
-    }, timeout);
-  }
-
-  showRetryButton() {
-    // Remove any existing retry buttons
-    const existingRetry = document.querySelectorAll('.retry-button');
-    existingRetry.forEach(button => button.remove());
-
-    const retryDiv = document.createElement('div');
-    retryDiv.className = 'retry-button';
-    retryDiv.style.cssText = `
-      position: fixed;
-      top: 80px;
-      right: 20px;
-      background: #2196F3;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      z-index: 1000;
-      cursor: pointer;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    `;
-    retryDiv.textContent = '🔄 Retry Loading';
-    retryDiv.addEventListener('click', () => {
-      retryDiv.remove();
-      this.init();
-    });
-    document.body.appendChild(retryDiv);
-  }
-
   renderDashboardStats() {
-    console.log('📊 Rendering dashboard stats...', this.dashboardStats);
-
     // Update dashboard overview stats
     const totalReviewsElement = document.getElementById('total-reviews');
     const avgRatingElement = document.getElementById('avg-rating');
     const totalProductsElement = document.getElementById('total-products');
 
-    if (totalReviewsElement) {
-      totalReviewsElement.textContent = this.dashboardStats.totalReviews || 0;
-      console.log('✅ Total reviews set to:', this.dashboardStats.totalReviews || 0);
-    } else {
-      console.log('❌ Total reviews element not found');
-    }
-
-    if (avgRatingElement) {
-      avgRatingElement.textContent = this.dashboardStats.avgRating || '0.0';
-      console.log('✅ Avg rating set to:', this.dashboardStats.avgRating || '0.0');
-    } else {
-      console.log('❌ Avg rating element not found');
-    }
-
-    if (totalProductsElement) {
-      totalProductsElement.textContent = this.dashboardStats.totalProducts || 0;
-      console.log('✅ Total products set to:', this.dashboardStats.totalProducts || 0);
-    } else {
-      console.log('❌ Total products element not found');
-    }
+    if (totalReviewsElement) totalReviewsElement.textContent = this.dashboardStats.totalReviews || 0;
+    if (avgRatingElement) avgRatingElement.textContent = this.dashboardStats.avgRating || '0.0';
+    if (totalProductsElement) totalProductsElement.textContent = this.dashboardStats.totalProducts || 0;
   }
 
   renderUserStats() {
-    console.log('👤 Rendering user stats...', this.userStats);
-
     // Update sidebar user stats
     const userBadges = document.getElementById('user-badges');
     const userScore = document.getElementById('user-score');
@@ -287,60 +135,149 @@ class UnifiedProfilePage {
     const userFollowing = document.getElementById('user-following');
     const userReviewsCount = document.getElementById('user-reviews-count');
 
-    if (userBadges) {
-      userBadges.textContent = this.userStats.badges || 4;
-      console.log('✅ User badges set to:', this.userStats.badges || 4);
-    } else {
-      console.log('❌ User badges element not found');
-    }
-
-    if (userScore) {
-      userScore.textContent = this.userStats.score || 500;
-      console.log('✅ User score set to:', this.userStats.score || 500);
-    } else {
-      console.log('❌ User score element not found');
-    }
-
-    if (userFollowers) {
-      userFollowers.textContent = this.userStats.followers || 0;
-      console.log('✅ User followers set to:', this.userStats.followers || 0);
-    } else {
-      console.log('❌ User followers element not found');
-    }
-
-    if (userFollowing) {
-      userFollowing.textContent = this.userStats.following || 0;
-      console.log('✅ User following set to:', this.userStats.following || 0);
-    } else {
-      console.log('❌ User following element not found');
-    }
-
-    if (userReviewsCount) {
-      userReviewsCount.textContent = this.userStats.totalReviews || 0;
-      console.log('✅ User reviews count set to:', this.userStats.totalReviews || 0);
-    } else {
-      console.log('❌ User reviews count element not found');
-    }
+    if (userBadges) userBadges.textContent = this.userStats.badges || 4;
+    if (userScore) userScore.textContent = this.userStats.score || 500;
+    if (userFollowers) userFollowers.textContent = this.userStats.followers || 0;
+    if (userFollowing) userFollowing.textContent = this.userStats.following || 0;
+    if (userReviewsCount) userReviewsCount.textContent = this.userStats.totalReviews || 0;
   }
 
   renderProducts() {
+    this.filteredProducts = [...this.products];
+    this.applyProductFilters();
+    this.renderProductsPage();
+    this.updateProductsCount();
+  }
+
+  applyProductFilters() {
+    const searchTerm = document.getElementById('product-search')?.value.toLowerCase() || '';
+    const categoryFilter = document.getElementById('product-category-filter')?.value || 'all';
+    const sortOption = document.getElementById('product-sort')?.value || 'newest';
+
+    // Apply search filter
+    this.filteredProducts = this.products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm) ||
+      product.description.toLowerCase().includes(searchTerm)
+    );
+
+    // Apply category filter
+    if (categoryFilter !== 'all') {
+      this.filteredProducts = this.filteredProducts.filter(product =>
+        product.category === categoryFilter
+      );
+    }
+
+    // Apply sorting
+    this.filteredProducts.sort((a, b) => {
+      switch (sortOption) {
+        case 'oldest':
+          return new Date(a.createdAt) - new Date(b.createdAt);
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'price-low':
+          return a.price - b.price;
+        case 'price-high':
+          return b.price - a.price;
+        default: // newest
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+  }
+
+  renderProductsPage() {
     const productsContainer = document.getElementById('products-container');
     if (!productsContainer) return;
 
-    productsContainer.innerHTML = this.products.length ?
-      this.products.map(product => `
+    const startIndex = (this.currentProductPage - 1) * this.productsPerPage;
+    const endIndex = startIndex + this.productsPerPage;
+    const pageProducts = this.filteredProducts.slice(startIndex, endIndex);
+
+    const viewMode = document.querySelector('.view-btn.active')?.dataset.view || 'grid';
+    productsContainer.className = `products-${viewMode}`;
+
+    productsContainer.innerHTML = pageProducts.length ?
+      pageProducts.map(product => `
         <div class="product-card" data-id="${product._id}">
-          <img src="${product.imageUrl || 'placeholder1.jpg'}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>${product.description.substring(0, 100)}...</p>
-          <p class="price">$${product.price.toFixed(2)}</p>
-          <div class="product-actions">
-            <a href="product.html?id=${product._id}" class="btn btn-outline">View Details</a>
-            <button class="btn review-btn" data-id="${product._id}">Add Review</button>
+          <div class="product-image">
+            <img src="${product.imageUrl || 'placeholder1.jpg'}" alt="${product.name}" loading="lazy">
+            <div class="product-overlay">
+              <button class="quick-view-btn" data-id="${product._id}">Quick View</button>
+            </div>
+          </div>
+          <div class="product-info">
+            <h3>${product.name}</h3>
+            <p class="product-description">${product.description.substring(0, 100)}...</p>
+            <div class="product-meta">
+              <span class="price">$${product.price.toFixed(2)}</span>
+              <span class="category">${product.category || 'General'}</span>
+            </div>
+            <div class="product-actions">
+              <a href="product.html?id=${product._id}" class="btn btn-outline">View Details</a>
+              <button class="btn review-btn primary" data-id="${product._id}">Add Review</button>
+              <button class="favorite-btn" data-id="${product._id}">
+                <i class="icon-heart"></i>
+              </button>
+            </div>
           </div>
         </div>
       `).join('') :
-      '<p>No products available.</p>';
+      '<div class="no-data"><i class="icon-search"></i><p>No products found</p></div>';
+
+    this.renderProductsPagination();
+    this.setupProductEventListeners();
+  }
+
+  renderProductsPagination() {
+    const paginationContainer = document.getElementById('products-pagination');
+    if (!paginationContainer) return;
+
+    const totalPages = Math.ceil(this.filteredProducts.length / this.productsPerPage);
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    let paginationHTML = '<div class="pagination">';
+
+    // Previous button
+    paginationHTML += `
+      <button class="page-btn ${this.currentProductPage === 1 ? 'disabled' : ''}"
+              data-page="${this.currentProductPage - 1}">
+        <i class="icon-chevron-left"></i>
+      </button>
+    `;
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= this.currentProductPage - 2 && i <= this.currentProductPage + 2)) {
+        paginationHTML += `
+          <button class="page-btn ${i === this.currentProductPage ? 'active' : ''}"
+                  data-page="${i}">${i}</button>
+        `;
+      } else if (i === this.currentProductPage - 3 || i === this.currentProductPage + 3) {
+        paginationHTML += '<span class="page-ellipsis">...</span>';
+      }
+    }
+
+    // Next button
+    paginationHTML += `
+      <button class="page-btn ${this.currentProductPage === totalPages ? 'disabled' : ''}"
+              data-page="${this.currentProductPage + 1}">
+        <i class="icon-chevron-right"></i>
+      </button>
+    `;
+
+    paginationHTML += '</div>';
+    paginationContainer.innerHTML = paginationHTML;
+  }
+
+  updateProductsCount() {
+    const countElement = document.getElementById('products-count');
+    if (countElement) {
+      const total = this.filteredProducts.length;
+      const showing = Math.min(this.productsPerPage, total - (this.currentProductPage - 1) * this.productsPerPage);
+      countElement.textContent = `Showing ${showing} of ${total} products`;
+    }
   }
 
   renderReviews() {
@@ -485,11 +422,76 @@ class UnifiedProfilePage {
       });
     }
 
-    // Product review buttons
-    document.querySelectorAll('.review-btn').forEach(button => {
-      button.addEventListener('click', (e) => {
-        const productId = e.target.dataset.id;
-        this.showReviewForm(productId);
+    // Share profile button
+    const shareProfileBtn = document.getElementById('share-profile-btn');
+    if (shareProfileBtn) {
+      shareProfileBtn.addEventListener('click', () => {
+        this.shareProfile();
+      });
+    }
+
+    // Change avatar button
+    const changeAvatarBtn = document.getElementById('change-avatar-btn');
+    if (changeAvatarBtn) {
+      changeAvatarBtn.addEventListener('click', () => {
+        this.changeAvatar();
+      });
+    }
+
+    // Stats refresh button
+    const refreshStatsBtn = document.getElementById('refresh-stats-btn');
+    if (refreshStatsBtn) {
+      refreshStatsBtn.addEventListener('click', () => {
+        this.refreshStats();
+      });
+    }
+
+    // Stats time filter
+    const statsTimeFilter = document.getElementById('stats-time-filter');
+    if (statsTimeFilter) {
+      statsTimeFilter.addEventListener('change', () => {
+        this.filterStatsByTime();
+      });
+    }
+
+    // Clickable stat cards
+    document.querySelectorAll('.stat-card.clickable').forEach(card => {
+      card.addEventListener('click', () => {
+        const statType = card.dataset.stat;
+        this.showStatDetails(statType);
+      });
+    });
+
+    // Review tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        this.filterReviewsByTab(e.target.dataset.tab);
+      });
+    });
+
+    // Review rating filter
+    const reviewRatingFilter = document.getElementById('review-rating-filter');
+    if (reviewRatingFilter) {
+      reviewRatingFilter.addEventListener('change', () => {
+        this.filterReviewsByRating();
+      });
+    }
+
+    // Quick add review button
+    const quickAddReviewBtn = document.getElementById('quick-add-review');
+    if (quickAddReviewBtn) {
+      quickAddReviewBtn.addEventListener('click', () => {
+        this.showQuickReviewForm();
+      });
+    }
+
+    // Connection stats
+    document.querySelectorAll('.stat-item.clickable').forEach(item => {
+      item.addEventListener('click', () => {
+        const action = item.dataset.action;
+        this.handleConnectionAction(action);
       });
     });
 
@@ -508,23 +510,360 @@ class UnifiedProfilePage {
       });
     }
 
-    const settingsBtn = document.getElementById('settings-btn');
-    if (settingsBtn) {
-      settingsBtn.addEventListener('click', () => {
-        this.showEditProfileModal();
+    const exportDataBtn = document.getElementById('export-data-btn');
+    if (exportDataBtn) {
+      exportDataBtn.addEventListener('click', () => {
+        this.exportUserData();
       });
+    }
+  }
+
+  // New dynamic methods for enhanced functionality
+  shareProfile() {
+    const profileUrl = `${window.location.origin}/profile.html?user=${this.user._id}`;
+
+    if (navigator.share) {
+      navigator.share({
+        title: `${this.user.firstName} ${this.user.lastName}'s Profile`,
+        text: 'Check out my FeedbackHub profile!',
+        url: profileUrl
+      });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(profileUrl).then(() => {
+        this.addLiveUpdate('Profile link copied to clipboard!', 'success');
+      });
+    }
+  }
+
+  changeAvatar() {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const avatar = document.getElementById('main-profile-avatar');
+          if (avatar) {
+            avatar.src = e.target.result;
+            this.addLiveUpdate('Profile picture updated!', 'success');
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  }
+
+  refreshStats() {
+    this.addLiveUpdate('Refreshing statistics...', 'info');
+
+    // Simulate API call with loading animation
+    const refreshBtn = document.getElementById('refresh-stats-btn');
+    if (refreshBtn) {
+      refreshBtn.innerHTML = '<i class="icon-loading spinning"></i>';
+      refreshBtn.disabled = true;
     }
 
-    // Logout functionality
-    const logoutBtn = document.querySelector('.logout-btn');
-    if (logoutBtn) {
-      logoutBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        window.location.href = 'login.html';
-      });
+    setTimeout(async () => {
+      try {
+        const [userStats, dashboardStats] = await Promise.all([
+          api.getUserStats(),
+          api.getDashboardStats()
+        ]);
+
+        this.userStats = userStats;
+        this.dashboardStats = dashboardStats;
+
+        this.renderDashboardStats();
+        this.renderUserStats();
+        this.renderProgressTracker();
+
+        this.addLiveUpdate('Statistics updated!', 'success');
+      } catch (error) {
+        this.addLiveUpdate('Failed to refresh statistics', 'error');
+      } finally {
+        if (refreshBtn) {
+          refreshBtn.innerHTML = '<i class="icon-refresh"></i>';
+          refreshBtn.disabled = false;
+        }
+      }
+    }, 1000);
+  }
+
+  filterStatsByTime() {
+    const timeFilter = document.getElementById('stats-time-filter').value;
+    this.addLiveUpdate(`Filtering stats by: ${timeFilter}`, 'info');
+
+    // This would typically filter the stats based on time period
+    // For now, we'll just show a message
+    const filterText = {
+      'all': 'All Time',
+      'month': 'This Month',
+      'week': 'This Week'
+    };
+
+    this.addLiveUpdate(`Showing stats for: ${filterText[timeFilter]}`, 'info');
+  }
+
+  showStatDetails(statType) {
+    const statNames = {
+      'reviews': 'Reviews',
+      'rating': 'Ratings',
+      'products': 'Products',
+      'engagement': 'Engagement'
+    };
+
+    this.addLiveUpdate(`Viewing ${statNames[statType]} details`, 'info');
+
+    // Create a detailed view modal
+    const modal = document.createElement('div');
+    modal.className = 'modal stat-details-modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>${statNames[statType]} Details</h2>
+        <div class="stat-details">
+          <p>Detailed ${statNames[statType].toLowerCase()} information would be displayed here.</p>
+          <div class="chart-placeholder">
+            <p>📊 Chart visualization coming soon...</p>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    modal.querySelector('.close').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  }
+
+  filterReviewsByTab(tab) {
+    this.addLiveUpdate(`Switching to ${tab} view`, 'info');
+
+    switch (tab) {
+      case 'my-reviews':
+        this.filteredReviews = this.userReviews;
+        break;
+      case 'all-reviews':
+        this.filteredReviews = this.allReviews;
+        break;
+      case 'recent':
+        this.filteredReviews = this.allReviews.slice(0, 10);
+        break;
     }
+
+    this.renderReviewsPage();
+  }
+
+  filterReviewsByRating() {
+    const ratingFilter = document.getElementById('review-rating-filter').value;
+
+    if (ratingFilter === 'all') {
+      this.filteredReviews = this.userReviews;
+    } else {
+      this.filteredReviews = this.userReviews.filter(review =>
+        review.rating === parseInt(ratingFilter)
+      );
+    }
+
+    this.renderReviewsPage();
+    this.addLiveUpdate(`Filtered reviews by ${ratingFilter} stars`, 'info');
+  }
+
+  renderReviewsPage() {
+    const reviewsContainer = document.getElementById('reviews-container');
+    if (!reviewsContainer) return;
+
+    const startIndex = (this.currentReviewPage - 1) * this.reviewsPerPage;
+    const endIndex = startIndex + this.reviewsPerPage;
+    const pageReviews = this.filteredReviews.slice(startIndex, endIndex);
+
+    reviewsContainer.innerHTML = pageReviews.length ?
+      pageReviews.map(review => `
+        <div class="review-card">
+          <div class="review-header">
+            <div class="review-rating">
+              ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}
+            </div>
+            <span class="review-date">${new Date(review.createdAt).toLocaleDateString()}</span>
+          </div>
+          <h4 class="review-product">${review.productId?.name || 'Product'}</h4>
+          <p class="review-content">${review.content}</p>
+          <div class="review-actions">
+            <button class="btn-small edit-review" data-id="${review._id}">Edit</button>
+            <button class="btn-small delete-review" data-id="${review._id}">Delete</button>
+          </div>
+        </div>
+      `).join('') :
+      '<div class="no-data"><i class="icon-review"></i><p>No reviews found</p></div>';
+
+    this.updateReviewsCount();
+  }
+
+  updateReviewsCount() {
+    const countElement = document.getElementById('reviews-count');
+    if (countElement) {
+      countElement.textContent = `${this.filteredReviews.length} reviews found`;
+    }
+  }
+
+  showQuickReviewForm() {
+    const modal = document.createElement('div');
+    modal.className = 'modal quick-review-modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Quick Review</h2>
+        <form class="quick-review-form">
+          <div class="form-group">
+            <label>Select Product:</label>
+            <select id="quick-review-product" required>
+              <option value="">Choose a product...</option>
+              ${this.products.map(product =>
+                `<option value="${product._id}">${product.name}</option>`
+              ).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Rating:</label>
+            <div class="star-rating" id="quick-review-rating">
+              ${[1,2,3,4,5].map(i => `<span class="star" data-rating="${i}">☆</span>`).join('')}
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Review:</label>
+            <textarea id="quick-review-content" placeholder="Write your review..." required></textarea>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+            <button type="button" class="btn btn-secondary cancel">Cancel</button>
+          </div>
+        </form>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Setup star rating
+    modal.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', (e) => {
+        const rating = parseInt(e.target.dataset.rating);
+        modal.querySelectorAll('.star').forEach((s, i) => {
+          s.textContent = i < rating ? '★' : '☆';
+        });
+        modal.querySelector('#quick-review-rating').dataset.rating = rating;
+      });
+    });
+
+    // Setup form submission
+    modal.querySelector('.quick-review-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.submitQuickReview(modal);
+    });
+
+    // Setup close buttons
+    modal.querySelector('.close').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+
+    modal.querySelector('.cancel').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+  }
+
+  submitQuickReview(modal) {
+    const productId = modal.querySelector('#quick-review-product').value;
+    const rating = modal.querySelector('#quick-review-rating').dataset.rating;
+    const content = modal.querySelector('#quick-review-content').value;
+
+    if (!productId || !rating || !content) {
+      this.addLiveUpdate('Please fill in all fields', 'error');
+      return;
+    }
+
+    // Simulate API call
+    this.addLiveUpdate('Submitting review...', 'info');
+
+    setTimeout(() => {
+      this.addLiveUpdate('Review submitted successfully!', 'success');
+      document.body.removeChild(modal);
+
+      // Add the new review to the list (simulation)
+      const newReview = {
+        _id: Date.now().toString(),
+        productId: this.products.find(p => p._id === productId),
+        rating: parseInt(rating),
+        content: content,
+        createdAt: new Date().toISOString()
+      };
+
+      this.userReviews.unshift(newReview);
+      this.filteredReviews = this.userReviews;
+      this.renderReviewsPage();
+      this.refreshStats();
+    }, 1000);
+  }
+
+  handleConnectionAction(action) {
+    switch (action) {
+      case 'view-followers':
+        this.showFollowersList();
+        break;
+      case 'view-following':
+        this.showFollowingList();
+        break;
+      case 'view-reviews':
+        this.scrollToReviews();
+        break;
+    }
+  }
+
+  showFollowersList() {
+    this.addLiveUpdate('Followers feature coming soon!', 'info');
+  }
+
+  showFollowingList() {
+    this.addLiveUpdate('Following feature coming soon!', 'info');
+  }
+
+  scrollToReviews() {
+    const reviewsSection = document.querySelector('.reviews-section');
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  }
+
+  exportUserData() {
+    this.addLiveUpdate('Preparing data export...', 'info');
+
+    const userData = {
+      profile: {
+        name: `${this.user.firstName} ${this.user.lastName}`,
+        email: this.user.email,
+        location: this.user.location,
+        bio: this.user.bio,
+        joinDate: this.user.createdAt
+      },
+      stats: this.userStats,
+      reviews: this.userReviews,
+      exportDate: new Date().toISOString()
+    };
+
+    const dataStr = JSON.stringify(userData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `feedbackhub-data-${this.user.firstName}-${Date.now()}.json`;
+    link.click();
+
+    URL.revokeObjectURL(url);
+    this.addLiveUpdate('Data exported successfully!', 'success');
   }
 
   showEditProfileModal() {
@@ -1040,6 +1379,164 @@ class UnifiedProfilePage {
     }
   }
 
+  renderProgressTracker() {
+    const currentLevel = document.getElementById('current-level');
+    const nextLevel = document.getElementById('next-level');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
+
+    if (!this.userStats) return;
+
+    const score = this.userStats.score || 0;
+    const level = Math.floor(score / 1000) + 1;
+    const nextLevelScore = level * 1000;
+    const currentLevelScore = (level - 1) * 1000;
+    const progress = ((score - currentLevelScore) / (nextLevelScore - currentLevelScore)) * 100;
+
+    if (currentLevel) currentLevel.textContent = `Level ${level}`;
+    if (nextLevel) nextLevel.textContent = `Level ${level + 1}`;
+    if (progressFill) progressFill.style.width = `${Math.min(progress, 100)}%`;
+    if (progressText) progressText.textContent = `${score} / ${nextLevelScore} XP`;
+  }
+
+  renderRecentActivity() {
+    const activityList = document.getElementById('activity-list');
+    if (!activityList) return;
+
+    // Generate recent activities based on user data
+    this.recentActivities = this.generateRecentActivities();
+
+    activityList.innerHTML = this.recentActivities.length ?
+      this.recentActivities.slice(0, 5).map(activity => `
+        <div class="activity-item">
+          <i class="icon-${activity.type}"></i>
+          <div class="activity-content">
+            <span class="activity-text">${activity.text}</span>
+            <span class="activity-time">${this.formatTimeAgo(activity.timestamp)}</span>
+          </div>
+        </div>
+      `).join('') :
+      '<div class="no-activity">No recent activity</div>';
+  }
+
+  generateRecentActivities() {
+    const activities = [];
+    const now = Date.now();
+
+    // Add review activities
+    this.userReviews.slice(0, 3).forEach((review, index) => {
+      activities.push({
+        type: 'review',
+        text: `Reviewed ${review.productId?.name || 'a product'}`,
+        timestamp: new Date(review.createdAt).getTime()
+      });
+    });
+
+    // Add profile update activity
+    if (this.user.updatedAt) {
+      activities.push({
+        type: 'profile',
+        text: 'Updated profile information',
+        timestamp: new Date(this.user.updatedAt).getTime()
+      });
+    }
+
+    // Add login activity
+    activities.push({
+      type: 'login',
+      text: 'Logged in',
+      timestamp: now - Math.random() * 3600000 // Random time within last hour
+    });
+
+    return activities.sort((a, b) => b.timestamp - a.timestamp);
+  }
+
+  formatTimeAgo(timestamp) {
+    const now = Date.now();
+    const diff = now - timestamp;
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (days > 0) return `${days}d ago`;
+    if (hours > 0) return `${hours}h ago`;
+    if (minutes > 0) return `${minutes}m ago`;
+    return 'Just now';
+  }
+
+  setupAutoRefresh() {
+    const autoRefreshToggle = document.getElementById('auto-refresh-toggle');
+    if (!autoRefreshToggle) return;
+
+    autoRefreshToggle.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        this.startAutoRefresh();
+      } else {
+        this.stopAutoRefresh();
+      }
+    });
+
+    // Start auto-refresh by default
+    if (autoRefreshToggle.checked) {
+      this.startAutoRefresh();
+    }
+  }
+
+  startAutoRefresh() {
+    this.stopAutoRefresh(); // Clear any existing interval
+    this.autoRefreshInterval = setInterval(() => {
+      this.refreshData();
+      this.addLiveUpdate('Data refreshed automatically', 'info');
+    }, 30000); // Refresh every 30 seconds
+  }
+
+  stopAutoRefresh() {
+    if (this.autoRefreshInterval) {
+      clearInterval(this.autoRefreshInterval);
+      this.autoRefreshInterval = null;
+    }
+  }
+
+  updateOnlineStatus() {
+    const statusIndicator = document.querySelector('.status-indicator');
+    const statusText = document.querySelector('.status-text');
+
+    if (statusIndicator && statusText) {
+      statusIndicator.className = 'status-indicator online';
+      statusText.textContent = 'Online';
+    }
+
+    // Update last seen time
+    this.lastUpdateTime = Date.now();
+  }
+
+  addLiveUpdate(message, type = 'info') {
+    const updatesContainer = document.getElementById('updates-container');
+    if (!updatesContainer) return;
+
+    const updateItem = document.createElement('div');
+    updateItem.className = 'update-item';
+    updateItem.innerHTML = `
+      <i class="icon-${type}"></i>
+      <span>${message}</span>
+      <span class="update-time">${new Date().toLocaleTimeString()}</span>
+    `;
+
+    updatesContainer.insertBefore(updateItem, updatesContainer.firstChild);
+
+    // Keep only last 5 updates
+    while (updatesContainer.children.length > 5) {
+      updatesContainer.removeChild(updatesContainer.lastChild);
+    }
+
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+      if (updateItem.parentNode) {
+        updateItem.remove();
+      }
+    }, 10000);
+  }
+
   setupProductEventListeners() {
     // Re-setup product review buttons
     document.querySelectorAll('.review-btn').forEach(button => {
@@ -1048,6 +1545,127 @@ class UnifiedProfilePage {
         this.showReviewForm(productId);
       });
     });
+
+    // Setup product search
+    const searchInput = document.getElementById('product-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        this.currentProductPage = 1;
+        this.renderProducts();
+      });
+    }
+
+    // Setup product filters
+    const categoryFilter = document.getElementById('product-category-filter');
+    const sortSelect = document.getElementById('product-sort');
+
+    if (categoryFilter) {
+      categoryFilter.addEventListener('change', () => {
+        this.currentProductPage = 1;
+        this.renderProducts();
+      });
+    }
+
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        this.currentProductPage = 1;
+        this.renderProducts();
+      });
+    }
+
+    // Setup view toggle
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+        this.renderProductsPage();
+      });
+    });
+
+    // Setup pagination
+    document.querySelectorAll('.page-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const page = parseInt(e.target.dataset.page);
+        if (page && page !== this.currentProductPage) {
+          this.currentProductPage = page;
+          this.renderProductsPage();
+        }
+      });
+    });
+
+    // Setup quick view buttons
+    document.querySelectorAll('.quick-view-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const productId = e.target.dataset.id;
+        this.showQuickView(productId);
+      });
+    });
+
+    // Setup favorite buttons
+    document.querySelectorAll('.favorite-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const productId = e.target.dataset.id;
+        this.toggleFavorite(productId, e.target);
+      });
+    });
+  }
+
+  showQuickView(productId) {
+    const product = this.products.find(p => p._id === productId);
+    if (!product) return;
+
+    // Create quick view modal
+    const modal = document.createElement('div');
+    modal.className = 'modal quick-view-modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="quick-view-content">
+          <div class="quick-view-image">
+            <img src="${product.imageUrl || 'placeholder1.jpg'}" alt="${product.name}">
+          </div>
+          <div class="quick-view-info">
+            <h2>${product.name}</h2>
+            <p class="price">$${product.price.toFixed(2)}</p>
+            <p class="description">${product.description}</p>
+            <div class="quick-view-actions">
+              <a href="product.html?id=${product._id}" class="btn btn-primary">View Full Details</a>
+              <button class="btn btn-outline review-btn" data-id="${product._id}">Write Review</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Setup modal close
+    modal.querySelector('.close').addEventListener('click', () => {
+      document.body.removeChild(modal);
+    });
+
+    // Setup review button
+    modal.querySelector('.review-btn').addEventListener('click', (e) => {
+      document.body.removeChild(modal);
+      this.showReviewForm(productId);
+    });
+  }
+
+  toggleFavorite(productId, button) {
+    // Toggle favorite state (this would typically involve an API call)
+    const icon = button.querySelector('i');
+    const isFavorited = icon.classList.contains('favorited');
+
+    if (isFavorited) {
+      icon.classList.remove('favorited');
+      button.title = 'Add to favorites';
+      this.addLiveUpdate('Removed from favorites', 'info');
+    } else {
+      icon.classList.add('favorited');
+      button.title = 'Remove from favorites';
+      this.addLiveUpdate('Added to favorites', 'success');
+    }
   }
 }
 

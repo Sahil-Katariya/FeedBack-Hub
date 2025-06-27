@@ -54,6 +54,8 @@ const reviewSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 1, max: 5 },
   content: { type: String, required: true },
   source: { type: String, required: true },
+  helpfulCount: { type: Number, default: 0 },
+  verified: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

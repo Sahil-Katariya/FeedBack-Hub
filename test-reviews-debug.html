@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            display: inline-block;
+            margin: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .api-response {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .dom-elements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .element-check {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .element-found { background: #d4edda; }
+        .element-missing { background: #f8d7da; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Reviews Page Debug Test</h1>
+        <p>This test helps identify issues with the reviews page functionality.</p>
+        
+        <div class="test-section">
+            <h3>1. Server Connection Test</h3>
+            <p>Status: <span id="server-status" class="status info">Testing...</span></p>
+            <button onclick="testServerConnection()">Test Server</button>
+            <div id="server-response" class="api-response"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. API Endpoint Test</h3>
+            <p>Status: <span id="api-status" class="status info">Ready</span></p>
+            <button onclick="testReviewsAPI()">Test Reviews API</button>
+            <div id="api-response" class="api-response"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. DOM Elements Check</h3>
+            <p>Status: <span id="dom-status" class="status info">Ready</span></p>
+            <button onclick="checkDOMElements()">Check DOM Elements</button>
+            <div id="dom-results" class="dom-elements"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>4. Reviews Page Simulation</h3>
+            <p>Status: <span id="simulation-status" class="status info">Ready</span></p>
+            <button onclick="simulateReviewsPage()">Simulate Reviews Page</button>
+            <button onclick="openReviewsPage()">Open Reviews Page</button>
+            <div id="simulation-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>5. Console Log</h3>
+            <div id="console-log" class="log">Debug output will appear here...</div>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+    </div>
+
+    <script>
+        // Console capture
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        const logElement = document.getElementById('console-log');
+        
+        function addToLog(message, type = 'log') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.style.color = type === 'error' ? 'red' : type === 'warn' ? 'orange' : 'black';
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            logElement.appendChild(logEntry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToLog(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToLog(args.join(' '), 'error');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            addToLog(args.join(' '), 'warn');
+        };
+
+        // Test functions
+        async function testServerConnection() {
+            const statusEl = document.getElementById('server-status');
+            const responseEl = document.getElementById('server-response');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Testing server connection...');
+                const response = await fetch('http://localhost:5000/api/products');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    statusEl.textContent = 'Connected';
+                    statusEl.className = 'status success';
+                    responseEl.textContent = `Server is online. Found ${data.length} products.`;
+                    console.log('Server connection successful');
+                } else {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+                responseEl.textContent = `Server connection failed: ${error.message}`;
+                console.error('Server connection failed:', error);
+            }
+        }
+
+        async function testReviewsAPI() {
+            const statusEl = document.getElementById('api-status');
+            const responseEl = document.getElementById('api-response');
+            
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Testing reviews API...');
+                const response = await fetch('http://localhost:5000/api/reviews');
+                
+                console.log('API Response status:', response.status);
+                console.log('API Response headers:', [...response.headers.entries()]);
+                
+                if (response.ok) {
+                    const reviews = await response.json();
+                    statusEl.textContent = 'Working';
+                    statusEl.className = 'status success';
+                    
+                    responseEl.innerHTML = `
+                        <strong>API Response:</strong><br>
+                        Status: ${response.status}<br>
+                        Reviews count: ${reviews.length}<br>
+                        Sample review: ${JSON.stringify(reviews[0], null, 2)}
+                    `;
+                    
+                    console.log('Reviews API working:', reviews.length, 'reviews');
+                    console.log('Sample review:', reviews[0]);
+                } else {
+                    const errorText = await response.text();
+                    throw new Error(`API returned ${response.status}: ${errorText}`);
+                }
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+                responseEl.textContent = `API test failed: ${error.message}`;
+                console.error('Reviews API test failed:', error);
+            }
+        }
+
+        function checkDOMElements() {
+            const statusEl = document.getElementById('dom-status');
+            const resultsEl = document.getElementById('dom-results');
+            
+            console.log('Checking DOM elements...');
+            
+            const requiredElements = [
+                'reviews-grid',
+                'review-search',
+                'search-btn',
+                'product-filter',
+                'source-filter',
+                'rating-filter',
+                'sort-by',
+                'view-toggle',
+                'load-more-reviews',
+                'featured-reviews',
+                'total-reviews',
+                'avg-rating',
+                'total-products',
+                'total-sources',
+                'reviews-count'
+            ];
+            
+            let foundElements = 0;
+            let missingElements = [];
+            
+            resultsEl.innerHTML = '';
+            
+            requiredElements.forEach(id => {
+                const element = document.getElementById(id);
+                const elementDiv = document.createElement('div');
+                elementDiv.className = 'element-check';
+                
+                if (element) {
+                    foundElements++;
+                    elementDiv.className += ' element-found';
+                    elementDiv.textContent = `✅ ${id}`;
+                    console.log(`Found element: ${id}`);
+                } else {
+                    missingElements.push(id);
+                    elementDiv.className += ' element-missing';
+                    elementDiv.textContent = `❌ ${id}`;
+                    console.log(`Missing element: ${id}`);
+                }
+                
+                resultsEl.appendChild(elementDiv);
+            });
+            
+            if (missingElements.length === 0) {
+                statusEl.textContent = 'All Elements Found';
+                statusEl.className = 'status success';
+            } else {
+                statusEl.textContent = `${foundElements}/${requiredElements.length} Found`;
+                statusEl.className = 'status warning';
+                console.warn('Missing elements:', missingElements);
+            }
+        }
+
+        async function simulateReviewsPage() {
+            const statusEl = document.getElementById('simulation-status');
+            const resultsEl = document.getElementById('simulation-results');
+            
+            statusEl.textContent = 'Simulating...';
+            statusEl.className = 'status info';
+            
+            try {
+                console.log('Simulating reviews page initialization...');
+                
+                // Test API call
+                const response = await fetch('http://localhost:5000/api/reviews');
+                if (!response.ok) {
+                    throw new Error(`API failed: ${response.status}`);
+                }
+                
+                const reviews = await response.json();
+                console.log('Reviews loaded:', reviews.length);
+                
+                // Test data processing
+                const uniqueProducts = [...new Set(
+                    reviews
+                        .filter(review => review.productId && review.productId.name)
+                        .map(review => review.productId.name)
+                )];
+                
+                console.log('Unique products:', uniqueProducts.length);
+                
+                statusEl.textContent = 'Success';
+                statusEl.className = 'status success';
+                resultsEl.innerHTML = `
+                    <div class="success">
+                        ✅ Simulation successful<br>
+                        📊 Reviews: ${reviews.length}<br>
+                        📦 Products: ${uniqueProducts.length}<br>
+                        🔧 Data structure: Valid
+                    </div>
+                `;
+                
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'status error';
+                resultsEl.innerHTML = `
+                    <div class="error">
+                        ❌ Simulation failed: ${error.message}
+                    </div>
+                `;
+                console.error('Simulation failed:', error);
+            }
+        }
+
+        function openReviewsPage() {
+            window.open('reviews.html', '_blank');
+        }
+
+        function clearLog() {
+            logElement.innerHTML = 'Debug output will appear here...';
+        }
+
+        // Auto-run server test on load
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Reviews Debug Test Page Loaded');
+            testServerConnection();
+        });
+    </script>
+</body>
+</html>

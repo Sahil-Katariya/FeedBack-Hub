@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="css/profile-menu.css">
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/profile-enhanced.css">
     <link rel="icon" href="ico.ico" type="image/x-icon" />
 
 </head>
@@ -64,47 +65,199 @@
             <div class="profile-main">
                 <section class="profile-header" aria-labelledby="profile-title">
                     <div class="profile-info">
-                        <img src="profile photo.svg" alt="" class="profile-avatar" width="207" height="162">
+                        <div class="avatar-container">
+                            <img src="profile photo.svg" alt="" class="profile-avatar" width="207" height="162" id="main-profile-avatar">
+                            <div class="avatar-overlay">
+                                <button class="change-avatar-btn" id="change-avatar-btn">
+                                    <i class="icon-camera"></i>
+                                    Change Photo
+                                </button>
+                            </div>
+                            <div class="online-status" id="online-status">
+                                <span class="status-indicator online"></span>
+                                <span class="status-text">Online</span>
+                            </div>
+                        </div>
                         <div class="profile-details">
                             <h1 id="profile-title" class="profile-name">Loading...</h1>
                             <p class="profile-role">Customer</p>
-                            <p class="profile-location">Loading...</p>
+                            <p class="profile-location">
+                                <i class="icon-location"></i>
+                                <span id="location-text">Loading...</span>
+                            </p>
+                            <p class="profile-bio" id="profile-bio">
+                                <i class="icon-info"></i>
+                                <span id="bio-text">No bio available</span>
+                            </p>
+                            <div class="profile-stats-mini">
+                                <span class="mini-stat">
+                                    <strong id="mini-reviews">0</strong> Reviews
+                                </span>
+                                <span class="mini-stat">
+                                    <strong id="mini-rating">0.0</strong> Avg Rating
+                                </span>
+                                <span class="mini-stat">
+                                    <strong id="mini-joined">Member since</strong> <span id="join-date">2024</span>
+                                </span>
+                            </div>
                         </div>
-                        <button class="edit-profile-btn" aria-label="Edit profile">
-                            <img src="edit.svg" alt="edit-btn">
-                        </button>
+                        <div class="profile-actions">
+                            <button class="edit-profile-btn" aria-label="Edit profile">
+                                <img src="edit.svg" alt="edit-btn">
+                                <span>Edit Profile</span>
+                            </button>
+                            <button class="share-profile-btn" id="share-profile-btn">
+                                <i class="icon-share"></i>
+                                <span>Share</span>
+                            </button>
+                        </div>
                     </div>
                 </section>
 
                 <section class="dashboard-stats-section" aria-labelledby="stats-title">
-                    <h2 id="stats-title">Dashboard Overview</h2>
+                    <div class="section-header">
+                        <h2 id="stats-title">Dashboard Overview</h2>
+                        <div class="section-controls">
+                            <button class="refresh-btn" id="refresh-stats-btn" title="Refresh Statistics">
+                                <i class="icon-refresh"></i>
+                            </button>
+                            <select class="time-filter" id="stats-time-filter">
+                                <option value="all">All Time</option>
+                                <option value="month">This Month</option>
+                                <option value="week">This Week</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="stats-grid">
-                        <div class="stat-card">
-                            <h3>Total Reviews</h3>
-                            <p id="total-reviews">0</p>
+                        <div class="stat-card clickable" data-stat="reviews">
+                            <div class="stat-icon">
+                                <i class="icon-reviews"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Total Reviews</h3>
+                                <p class="stat-value" id="total-reviews">
+                                    <span class="number">0</span>
+                                    <span class="trend" id="reviews-trend"></span>
+                                </p>
+                                <small class="stat-subtitle">Your contributions</small>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <h3>Average Rating</h3>
-                            <p id="avg-rating">0.0</p>
+                        <div class="stat-card clickable" data-stat="rating">
+                            <div class="stat-icon">
+                                <i class="icon-star"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Average Rating</h3>
+                                <p class="stat-value" id="avg-rating">
+                                    <span class="number">0.0</span>
+                                    <span class="stars" id="rating-stars"></span>
+                                </p>
+                                <small class="stat-subtitle">Community average</small>
+                            </div>
                         </div>
-                        <div class="stat-card">
-                            <h3>Products</h3>
-                            <p id="total-products">0</p>
+                        <div class="stat-card clickable" data-stat="products">
+                            <div class="stat-icon">
+                                <i class="icon-products"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Products</h3>
+                                <p class="stat-value" id="total-products">
+                                    <span class="number">0</span>
+                                    <span class="trend" id="products-trend"></span>
+                                </p>
+                                <small class="stat-subtitle">Available to review</small>
+                            </div>
+                        </div>
+                        <div class="stat-card clickable" data-stat="engagement">
+                            <div class="stat-icon">
+                                <i class="icon-engagement"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Engagement</h3>
+                                <p class="stat-value" id="engagement-score">
+                                    <span class="number">0</span>
+                                    <span class="percentage">%</span>
+                                </p>
+                                <small class="stat-subtitle">Activity level</small>
+                            </div>
                         </div>
                     </div>
                 </section>
 
                 <section class="products-section" aria-labelledby="products-title">
-                    <h2 id="products-title">Available Products</h2>
+                    <div class="section-header">
+                        <h2 id="products-title">Available Products</h2>
+                        <div class="section-controls">
+                            <div class="search-container">
+                                <input type="text" id="product-search" placeholder="Search products..." class="search-input">
+                                <i class="icon-search search-icon"></i>
+                            </div>
+                            <select class="filter-select" id="product-category-filter">
+                                <option value="all">All Categories</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="software">Software</option>
+                                <option value="books">Books</option>
+                                <option value="home">Home & Garden</option>
+                            </select>
+                            <select class="sort-select" id="product-sort">
+                                <option value="newest">Newest First</option>
+                                <option value="oldest">Oldest First</option>
+                                <option value="name">Name A-Z</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="products-stats">
+                        <span id="products-count">0 products found</span>
+                        <div class="view-toggle">
+                            <button class="view-btn active" data-view="grid" title="Grid View">
+                                <i class="icon-grid"></i>
+                            </button>
+                            <button class="view-btn" data-view="list" title="List View">
+                                <i class="icon-list"></i>
+                            </button>
+                        </div>
+                    </div>
                     <div id="products-container" class="products-grid">
                         <!-- Products will be loaded here -->
+                    </div>
+                    <div class="products-pagination" id="products-pagination">
+                        <!-- Pagination will be added here -->
                     </div>
                 </section>
 
                 <section class="reviews-section" aria-labelledby="reviews-title">
-                    <h2 id="reviews-title">Recent Reviews</h2>
+                    <div class="section-header">
+                        <h2 id="reviews-title">My Reviews</h2>
+                        <div class="section-controls">
+                            <div class="review-tabs">
+                                <button class="tab-btn active" data-tab="my-reviews">My Reviews</button>
+                                <button class="tab-btn" data-tab="all-reviews">All Reviews</button>
+                                <button class="tab-btn" data-tab="recent">Recent</button>
+                            </div>
+                            <select class="filter-select" id="review-rating-filter">
+                                <option value="all">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="reviews-stats">
+                        <span id="reviews-count">0 reviews found</span>
+                        <button class="add-review-btn" id="quick-add-review">
+                            <i class="icon-plus"></i>
+                            Add Review
+                        </button>
+                    </div>
                     <div id="reviews-container" class="reviews-list">
                         <!-- Reviews will be loaded here -->
+                    </div>
+                    <div class="reviews-pagination" id="reviews-pagination">
+                        <!-- Pagination will be added here -->
                     </div>
                 </section>
                 <section class="badges-section" aria-labelledby="badges-title">
@@ -145,15 +298,27 @@
             <aside class="profile-sidebar">
                 <section class="track-rank" aria-labelledby="track-title">
                     <h2 id="track-title">Feedback Track</h2>
+                    <div class="progress-container">
+                        <div class="level-indicator">
+                            <span class="current-level" id="current-level">Level 1</span>
+                            <span class="next-level" id="next-level">Level 2</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="progress-text">0 / 100 XP</span>
+                    </div>
                     <img src="level.png" alt="Track progress visualization" width="177" height="132">
                     <div class="track-stats">
-                        <div class="stat-item">
+                        <div class="stat-item clickable" data-tooltip="Total badges earned">
                             <p class="stat-value" id="user-badges">1</p>
                             <p class="stat-label">Badges</p>
+                            <div class="stat-trend" id="badges-trend">+0</div>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item clickable" data-tooltip="Your feedback score">
                             <p class="stat-value" id="user-score">500</p>
                             <p class="stat-label">Score</p>
+                            <div class="stat-trend" id="score-trend">+0</div>
                         </div>
                     </div>
                 </section>
@@ -161,17 +326,26 @@
                 <section class="connections" aria-labelledby="connections-title">
                     <h2 id="connections-title">Connections</h2>
                     <div class="connection-stats">
-                        <div class="stat-item">
+                        <div class="stat-item clickable" data-action="view-followers">
                             <p class="stat-value" id="user-followers">0</p>
                             <p class="stat-label">Followers</p>
+                            <div class="stat-change" id="followers-change">+0</div>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item clickable" data-action="view-following">
                             <p class="stat-value" id="user-following">0</p>
                             <p class="stat-label">Following</p>
+                            <div class="stat-change" id="following-change">+0</div>
                         </div>
-                        <div class="stat-item">
+                        <div class="stat-item clickable" data-action="view-reviews">
                             <p class="stat-value" id="user-reviews-count">1</p>
                             <p class="stat-label">Reviews</p>
+                            <div class="stat-change" id="reviews-change">+0</div>
+                        </div>
+                    </div>
+                    <div class="recent-activity" id="recent-activity">
+                        <h4>Recent Activity</h4>
+                        <div class="activity-list" id="activity-list">
+                            <!-- Recent activities will be loaded here -->
                         </div>
                     </div>
                 </section>
@@ -179,18 +353,45 @@
                 <section class="quick-actions" aria-labelledby="actions-title">
                     <h2 id="actions-title">Quick Actions</h2>
                     <div class="action-buttons">
-                        <button class="action-btn" id="add-product-btn">
+                        <button class="action-btn primary" id="add-product-btn">
                             <i class="icon-plus"></i>
                             <span>Add Product</span>
+                            <div class="btn-tooltip">Add a new product for review</div>
                         </button>
                         <button class="action-btn" id="view-notifications-btn">
                             <i class="icon-notifications"></i>
                             <span>Notifications</span>
+                            <div class="notification-badge" id="notification-badge">0</div>
+                            <div class="btn-tooltip">View your notifications</div>
                         </button>
                         <button class="action-btn" id="settings-btn">
                             <i class="icon-settings"></i>
                             <span>Settings</span>
+                            <div class="btn-tooltip">Manage your account</div>
                         </button>
+                        <button class="action-btn" id="export-data-btn">
+                            <i class="icon-download"></i>
+                            <span>Export Data</span>
+                            <div class="btn-tooltip">Download your data</div>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Real-time Updates Section -->
+                <section class="live-updates" aria-labelledby="updates-title">
+                    <h2 id="updates-title">Live Updates</h2>
+                    <div class="updates-container" id="updates-container">
+                        <div class="update-item">
+                            <i class="icon-info"></i>
+                            <span>Welcome to your profile!</span>
+                        </div>
+                    </div>
+                    <div class="auto-refresh">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="auto-refresh-toggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span>Auto-refresh</span>
                     </div>
                 </section>
             </aside>

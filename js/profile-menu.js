@@ -5,10 +5,8 @@ class ProfileMenu {
   }
 
   init() {
-    console.log('🚀 ProfileMenu: Initializing...');
     this.setupEventListeners();
     this.loadUserInfo();
-    console.log('✅ ProfileMenu: Initialization complete');
   }
 
   setupEventListeners() {
@@ -61,50 +59,29 @@ class ProfileMenu {
 
   async loadUserInfo() {
     try {
-      console.log('🔄 ProfileMenu: Loading user info...');
       const token = localStorage.getItem('token');
-      if (!token) {
-        console.log('❌ ProfileMenu: No token found');
-        return;
-      }
+      if (!token) return;
 
-      console.log('✅ ProfileMenu: Token found, fetching user data...');
       const user = await api.getUser();
-      console.log('✅ ProfileMenu: User data received:', user);
       this.updateUserInfo(user);
     } catch (error) {
-      console.error('❌ ProfileMenu: Error loading user info:', error);
+      console.error('Error loading user info:', error);
     }
   }
 
   updateUserInfo(user) {
-    console.log('🎨 ProfileMenu: Updating user info display...', user);
-
     const dropdownName = document.getElementById('dropdown-user-name');
     const dropdownEmail = document.getElementById('dropdown-user-email');
     const profileAvatar = document.getElementById('profile-avatar');
 
     if (dropdownName) {
-      const fullName = `${user.firstName} ${user.lastName}`;
-      dropdownName.textContent = fullName;
-      console.log('✅ ProfileMenu: Dropdown name set to:', fullName);
-    } else {
-      console.log('❌ ProfileMenu: Dropdown name element not found');
+      dropdownName.textContent = `${user.firstName} ${user.lastName}`;
     }
-
     if (dropdownEmail) {
       dropdownEmail.textContent = user.email;
-      console.log('✅ ProfileMenu: Dropdown email set to:', user.email);
-    } else {
-      console.log('❌ ProfileMenu: Dropdown email element not found');
     }
-
-    if (profileAvatar) {
-      const avatarSrc = user.profilePicture || 'profile photo.svg';
-      profileAvatar.src = avatarSrc;
-      console.log('✅ ProfileMenu: Profile avatar set to:', avatarSrc);
-    } else {
-      console.log('❌ ProfileMenu: Profile avatar element not found');
+    if (profileAvatar && user.profilePicture) {
+      profileAvatar.src = user.profilePicture;
     }
   }
 
