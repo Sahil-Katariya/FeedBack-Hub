@@ -81,6 +81,20 @@ class ProfileMenu {
     if (profileAvatar && user.profilePicture) {
       profileAvatar.src = user.profilePicture;
     }
+
+    // Show/hide admin menu items based on user role
+    const adminItems = document.querySelectorAll('.admin-only');
+    if (user.role === 'admin') {
+      document.body.classList.add('admin');
+      adminItems.forEach(item => {
+        item.style.display = item.classList.contains('profile-dropdown-item') ? 'flex' : 'block';
+      });
+    } else {
+      document.body.classList.remove('admin');
+      adminItems.forEach(item => {
+        item.style.display = 'none';
+      });
+    }
   }
 
   toggleDropdown() {

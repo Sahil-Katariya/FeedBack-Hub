@@ -11,6 +11,9 @@ A comprehensive platform for product reviews and feedback aggregation.
 - **AI Product Review Aggregator**: Advanced AI-powered analysis of product reviews
 - **Profile Settings**: Edit profile information, change password, and upload avatar
 - **Profile Menu**: Dropdown menu with quick access to dashboard, profile, settings
+- **Admin Panel**: Comprehensive administrative interface for managing users, products, and reviews
+- **Role-Based Access**: User and admin roles with appropriate permissions
+- **System Analytics**: Detailed analytics and reporting for administrators
 - **Responsive Design**: Works on desktop and mobile devices
 
 ## Technologies Used
@@ -54,12 +57,18 @@ NODE_ENV=development
 node scripts/seedData.js
 ```
 
-6. Start the development server:
+6. Create an admin user (optional):
+```bash
+npm run create-admin
+```
+Default admin credentials: `admin@feedbackhub.com` / `admin123`
+
+7. Start the development server:
 ```bash
 npm run dev
 ```
 
-7. Open your browser and navigate to `http://localhost:5000`
+8. Open your browser and navigate to `http://localhost:5000`
 
 ## Usage
 
@@ -71,6 +80,11 @@ npm run dev
 7. **Profile Menu**: Access quick actions via the profile icon dropdown
 8. **Submit Reviews**: Add reviews for products you've used
 9. **View Reviews**: Read reviews from other users
+10. **Admin Panel**: Access comprehensive admin functionality (admin users only)
+    - User management and role assignment
+    - Product management and moderation
+    - Review management and verification
+    - System analytics and reporting
 
 ## API Endpoints
 
@@ -104,6 +118,19 @@ npm run dev
 ### AI Product Analysis
 - `GET /api/products/:id/analytics` - Get comprehensive product analytics and review insights
 
+### Admin (Admin Role Required)
+- `GET /api/admin/stats` - Get admin dashboard statistics
+- `GET /api/admin/users` - Get all users with pagination and filtering
+- `PUT /api/admin/users/:id` - Update user role and status
+- `DELETE /api/admin/users/:id` - Delete user account
+- `GET /api/admin/products` - Get all products with admin details
+- `PUT /api/admin/products/:id` - Update product information
+- `DELETE /api/admin/products/:id` - Delete product
+- `GET /api/admin/reviews` - Get all reviews with admin details
+- `PUT /api/admin/reviews/:id` - Update review verification status
+- `DELETE /api/admin/reviews/:id` - Delete review
+- `GET /api/admin/analytics` - Get system analytics and trends
+
 ## Project Structure
 
 ```
@@ -117,18 +144,48 @@ FeedBack Hub v1.1.0/
 ├── signup.html           # Registration page
 ├── profile.html          # Unified profile page with dashboard functionality
 ├── product.html          # AI-powered product review analysis page
+├── admin.html            # Admin panel for system management
 ├── css/
 │   ├── dashboard.css     # Dashboard-specific styles
 │   ├── profile-menu.css  # Profile menu and settings styles
-│   └── product.css       # Product page and AI analysis styles
+│   ├── product.css       # Product page and AI analysis styles
+│   └── admin.css         # Admin panel styles
 ├── js/
 │   ├── api.js           # API communication functions
 │   ├── profile-menu.js  # Profile dropdown menu and settings
 │   ├── profile.js       # Unified profile page with dashboard functionality
 │   ├── ai-analysis.js   # AI review analysis engine
-│   └── product.js       # Product page functionality
+│   ├── product.js       # Product page functionality
+│   └── admin.js         # Admin panel functionality
 ├── scripts/
-│   └── seedData.js      # Database seeding script
+│   ├── seedData.js      # Database seeding script
+│   └── createAdmin.js   # Admin user creation script
 └── images/              # Static images and assets
 ```
+
+## Admin Panel
+
+The FeedbackHub admin panel provides comprehensive administrative functionality for managing the platform.
+
+### Admin Features
+
+- **Dashboard Overview**: System statistics and recent activity
+- **User Management**: View, edit, and manage user accounts and roles
+- **Product Management**: Add, edit, and remove products
+- **Review Management**: Moderate and verify user reviews
+- **Analytics**: View system analytics and trends
+
+### Admin Access
+
+1. **Create Admin User**: Run `npm run create-admin` to create an admin account
+2. **Login**: Use admin credentials to log in
+3. **Access Panel**: Navigate to `/admin.html` or use the "Admin Panel" link in the profile dropdown
+
+### Default Admin Credentials
+
+- **Email**: `admin@feedbackhub.com`
+- **Password**: `admin123`
+- **⚠️ Important**: Change the password after first login
+
+For detailed admin documentation, see [ADMIN_GUIDE.md](ADMIN_GUIDE.md).
 
