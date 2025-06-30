@@ -51,6 +51,35 @@ class AdminPanel {
                 }
             });
         });
+
+        // Bulk operation form handlers
+        document.getElementById('bulk-user-action')?.addEventListener('change', (e) => {
+            const roleGroup = document.getElementById('bulk-user-role-group');
+            if (e.target.value === 'updateRole') {
+                roleGroup.style.display = 'block';
+            } else {
+                roleGroup.style.display = 'none';
+            }
+        });
+
+        document.getElementById('bulk-product-action')?.addEventListener('change', (e) => {
+            const categoryGroup = document.getElementById('bulk-product-category-group');
+            const multiplierGroup = document.getElementById('bulk-product-multiplier-group');
+
+            if (e.target.value === 'updateCategory') {
+                categoryGroup.style.display = 'block';
+                multiplierGroup.style.display = 'none';
+            } else if (e.target.value === 'updatePrice') {
+                categoryGroup.style.display = 'none';
+                multiplierGroup.style.display = 'block';
+            } else {
+                categoryGroup.style.display = 'none';
+                multiplierGroup.style.display = 'none';
+            }
+        });
+
+        // Logs refresh button
+        document.getElementById('logs-refresh-btn')?.addEventListener('click', () => this.loadLogs());
     }
 
     showSection(section) {
@@ -84,6 +113,15 @@ class AdminPanel {
                 break;
             case 'analytics':
                 this.loadAnalytics();
+                break;
+            case 'bulk-operations':
+                this.loadBulkOperations();
+                break;
+            case 'system':
+                this.loadSystemSection();
+                break;
+            case 'logs':
+                this.loadLogs();
                 break;
         }
     }
@@ -545,7 +583,184 @@ class AdminPanel {
             case 'reviews':
                 this.loadReviews();
                 break;
+            case 'logs':
+                this.loadLogs();
+                break;
         }
+    }
+
+    loadBulkOperations() {
+        // Bulk operations section is static, no loading needed
+        console.log('Bulk operations section loaded');
+    }
+
+    async loadSystemSection() {
+        try {
+            await Promise.all([
+                this.loadSystemHealth(),
+                this.loadSystemSettings()
+            ]);
+        } catch (error) {
+            console.error('Error loading system section:', error);
+            this.showError('Failed to load system information');
+        }
+    }
+
+    async loadSystemHealth() {
+        try {
+            const response = await fetch('/api/admin/health', {
+                headers: { 'x-auth-token': localStorage.getItem('token') }
+            });
+
+            if (!response.ok) throw new Error('Failed to load system health');
+
+            const health = await response.json();
+            this.renderSystemHealth(health);
+        } catch (error) {
+            console.error('Error loading system health:', error);
+            document.getElementById('system-health-content').innerHTML =
+                '<div class="error-message">Failed to load system health</div>';
+        }
+    }
+
+    renderSystemHealth(health) {
+        const container = document.getElementById('system-health-content');
+
+        container.innerHTML = `
+            <div class="health-grid">
+                <div class="health-item ${health.status === 'healthy' ? 'healthy' : 'error'}">
+                    <h4>System Status</h4>
+                    <div class="value">${health.status}</div>
+                </div>
+                <div class="health-item healthy">
+                    <h4>Uptime</h4>
+                    <div class="value">${Math.floor(health.uptime / 3600)}<span class="unit">hours</span></div>
+                </div>
+                <div class="health-item ${health.database?.status === 'connected' ? 'healthy' : 'error'}">
+                    <h4>Database</h4>
+                    <div class="value">${health.database?.status}</div>
+                </div>
+                <div class="health-item healthy">
+                    <h4>Response Time</h4>
+                    <div class="value">${health.database?.responseTime}</div>
+                </div>
+                <div class="health-item healthy">
+                    <h4>Memory Used</h4>
+                    <div class="value">${health.memory?.used}<span class="unit">MB</span></div>
+                </div>
+                <div class="health-item healthy">
+                    <h4>Node Version</h4>
+                    <div class="value">${health.nodeVersion}</div>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <p><strong>Last Updated:</strong> ${new Date(health.timestamp).toLocaleString()}</p>
+                <p><strong>Platform:</strong> ${health.platform}</p>
+            </div>
+        `;
+    }
+
+    async loadSystemSettings() {
+        try {
+            const response = await fetch('/api/admin/settings', {
+                headers: { 'x-auth-token': localStorage.getItem('token') }
+            });
+
+            if (!response.ok) throw new Error('Failed to load system settings');
+
+            const settings = await response.json();
+            this.renderSystemSettings(settings);
+        } catch (error) {
+            console.error('Error loading system settings:', error);
+            document.getElementById('system-settings-content').innerHTML =
+                '<div class="error-message">Failed to load system settings</div>';
+        }
+    }
+
+    renderSystemSettings(settings) {
+        const container = document.getElementById('system-settings-content');
+
+        container.innerHTML = `
+            <div class="settings-grid">
+                ${Object.entries(settings).map(([key, value]) => `
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h4>${this.formatSettingName(key)}</h4>
+                            <p>${this.getSettingDescription(key)}</p>
+                        </div>
+                        <div class="setting-value ${typeof value === 'boolean' ? 'boolean ' + value : ''}">
+                            ${Array.isArray(value) ? value.join(', ') : String(value)}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+
+    formatSettingName(key) {
+        return key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+    }
+
+    getSettingDescription(key) {
+        const descriptions = {
+            siteName: 'The name of the website',
+            allowRegistration: 'Whether new users can register',
+            requireEmailVerification: 'Whether email verification is required',
+            maxReviewsPerUser: 'Maximum reviews per user',
+            minPasswordLength: 'Minimum password length',
+            sessionTimeout: 'Session timeout in hours',
+            maintenanceMode: 'Whether the site is in maintenance mode',
+            featuredCategories: 'Featured product categories',
+            systemVersion: 'Current system version'
+        };
+        return descriptions[key] || 'System setting';
+    }
+
+    async loadLogs() {
+        try {
+            const type = document.getElementById('logs-type-filter')?.value || 'all';
+            const page = this.currentPage.logs || 1;
+
+            const params = new URLSearchParams({
+                page,
+                limit: this.pageSize,
+                type
+            });
+
+            const response = await fetch(`/api/admin/logs?${params}`, {
+                headers: { 'x-auth-token': localStorage.getItem('token') }
+            });
+
+            if (!response.ok) throw new Error('Failed to load logs');
+
+            const data = await response.json();
+            this.renderLogsTable(data.logs);
+            this.renderPagination('logs', data.page, data.totalPages);
+        } catch (error) {
+            console.error('Error loading logs:', error);
+            this.showError('Failed to load activity logs');
+        }
+    }
+
+    renderLogsTable(logs) {
+        const tbody = document.getElementById('logs-table-body');
+
+        if (!logs || logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state">No logs found</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = logs.map(log => `
+            <tr>
+                <td class="timestamp-cell">${this.formatDate(log.timestamp)}</td>
+                <td>
+                    <span class="log-type-badge log-type-${log.type.replace('_', '-')}">${log.type}</span>
+                </td>
+                <td>${log.message}</td>
+                <td class="id-cell">${log.userId || 'System'}</td>
+                <td>${log.ip || 'N/A'}</td>
+            </tr>
+        `).join('');
     }
 
     // Utility functions
@@ -777,4 +992,189 @@ function deleteReview(reviewId, productName) {
     };
 
     showModal('confirm-modal');
+}
+
+// Bulk Operations Functions
+async function executeBulkUserOperation() {
+    try {
+        const userIds = document.getElementById('bulk-user-ids').value
+            .split(',')
+            .map(id => id.trim())
+            .filter(id => id);
+
+        if (userIds.length === 0) {
+            alert('Please enter at least one user ID');
+            return;
+        }
+
+        const action = document.getElementById('bulk-user-action').value;
+        const data = {};
+
+        if (action === 'updateRole') {
+            data.role = document.getElementById('bulk-user-role').value;
+        }
+
+        const confirmed = confirm(`Are you sure you want to ${action} ${userIds.length} users?`);
+        if (!confirmed) return;
+
+        const response = await fetch('/api/admin/bulk/users', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': localStorage.getItem('token')
+            },
+            body: JSON.stringify({ action, userIds, data })
+        });
+
+        if (!response.ok) throw new Error('Bulk operation failed');
+
+        const result = await response.json();
+        adminPanel.showSuccess(result.message);
+
+        // Clear the form
+        document.getElementById('bulk-user-ids').value = '';
+
+        // Refresh users if on users section
+        if (adminPanel.currentSection === 'users') {
+            adminPanel.loadUsers();
+        }
+    } catch (error) {
+        console.error('Bulk user operation error:', error);
+        adminPanel.showError('Failed to execute bulk user operation');
+    }
+}
+
+async function executeBulkProductOperation() {
+    try {
+        const productIds = document.getElementById('bulk-product-ids').value
+            .split(',')
+            .map(id => id.trim())
+            .filter(id => id);
+
+        if (productIds.length === 0) {
+            alert('Please enter at least one product ID');
+            return;
+        }
+
+        const action = document.getElementById('bulk-product-action').value;
+        const data = {};
+
+        if (action === 'updateCategory') {
+            data.category = document.getElementById('bulk-product-category').value;
+            if (!data.category) {
+                alert('Please enter a category');
+                return;
+            }
+        } else if (action === 'updatePrice') {
+            data.multiplier = parseFloat(document.getElementById('bulk-product-multiplier').value);
+            if (isNaN(data.multiplier) || data.multiplier <= 0) {
+                alert('Please enter a valid price multiplier');
+                return;
+            }
+        }
+
+        const confirmed = confirm(`Are you sure you want to ${action} ${productIds.length} products?`);
+        if (!confirmed) return;
+
+        const response = await fetch('/api/admin/bulk/products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': localStorage.getItem('token')
+            },
+            body: JSON.stringify({ action, productIds, data })
+        });
+
+        if (!response.ok) throw new Error('Bulk operation failed');
+
+        const result = await response.json();
+        adminPanel.showSuccess(result.message);
+
+        // Clear the form
+        document.getElementById('bulk-product-ids').value = '';
+
+        // Refresh products if on products section
+        if (adminPanel.currentSection === 'products') {
+            adminPanel.loadProducts();
+        }
+    } catch (error) {
+        console.error('Bulk product operation error:', error);
+        adminPanel.showError('Failed to execute bulk product operation');
+    }
+}
+
+async function executeBulkReviewOperation() {
+    try {
+        const reviewIds = document.getElementById('bulk-review-ids').value
+            .split(',')
+            .map(id => id.trim())
+            .filter(id => id);
+
+        if (reviewIds.length === 0) {
+            alert('Please enter at least one review ID');
+            return;
+        }
+
+        const action = document.getElementById('bulk-review-action').value;
+
+        const confirmed = confirm(`Are you sure you want to ${action} ${reviewIds.length} reviews?`);
+        if (!confirmed) return;
+
+        const response = await fetch('/api/admin/bulk/reviews', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-auth-token': localStorage.getItem('token')
+            },
+            body: JSON.stringify({ action, reviewIds })
+        });
+
+        if (!response.ok) throw new Error('Bulk operation failed');
+
+        const result = await response.json();
+        adminPanel.showSuccess(result.message);
+
+        // Clear the form
+        document.getElementById('bulk-review-ids').value = '';
+
+        // Refresh reviews if on reviews section
+        if (adminPanel.currentSection === 'reviews') {
+            adminPanel.loadReviews();
+        }
+    } catch (error) {
+        console.error('Bulk review operation error:', error);
+        adminPanel.showError('Failed to execute bulk review operation');
+    }
+}
+
+// System Functions
+async function refreshSystemHealth() {
+    if (adminPanel) {
+        await adminPanel.loadSystemHealth();
+    }
+}
+
+async function exportData(type, format) {
+    try {
+        const response = await fetch(`/api/admin/export/${type}?format=${format}`, {
+            headers: { 'x-auth-token': localStorage.getItem('token') }
+        });
+
+        if (!response.ok) throw new Error('Export failed');
+
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${type}_export_${new Date().toISOString().split('T')[0]}.${format}`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+
+        adminPanel.showSuccess(`${type} data exported successfully`);
+    } catch (error) {
+        console.error('Export error:', error);
+        adminPanel.showError(`Failed to export ${type} data`);
+    }
 }

@@ -105,6 +105,18 @@
                             <i class="fas fa-chart-bar"></i>
                             <span>Analytics</span>
                         </button>
+                        <button class="admin-nav-item" data-section="bulk-operations">
+                            <i class="fas fa-tasks"></i>
+                            <span>Bulk Operations</span>
+                        </button>
+                        <button class="admin-nav-item" data-section="system">
+                            <i class="fas fa-cogs"></i>
+                            <span>System</span>
+                        </button>
+                        <button class="admin-nav-item" data-section="logs">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Activity Logs</span>
+                        </button>
                     </nav>
                 </div>
             </aside>
@@ -203,6 +215,7 @@
                             <select id="users-role-filter" class="filter-select">
                                 <option value="">All Roles</option>
                                 <option value="user">User</option>
+                                <option value="moderator">Moderator</option>
                                 <option value="admin">Admin</option>
                             </select>
                             <select id="users-status-filter" class="filter-select">
@@ -417,6 +430,250 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Bulk Operations Section -->
+                <section id="bulk-operations-section" class="admin-section">
+                    <div class="admin-header">
+                        <h1>Bulk Operations</h1>
+                        <p>Perform bulk actions on multiple items</p>
+                    </div>
+
+                    <!-- Bulk User Operations -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>Bulk User Operations</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="bulk-operation-form">
+                                <div class="form-group">
+                                    <label for="bulk-user-ids">User IDs (comma-separated):</label>
+                                    <textarea id="bulk-user-ids" class="form-control" rows="3" placeholder="Enter user IDs separated by commas"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bulk-user-action">Action:</label>
+                                    <select id="bulk-user-action" class="form-control">
+                                        <option value="activate">Activate Users</option>
+                                        <option value="deactivate">Deactivate Users</option>
+                                        <option value="updateRole">Update Role</option>
+                                        <option value="delete">Delete Users</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="bulk-user-role-group" style="display: none;">
+                                    <label for="bulk-user-role">New Role:</label>
+                                    <select id="bulk-user-role" class="form-control">
+                                        <option value="user">User</option>
+                                        <option value="moderator">Moderator</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn-primary" onclick="executeBulkUserOperation()">
+                                    <i class="fas fa-play"></i>
+                                    Execute Operation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Product Operations -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>Bulk Product Operations</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="bulk-operation-form">
+                                <div class="form-group">
+                                    <label for="bulk-product-ids">Product IDs (comma-separated):</label>
+                                    <textarea id="bulk-product-ids" class="form-control" rows="3" placeholder="Enter product IDs separated by commas"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bulk-product-action">Action:</label>
+                                    <select id="bulk-product-action" class="form-control">
+                                        <option value="updateCategory">Update Category</option>
+                                        <option value="updatePrice">Update Price (Multiply)</option>
+                                        <option value="delete">Delete Products</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" id="bulk-product-category-group">
+                                    <label for="bulk-product-category">New Category:</label>
+                                    <input type="text" id="bulk-product-category" class="form-control" placeholder="Enter new category">
+                                </div>
+                                <div class="form-group" id="bulk-product-multiplier-group" style="display: none;">
+                                    <label for="bulk-product-multiplier">Price Multiplier:</label>
+                                    <input type="number" id="bulk-product-multiplier" class="form-control" step="0.01" value="1.0" placeholder="e.g., 1.1 for 10% increase">
+                                </div>
+                                <button type="button" class="btn-primary" onclick="executeBulkProductOperation()">
+                                    <i class="fas fa-play"></i>
+                                    Execute Operation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bulk Review Operations -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>Bulk Review Operations</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="bulk-operation-form">
+                                <div class="form-group">
+                                    <label for="bulk-review-ids">Review IDs (comma-separated):</label>
+                                    <textarea id="bulk-review-ids" class="form-control" rows="3" placeholder="Enter review IDs separated by commas"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bulk-review-action">Action:</label>
+                                    <select id="bulk-review-action" class="form-control">
+                                        <option value="verify">Verify Reviews</option>
+                                        <option value="unverify">Unverify Reviews</option>
+                                        <option value="delete">Delete Reviews</option>
+                                    </select>
+                                </div>
+                                <button type="button" class="btn-primary" onclick="executeBulkReviewOperation()">
+                                    <i class="fas fa-play"></i>
+                                    Execute Operation
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- System Section -->
+                <section id="system-section" class="admin-section">
+                    <div class="admin-header">
+                        <h1>System Management</h1>
+                        <p>System settings, health monitoring, and data export</p>
+                    </div>
+
+                    <!-- System Health -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>System Health</h3>
+                            <button class="btn-secondary" onclick="refreshSystemHealth()">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+                        <div class="card-content">
+                            <div id="system-health-content">
+                                <div class="loading">Loading system health...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Export -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>Data Export</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="export-options">
+                                <div class="export-item">
+                                    <h4>Export Users</h4>
+                                    <p>Download all user data</p>
+                                    <div class="export-buttons">
+                                        <button class="btn-primary" onclick="exportData('users', 'json')">
+                                            <i class="fas fa-download"></i>
+                                            JSON
+                                        </button>
+                                        <button class="btn-secondary" onclick="exportData('users', 'csv')">
+                                            <i class="fas fa-file-csv"></i>
+                                            CSV
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="export-item">
+                                    <h4>Export Products</h4>
+                                    <p>Download all product data</p>
+                                    <div class="export-buttons">
+                                        <button class="btn-primary" onclick="exportData('products', 'json')">
+                                            <i class="fas fa-download"></i>
+                                            JSON
+                                        </button>
+                                        <button class="btn-secondary" onclick="exportData('products', 'csv')">
+                                            <i class="fas fa-file-csv"></i>
+                                            CSV
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="export-item">
+                                    <h4>Export Reviews</h4>
+                                    <p>Download all review data</p>
+                                    <div class="export-buttons">
+                                        <button class="btn-primary" onclick="exportData('reviews', 'json')">
+                                            <i class="fas fa-download"></i>
+                                            JSON
+                                        </button>
+                                        <button class="btn-secondary" onclick="exportData('reviews', 'csv')">
+                                            <i class="fas fa-file-csv"></i>
+                                            CSV
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- System Settings -->
+                    <div class="admin-card">
+                        <div class="card-header">
+                            <h3>System Settings</h3>
+                        </div>
+                        <div class="card-content">
+                            <div id="system-settings-content">
+                                <div class="loading">Loading system settings...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Activity Logs Section -->
+                <section id="logs-section" class="admin-section">
+                    <div class="admin-header">
+                        <h1>Activity Logs</h1>
+                        <p>Monitor system activity and user actions</p>
+                    </div>
+
+                    <!-- Log Controls -->
+                    <div class="admin-controls">
+                        <div class="search-filters">
+                            <select id="logs-type-filter" class="filter-select">
+                                <option value="all">All Types</option>
+                                <option value="user_login">User Login</option>
+                                <option value="admin_action">Admin Action</option>
+                                <option value="system_error">System Error</option>
+                            </select>
+                            <button id="logs-refresh-btn" class="btn-primary">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Activity Logs Table -->
+                    <div class="admin-card">
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="admin-table" id="logs-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Timestamp</th>
+                                            <th>Type</th>
+                                            <th>Message</th>
+                                            <th>User ID</th>
+                                            <th>IP Address</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="logs-table-body">
+                                        <tr>
+                                            <td colspan="5" class="loading">Loading activity logs...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="pagination" id="logs-pagination"></div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
 
@@ -437,6 +694,7 @@
                             <label for="edit-user-role">Role:</label>
                             <select id="edit-user-role" class="form-control">
                                 <option value="user">User</option>
+                                <option value="moderator">Moderator</option>
                                 <option value="admin">Admin</option>
                             </select>
                         </div>
@@ -526,12 +784,35 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('token');
             if (!token) {
-                alert('Please log in to access the admin panel.');
-                window.location.href = 'login.html';
+                showLoginPrompt();
                 return;
             }
 
             try {
+                // First verify the token is valid
+                const userResponse = await fetch('/api/auth/me', {
+                    headers: {
+                        'x-auth-token': token
+                    }
+                });
+
+                if (!userResponse.ok) {
+                    console.log('Token validation failed');
+                    localStorage.removeItem('token');
+                    showLoginPrompt();
+                    return;
+                }
+
+                const userData = await userResponse.json();
+                console.log('User data:', userData);
+
+                // Check if user has admin or moderator role
+                if (userData.user.role !== 'admin' && userData.user.role !== 'moderator') {
+                    alert('Access denied. Admin or moderator privileges required.');
+                    window.location.href = 'profile.html';
+                    return;
+                }
+
                 // Verify admin access by trying to fetch admin stats
                 const response = await fetch('/api/admin/stats', {
                     headers: {
@@ -540,24 +821,34 @@
                 });
 
                 if (!response.ok) {
+                    console.error('Admin stats fetch failed:', response.status, response.statusText);
                     if (response.status === 403) {
                         alert('Access denied. Admin privileges required.');
                         window.location.href = 'profile.html';
+                    } else if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        showLoginPrompt();
                     } else {
-                        alert('Authentication failed. Please log in again.');
-                        window.location.href = 'login.html';
+                        alert('Failed to load admin panel. Please try again.');
+                        window.location.href = 'profile.html';
                     }
                     return;
                 }
 
                 // Initialize admin panel
+                console.log('Initializing admin panel...');
                 initializeAdminPanel();
             } catch (error) {
                 console.error('Admin access check failed:', error);
                 alert('Failed to verify admin access. Please try again.');
-                window.location.href = 'login.html';
+                showLoginPrompt();
             }
         });
+
+        function showLoginPrompt() {
+            alert('Please log in to access the admin panel.');
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 

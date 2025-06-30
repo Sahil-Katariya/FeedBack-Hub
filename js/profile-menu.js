@@ -84,7 +84,7 @@ class ProfileMenu {
 
     // Show/hide admin menu items based on user role
     const adminItems = document.querySelectorAll('.admin-only');
-    if (user.role === 'admin') {
+    if (user.role === 'admin' || user.role === 'moderator') {
       document.body.classList.add('admin');
       adminItems.forEach(item => {
         item.style.display = item.classList.contains('profile-dropdown-item') ? 'flex' : 'block';

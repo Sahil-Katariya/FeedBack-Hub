@@ -2,7 +2,18 @@
 
 ## Overview
 
-The FeedbackHub Admin Panel provides comprehensive administrative functionality for managing users, products, reviews, and system analytics. This guide covers all admin features and how to use them.
+The FeedbackHub Admin Panel provides comprehensive administrative functionality for managing users, products, reviews, system analytics, bulk operations, and system monitoring. This enhanced admin panel includes advanced features for efficient platform management.
+
+## 🆕 New Features in v1.1.0
+
+- **Enhanced Authentication**: Improved login flow with better error handling
+- **Moderator Role**: New user role with limited admin privileges
+- **Bulk Operations**: Mass actions for users, products, and reviews
+- **System Health Monitoring**: Real-time system status and performance metrics
+- **Data Export**: Export functionality for users, products, and reviews (JSON/CSV)
+- **Activity Logs**: System activity monitoring and logging
+- **Advanced Analytics**: Enhanced reporting with configurable time periods
+- **System Settings**: Centralized system configuration management
 
 ## Getting Started
 
@@ -13,10 +24,20 @@ The FeedbackHub Admin Panel provides comprehensive administrative functionality 
    npm run create-admin
    ```
 
-2. **Default admin credentials:**
+2. **Custom admin user (with arguments):**
+   ```bash
+   node scripts/createAdmin.js "John" "Doe" "john@example.com" "securepassword" "New York" "Lead Administrator"
+   ```
+
+3. **Default admin credentials:**
    - Email: `admin@feedbackhub.com`
    - Password: `admin123`
    - **⚠️ Important:** Change the password after first login
+
+4. **Test admin functionality:**
+   ```bash
+   npm run test-admin
+   ```
 
 ### Accessing the Admin Panel
 
@@ -125,6 +146,78 @@ The FeedbackHub Admin Panel provides comprehensive administrative functionality 
 - Category popularity rankings
 - Rating distribution (1-5 stars)
 
+### 6. Bulk Operations
+
+**Location:** Admin Panel → Bulk Operations section
+
+**Features:**
+- **Bulk User Operations:** Mass actions on multiple users
+- **Bulk Product Operations:** Mass actions on multiple products
+- **Bulk Review Operations:** Mass actions on multiple reviews
+- **ID-based Operations:** Use comma-separated IDs for targeted actions
+
+**User Bulk Actions:**
+- Activate/Deactivate multiple users
+- Update user roles (user, moderator, admin)
+- Delete multiple users and associated data
+
+**Product Bulk Actions:**
+- Update categories for multiple products
+- Apply price multipliers (bulk price changes)
+- Delete multiple products and associated reviews
+
+**Review Bulk Actions:**
+- Verify/unverify multiple reviews
+- Delete multiple reviews
+
+### 7. System Management
+
+**Location:** Admin Panel → System section
+
+**Features:**
+- **System Health Monitoring:** Real-time system status
+- **Data Export:** Download data in JSON or CSV format
+- **System Settings:** View and manage system configuration
+
+**Health Metrics:**
+- System status and uptime
+- Database connectivity and response time
+- Memory usage and performance
+- Node.js version and platform info
+
+**Export Options:**
+- Users data (with privacy considerations)
+- Products data (complete product catalog)
+- Reviews data (with user and product context)
+- Multiple formats: JSON, CSV
+
+**System Settings:**
+- Site configuration
+- User registration settings
+- Security parameters
+- Feature toggles
+
+### 8. Activity Logs
+
+**Location:** Admin Panel → Activity Logs section
+
+**Features:**
+- **System Activity Monitoring:** Track user and admin actions
+- **Log Filtering:** Filter by log type and time period
+- **Security Monitoring:** Monitor login attempts and admin actions
+
+**Log Types:**
+- User login events
+- Admin actions and changes
+- System errors and warnings
+- Security-related events
+
+**Log Information:**
+- Timestamp and event type
+- User ID and IP address
+- Action description and context
+- System-generated events
+
 ## API Endpoints
 
 ### Admin Authentication
@@ -167,12 +260,62 @@ DELETE /api/admin/reviews/:id
 GET /api/admin/analytics?period=30
 ```
 
+### Bulk Operations (Admin Only)
+```
+POST /api/admin/bulk/users
+POST /api/admin/bulk/products
+POST /api/admin/bulk/reviews
+```
+
+### System Management (Admin Only)
+```
+GET /api/admin/settings
+GET /api/admin/health
+GET /api/admin/export/:type?format=json|csv
+GET /api/admin/logs?page=1&limit=50&type=all
+```
+
+### User Info
+```
+GET /api/auth/me
+```
+
+## User Roles
+
+### Role Hierarchy
+1. **User** - Standard user with basic access
+2. **Moderator** - Limited admin access for content moderation
+3. **Admin** - Full administrative access
+
+### Role Permissions
+
+**User Role:**
+- View and submit reviews
+- Manage own profile
+- Access public content
+
+**Moderator Role:**
+- All user permissions
+- Access admin panel (limited)
+- Manage reviews (verify/delete)
+- View user and product data
+- Access analytics and logs
+
+**Admin Role:**
+- All moderator permissions
+- Full user management (create/edit/delete)
+- Full product management
+- Bulk operations
+- System settings and health
+- Data export functionality
+
 ## Security Features
 
 ### Role-Based Access Control
-- **Admin Role Required:** All admin endpoints check for `role: 'admin'`
+- **Admin/Moderator Required:** Admin endpoints check for appropriate roles
 - **JWT Authentication:** Secure token-based authentication
-- **Route Protection:** Admin pages redirect non-admin users
+- **Route Protection:** Admin pages redirect unauthorized users
+- **Granular Permissions:** Different access levels for different roles
 
 ### Data Protection
 - **Input Validation:** All inputs are validated and sanitized

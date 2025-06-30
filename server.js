@@ -16,6 +16,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // MongoDB connection
+// mongodb+srv://AdminFBH:<db_password>@feedhub001.re6xxba.mongodb.net/?retryWrites=true&w=majority&appName=FeedHub001
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/feedbackhub', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -30,7 +31,7 @@ const userSchema = new mongoose.Schema({
   profilePicture: { type: String, default: 'profile photo.svg' },
   location: { type: String, default: '' },
   bio: { type: String, default: '' },
-  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  role: { type: String, enum: ['user', 'admin', 'moderator'], default: 'user' },
   isActive: { type: Boolean, default: true },
   lastLogin: { type: Date },
   createdAt: { type: Date, default: Date.now }
@@ -137,6 +138,45 @@ const adminAuth = async (req, res, next) => {
       });
     }
 
+    if (user.role !== 'admin' && user.role !== 'moderator') {
+      return res.status(403).json({
+        error: 'Access denied',
+        message: 'Admin or moderator privileges required'
+      });
+    }
+
+    req.user = { ...decoded, role: user.role };
+    next();
+  } catch (error) {
+    console.error('❌ Admin auth middleware - Error:', error.message);
+    return res.status(401).json({
+      error: 'Authentication failed',
+      message: 'Invalid or expired token'
+    });
+  }
+};
+
+// Admin-only middleware (stricter than adminAuth)
+const adminOnly = async (req, res, next) => {
+  try {
+    const token = req.header('x-auth-token');
+    if (!token) {
+      return res.status(401).json({
+        error: 'No token, authorization denied',
+        message: 'Authentication token is required'
+      });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      return res.status(401).json({
+        error: 'User not found',
+        message: 'User account no longer exists'
+      });
+    }
+
     if (user.role !== 'admin') {
       return res.status(403).json({
         error: 'Access denied',
@@ -147,7 +187,7 @@ const adminAuth = async (req, res, next) => {
     req.user = { ...decoded, role: user.role };
     next();
   } catch (error) {
-    console.error('❌ Admin auth middleware - Error:', error.message);
+    console.error('❌ Admin-only auth middleware - Error:', error.message);
     return res.status(401).json({
       error: 'Authentication failed',
       message: 'Invalid or expired token'
@@ -236,6 +276,36 @@ app.post('/api/auth/login', async (req, res) => {
   } catch (error) {
     console.error('Login error:', error);
     res.status(400).json({ error: error.message });
+  }
+});
+
+// Get current user info
+app.get('/api/auth/me', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+        profilePicture: user.profilePicture,
+        location: user.location,
+        bio: user.bio,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin
+      }
+    });
+  } catch (error) {
+    console.error('Get user info error:', error);
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -980,6 +1050,275 @@ app.get('/api/admin/analytics', adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Admin analytics error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Bulk Operations (Admin Only)
+app.post('/api/admin/bulk/users', adminOnly, async (req, res) => {
+  try {
+    const { action, userIds, data } = req.body;
+
+    switch (action) {
+      case 'activate':
+        await User.updateMany(
+          { _id: { $in: userIds } },
+          { isActive: true }
+        );
+        break;
+      case 'deactivate':
+        await User.updateMany(
+          { _id: { $in: userIds } },
+          { isActive: false }
+        );
+        break;
+      case 'delete':
+        await User.deleteMany({ _id: { $in: userIds } });
+        await Review.deleteMany({ userId: { $in: userIds } });
+        await Notification.deleteMany({ userId: { $in: userIds } });
+        break;
+      case 'updateRole':
+        await User.updateMany(
+          { _id: { $in: userIds } },
+          { role: data.role }
+        );
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    res.json({ success: true, message: `Bulk ${action} completed for ${userIds.length} users` });
+  } catch (error) {
+    console.error('Bulk user operation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/bulk/products', adminOnly, async (req, res) => {
+  try {
+    const { action, productIds, data } = req.body;
+
+    switch (action) {
+      case 'delete':
+        await Product.deleteMany({ _id: { $in: productIds } });
+        await Review.deleteMany({ productId: { $in: productIds } });
+        break;
+      case 'updateCategory':
+        await Product.updateMany(
+          { _id: { $in: productIds } },
+          { category: data.category }
+        );
+        break;
+      case 'updatePrice':
+        await Product.updateMany(
+          { _id: { $in: productIds } },
+          { $mul: { price: data.multiplier } }
+        );
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    res.json({ success: true, message: `Bulk ${action} completed for ${productIds.length} products` });
+  } catch (error) {
+    console.error('Bulk product operation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/bulk/reviews', adminAuth, async (req, res) => {
+  try {
+    const { action, reviewIds } = req.body;
+
+    switch (action) {
+      case 'verify':
+        await Review.updateMany(
+          { _id: { $in: reviewIds } },
+          { verified: true }
+        );
+        break;
+      case 'unverify':
+        await Review.updateMany(
+          { _id: { $in: reviewIds } },
+          { verified: false }
+        );
+        break;
+      case 'delete':
+        await Review.deleteMany({ _id: { $in: reviewIds } });
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid action' });
+    }
+
+    res.json({ success: true, message: `Bulk ${action} completed for ${reviewIds.length} reviews` });
+  } catch (error) {
+    console.error('Bulk review operation error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// System Settings
+app.get('/api/admin/settings', adminOnly, async (req, res) => {
+  try {
+    // Get system settings (you can store these in a separate collection)
+    const settings = {
+      siteName: 'FeedbackHub',
+      allowRegistration: true,
+      requireEmailVerification: false,
+      maxReviewsPerUser: 100,
+      minPasswordLength: 6,
+      sessionTimeout: 24, // hours
+      maintenanceMode: false,
+      featuredCategories: ['Electronics', 'Books', 'Clothing'],
+      systemVersion: '1.1.0'
+    };
+
+    res.json(settings);
+  } catch (error) {
+    console.error('Get settings error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Export Data
+app.get('/api/admin/export/:type', adminOnly, async (req, res) => {
+  try {
+    const { type } = req.params;
+    const { format = 'json' } = req.query;
+
+    let data;
+    let filename;
+
+    switch (type) {
+      case 'users':
+        data = await User.find().select('-password').lean();
+        filename = `users_export_${new Date().toISOString().split('T')[0]}`;
+        break;
+      case 'products':
+        data = await Product.find().lean();
+        filename = `products_export_${new Date().toISOString().split('T')[0]}`;
+        break;
+      case 'reviews':
+        data = await Review.find()
+          .populate('userId', 'firstName lastName email')
+          .populate('productId', 'name category')
+          .lean();
+        filename = `reviews_export_${new Date().toISOString().split('T')[0]}`;
+        break;
+      default:
+        return res.status(400).json({ error: 'Invalid export type' });
+    }
+
+    if (format === 'csv') {
+      // Convert to CSV format
+      const csv = convertToCSV(data);
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}.csv"`);
+      res.send(csv);
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}.json"`);
+      res.json(data);
+    }
+  } catch (error) {
+    console.error('Export data error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Helper function to convert JSON to CSV
+function convertToCSV(data) {
+  if (!data || data.length === 0) return '';
+
+  const headers = Object.keys(data[0]);
+  const csvHeaders = headers.join(',');
+
+  const csvRows = data.map(row => {
+    return headers.map(header => {
+      const value = row[header];
+      if (typeof value === 'object' && value !== null) {
+        return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+      }
+      return `"${String(value || '').replace(/"/g, '""')}"`;
+    }).join(',');
+  });
+
+  return [csvHeaders, ...csvRows].join('\n');
+}
+
+// System Health Check
+app.get('/api/admin/health', adminAuth, async (req, res) => {
+  try {
+    const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+    const uptime = process.uptime();
+    const memoryUsage = process.memoryUsage();
+
+    // Check database performance
+    const startTime = Date.now();
+    await User.findOne().limit(1);
+    const dbResponseTime = Date.now() - startTime;
+
+    const health = {
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      uptime: Math.floor(uptime),
+      database: {
+        status: dbStatus,
+        responseTime: `${dbResponseTime}ms`
+      },
+      memory: {
+        used: Math.round(memoryUsage.heapUsed / 1024 / 1024),
+        total: Math.round(memoryUsage.heapTotal / 1024 / 1024),
+        external: Math.round(memoryUsage.external / 1024 / 1024)
+      },
+      nodeVersion: process.version,
+      platform: process.platform
+    };
+
+    res.json(health);
+  } catch (error) {
+    console.error('Health check error:', error);
+    res.status(500).json({
+      status: 'unhealthy',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Activity Logs
+app.get('/api/admin/logs', adminAuth, async (req, res) => {
+  try {
+    const { page = 1, limit = 50, type = 'all' } = req.query;
+
+    // This is a simplified version. In production, you'd use a proper logging system
+    const logs = [
+      {
+        id: 1,
+        timestamp: new Date(),
+        type: 'user_login',
+        message: 'User logged in',
+        userId: '507f1f77bcf86cd799439011',
+        ip: '192.168.1.1'
+      },
+      {
+        id: 2,
+        timestamp: new Date(Date.now() - 3600000),
+        type: 'admin_action',
+        message: 'User role updated',
+        userId: '507f1f77bcf86cd799439012',
+        ip: '192.168.1.2'
+      }
+    ];
+
+    res.json({
+      logs: logs.slice((page - 1) * limit, page * limit),
+      total: logs.length,
+      page: parseInt(page),
+      totalPages: Math.ceil(logs.length / limit)
+    });
+  } catch (error) {
+    console.error('Get logs error:', error);
     res.status(500).json({ error: error.message });
   }
 });

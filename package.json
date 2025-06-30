@@ -19,6 +19,7 @@
     "seed": "node scripts/seedData.js",
     "seed-reviews": "node scripts/seedReviews.js",
     "create-admin": "node scripts/createAdmin.js",
+    "test-admin": "node scripts/testAdmin.js",
     "test-setup": "node scripts/test-setup.js",
     "test-profile": "node scripts/test-unified-profile.js",
     "build": "parcel build index.html"
