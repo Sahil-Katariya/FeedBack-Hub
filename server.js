@@ -15,11 +15,42 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// MongoDB connection
-// mongodb+srv://AdminFBH:<db_password>@feedhub001.re6xxba.mongodb.net/?retryWrites=true&w=majority&appName=FeedHub001
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/feedbackhub', {
+// MongoDB connection with error handling
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/feedbackhub';
+
+console.log('🔗 Attempting to connect to MongoDB...');
+console.log('📍 MongoDB URI:', MONGODB_URI.replace(/\/\/.*@/, '//***:***@')); // Hide credentials in logs
+
+mongoose.connect(MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+});
+
+// MongoDB connection event handlers
+mongoose.connection.on('connected', () => {
+  console.log('✅ MongoDB connected successfully');
+  console.log('📊 Database:', mongoose.connection.name);
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('❌ MongoDB connection error:', err.message);
+  console.log('💡 Troubleshooting tips:');
+  console.log('   1. Make sure MongoDB is installed and running');
+  console.log('   2. Check if MongoDB service is started');
+  console.log('   3. Verify the connection string in .env file');
+  console.log('   4. For local MongoDB: mongod --dbpath /path/to/data');
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('⚠️  MongoDB disconnected');
+});
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n🛑 Shutting down gracefully...');
+  await mongoose.connection.close();
+  console.log('✅ MongoDB connection closed');
+  process.exit(0);
 });
 
 // User Schema
@@ -76,10 +107,18 @@ const notificationSchema = new mongoose.Schema({
 
 const Notification = mongoose.model('Notification', notificationSchema);
 
+// Helper to extract token from headers (x-auth-token or Authorization: Bearer)
+function getTokenFromReq(req) {
+  const headerToken = req.header('x-auth-token') || req.header('authorization') || req.header('Authorization');
+  if (!headerToken) return null;
+  if (headerToken.startsWith('Bearer ')) return headerToken.slice(7);
+  return headerToken;
+}
+
 // Authentication middleware
 const auth = (req, res, next) => {
   try {
-    const token = req.header('x-auth-token');
+    const token = getTokenFromReq(req);
     console.log('🔐 Auth middleware - Token received:', token ? token.substring(0, 20) + '...' : 'No token');
 
     if (!token) {
@@ -120,7 +159,7 @@ const auth = (req, res, next) => {
 const adminAuth = async (req, res, next) => {
   try {
     // First check if user is authenticated
-    const token = req.header('x-auth-token');
+    const token = getTokenFromReq(req);
     if (!token) {
       return res.status(401).json({
         error: 'No token, authorization denied',
@@ -159,7 +198,7 @@ const adminAuth = async (req, res, next) => {
 // Admin-only middleware (stricter than adminAuth)
 const adminOnly = async (req, res, next) => {
   try {
-    const token = req.header('x-auth-token');
+    const token = getTokenFromReq(req);
     if (!token) {
       return res.status(401).json({
         error: 'No token, authorization denied',
@@ -754,6 +793,33 @@ app.get('/api/admin/users', adminAuth, async (req, res) => {
     });
   } catch (error) {
     console.error('Admin users error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/admin/users', adminOnly, async (req, res) => {
+  try {
+    const { firstName, lastName, email, password, role = 'user', isActive = true } = req.body;
+
+    if (!firstName || !lastName || !email || !password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      return res.status(400).json({ error: 'Email already in use' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = new User({ firstName, lastName, email, password: hashedPassword, role, isActive });
+    await user.save();
+
+    const safeUser = await User.findById(user._id).select('-password');
+    res.status(201).json({ success: true, user: safeUser });
+  } catch (error) {
+    console.error('Admin create user error:', error);
     res.status(500).json({ error: error.message });
   }
 });

@@ -19,32 +19,35 @@ class ResponsePage {
       this.initializeCommunityChat();
       this.startCommunitySimulation();
     } catch (error) {
-      console.error('Error initializing response page:', error);
-      this.showError('Failed to load products. Please try again later.');
+      console.error("Error initializing response page:", error);
+      this.showError("Failed to load products. Please try again later.");
     }
   }
 
   async loadProducts() {
     try {
-      console.log('Attempting to load products from server...');
+      console.log("Attempting to load products from server...");
       // Try to load from API first
-      const response = await fetch('http://localhost:5001/api/products');
+      const response = await fetch("http://localhost:5000/api/products");
       if (response.ok) {
         const serverProducts = await response.json();
         if (serverProducts && serverProducts.length > 0) {
           this.products = serverProducts;
-          console.log('✅ Loaded products from server:', this.products.length);
+          console.log("✅ Loaded products from server:", this.products.length);
         } else {
-          throw new Error('No products found on server');
+          throw new Error("No products found on server");
         }
       } else {
         throw new Error(`Server responded with status: ${response.status}`);
       }
     } catch (error) {
-      console.log('⚠️ Server not available or no data, using sample data:', error.message);
+      console.log(
+        "⚠️ Server not available or no data, using sample data:",
+        error.message
+      );
       // Fallback to sample data
       this.products = this.getSampleProducts();
-      console.log('📦 Using sample products:', this.products.length);
+      console.log("📦 Using sample products:", this.products.length);
     }
 
     this.renderProducts();
@@ -53,208 +56,226 @@ class ResponsePage {
   getSampleProducts() {
     return [
       {
-        _id: '1',
-        name: 'iPhone 15 Pro',
-        description: 'Latest iPhone with advanced camera system and A17 Pro chip',
+        _id: "1",
+        name: "iPhone 15 Pro",
+        description:
+          "Latest iPhone with advanced camera system and A17 Pro chip",
         price: 999.99,
-        category: 'Electronics',
-        imageUrl: 'placeholder1.jpg',
+        category: "Electronics",
+        imageUrl: "placeholder1.jpg",
         rating: 4.8,
-        reviewCount: 1250
+        reviewCount: 1250,
       },
       {
-        _id: '2',
-        name: 'Samsung Galaxy S24 Ultra',
-        description: 'Premium Android smartphone with S Pen and AI features',
+        _id: "2",
+        name: "Samsung Galaxy S24 Ultra",
+        description: "Premium Android smartphone with S Pen and AI features",
         price: 1199.99,
-        category: 'Electronics',
-        imageUrl: 'placeholder2.jpg',
+        category: "Electronics",
+        imageUrl: "placeholder2.jpg",
         rating: 4.7,
-        reviewCount: 890
+        reviewCount: 890,
       },
       {
-        _id: '3',
-        name: 'MacBook Air M3',
-        description: 'Ultra-thin laptop with M3 chip and 18-hour battery',
+        _id: "3",
+        name: "MacBook Air M3",
+        description: "Ultra-thin laptop with M3 chip and 18-hour battery",
         price: 1099.99,
-        category: 'Computers',
-        imageUrl: 'placeholder3.jpg',
+        category: "Computers",
+        imageUrl: "placeholder3.jpg",
         rating: 4.9,
-        reviewCount: 2100
+        reviewCount: 2100,
       },
       {
-        _id: '4',
-        name: 'Sony WH-1000XM5',
-        description: 'Industry-leading noise canceling wireless headphones',
+        _id: "4",
+        name: "Sony WH-1000XM5",
+        description: "Industry-leading noise canceling wireless headphones",
         price: 399.99,
-        category: 'Audio',
-        imageUrl: 'placeholder4.jpg',
+        category: "Audio",
+        imageUrl: "placeholder4.jpg",
         rating: 4.6,
-        reviewCount: 1580
+        reviewCount: 1580,
       },
       {
-        _id: '5',
-        name: 'iPad Pro 12.9',
-        description: 'Most advanced iPad with M2 chip and Liquid Retina XDR display',
+        _id: "5",
+        name: "iPad Pro 12.9",
+        description:
+          "Most advanced iPad with M2 chip and Liquid Retina XDR display",
         price: 1099.99,
-        category: 'Tablets',
-        imageUrl: 'placeholder5.jpg',
+        category: "Tablets",
+        imageUrl: "placeholder5.jpg",
         rating: 4.8,
-        reviewCount: 1850
+        reviewCount: 1850,
       },
       {
-        _id: '6',
-        name: 'Nintendo Switch OLED',
-        description: 'Gaming console with vibrant OLED screen and enhanced audio',
+        _id: "6",
+        name: "Nintendo Switch OLED",
+        description:
+          "Gaming console with vibrant OLED screen and enhanced audio",
         price: 349.99,
-        category: 'Gaming',
-        imageUrl: 'placeholder6.jpg',
+        category: "Gaming",
+        imageUrl: "placeholder6.jpg",
         rating: 4.5,
-        reviewCount: 3200
+        reviewCount: 3200,
       },
       {
-        _id: '7',
-        name: 'Tesla Model 3',
-        description: 'Electric vehicle with autopilot and long range',
-        price: 38990.00,
-        category: 'Automotive',
-        imageUrl: 'placeholder7.jpg',
+        _id: "7",
+        name: "Tesla Model 3",
+        description: "Electric vehicle with autopilot and long range",
+        price: 38990.0,
+        category: "Automotive",
+        imageUrl: "placeholder7.jpg",
         rating: 4.7,
-        reviewCount: 2500
+        reviewCount: 2500,
       },
       {
-        _id: '8',
-        name: 'Dyson V15 Detect',
-        description: 'Cordless vacuum with laser dust detection technology',
+        _id: "8",
+        name: "Dyson V15 Detect",
+        description: "Cordless vacuum with laser dust detection technology",
         price: 749.99,
-        category: 'Home Appliances',
-        imageUrl: 'placeholder8.jpg',
+        category: "Home Appliances",
+        imageUrl: "placeholder8.jpg",
         rating: 4.6,
-        reviewCount: 1200
+        reviewCount: 1200,
       },
       {
-        _id: '9',
-        name: 'Apple Watch Series 9',
-        description: 'Advanced smartwatch with health monitoring and fitness tracking',
+        _id: "9",
+        name: "Apple Watch Series 9",
+        description:
+          "Advanced smartwatch with health monitoring and fitness tracking",
         price: 399.99,
-        category: 'Wearables',
-        imageUrl: 'placeholder9.jpg',
+        category: "Wearables",
+        imageUrl: "placeholder9.jpg",
         rating: 4.5,
-        reviewCount: 1750
+        reviewCount: 1750,
       },
       {
-        _id: '10',
-        name: 'Canon EOS R5',
-        description: 'Professional mirrorless camera with 45MP sensor and 8K video',
+        _id: "10",
+        name: "Canon EOS R5",
+        description:
+          "Professional mirrorless camera with 45MP sensor and 8K video",
         price: 3899.99,
-        category: 'Photography',
-        imageUrl: 'placeholder10.jpg',
+        category: "Photography",
+        imageUrl: "placeholder10.jpg",
         rating: 4.9,
-        reviewCount: 650
-      }
+        reviewCount: 650,
+      },
     ];
   }
 
   setupEventListeners() {
     // Product search
-    const productSearch = document.getElementById('product-search');
-    productSearch.addEventListener('input', () => {
+    const productSearch = document.getElementById("product-search");
+    productSearch.addEventListener("input", () => {
       this.debounce(() => this.filterProducts(), 300)();
     });
 
     // Chat input
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-btn');
-    
-    chatInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+    const chatInput = document.getElementById("chat-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    chatInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         this.sendMessage();
       }
     });
 
-    sendBtn.addEventListener('click', () => {
+    sendBtn.addEventListener("click", () => {
       this.sendMessage();
     });
 
     // Community chat input
-    const communityInput = document.getElementById('community-input');
-    const communitySendBtn = document.getElementById('community-send-btn');
+    const communityInput = document.getElementById("community-input");
+    const communitySendBtn = document.getElementById("community-send-btn");
 
-    communityInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
+    communityInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault();
         this.sendCommunityMessage();
       }
     });
 
-    communitySendBtn.addEventListener('click', () => {
+    communitySendBtn.addEventListener("click", () => {
       this.sendCommunityMessage();
     });
 
     // Chat tabs
-    document.getElementById('summary-tab').addEventListener('click', () => {
-      this.switchTab('summary');
+    document.getElementById("summary-tab").addEventListener("click", () => {
+      this.switchTab("summary");
     });
 
-    document.getElementById('community-tab').addEventListener('click', () => {
-      this.switchTab('community');
+    document.getElementById("community-tab").addEventListener("click", () => {
+      this.switchTab("community");
     });
 
     // Floating action buttons
-    document.getElementById('clear-chat-btn').addEventListener('click', () => {
+    document.getElementById("clear-chat-btn").addEventListener("click", () => {
       this.clearChat();
     });
 
-    document.getElementById('export-chat-btn').addEventListener('click', () => {
+    document.getElementById("export-chat-btn").addEventListener("click", () => {
       this.exportChat();
     });
 
-    document.getElementById('toggle-panel-btn').addEventListener('click', () => {
-      this.togglePanel();
-    });
+    document
+      .getElementById("toggle-panel-btn")
+      .addEventListener("click", () => {
+        this.togglePanel();
+      });
 
-    document.getElementById('join-community-btn').addEventListener('click', () => {
-      this.joinCommunityChat();
-    });
+    document
+      .getElementById("join-community-btn")
+      .addEventListener("click", () => {
+        this.joinCommunityChat();
+      });
 
     // Close panel
-    document.getElementById('close-panel').addEventListener('click', () => {
+    document.getElementById("close-panel").addEventListener("click", () => {
       this.closePanel();
     });
 
     // Change username
-    document.getElementById('change-username-btn').addEventListener('click', () => {
-      this.changeAnonymousUsername();
-    });
+    document
+      .getElementById("change-username-btn")
+      .addEventListener("click", () => {
+        this.changeAnonymousUsername();
+      });
 
     // Chat option buttons
-    document.getElementById('ask-ai-btn').addEventListener('click', () => {
+    document.getElementById("ask-ai-btn").addEventListener("click", () => {
       this.askAIInCommunity();
     });
 
-    document.getElementById('share-opinion-btn').addEventListener('click', () => {
-      this.shareOpinion();
-    });
+    document
+      .getElementById("share-opinion-btn")
+      .addEventListener("click", () => {
+        this.shareOpinion();
+      });
 
-    document.getElementById('ask-community-btn').addEventListener('click', () => {
-      this.askCommunity();
-    });
+    document
+      .getElementById("ask-community-btn")
+      .addEventListener("click", () => {
+        this.askCommunity();
+      });
   }
 
   renderProducts() {
-    const container = document.getElementById('products-list');
-    const searchTerm = document.getElementById('product-search').value.toLowerCase();
+    const container = document.getElementById("products-list");
+    const searchTerm = document
+      .getElementById("product-search")
+      .value.toLowerCase();
 
     // Hide loading indicator
-    const loadingElement = container.querySelector('.loading-products');
+    const loadingElement = container.querySelector(".loading-products");
     if (loadingElement) {
-      loadingElement.style.display = 'none';
+      loadingElement.style.display = "none";
     }
 
-    const filteredProducts = this.products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm) ||
-      product.category.toLowerCase().includes(searchTerm)
+    const filteredProducts = this.products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm) ||
+        product.category.toLowerCase().includes(searchTerm)
     );
 
     if (filteredProducts.length === 0) {
@@ -266,26 +287,31 @@ class ResponsePage {
       return;
     }
 
-    container.innerHTML = filteredProducts.map(product => `
+    container.innerHTML = filteredProducts
+      .map(
+        (product) => `
       <div class="product-item" data-product-id="${product._id}">
-        <img src="${product.imageUrl}" alt="${product.name}" class="product-item-img"
+        <img src="${product.imageUrl}" alt="${
+          product.name
+        }" class="product-item-img"
              onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgNzBDOTQuNDc3MiA3MCA5MCA3NC40NzcyIDkwIDgwVjEyMEM5MCA5NC40NzcyIDk0LjQ3NzIgOTAgMTAwIDkwSDEwMEMxMDUuNTIzIDkwIDExMCA5NC40NzcyIDExMCAxMDBWMTIwQzExMCAxMjUuNTIzIDEwNS41MjMgMTMwIDEwMCAxMzBIOTBWMTQwSDExMEMxMTYuNjI3IDE0MCA5MiAxMzMuMzczIDkyIDEyNlY4MEMxMDAgNzMuMzczIDEwNi42MjcgNzAgMTAwIDcwWiIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K'; this.onerror=null;">
         <div class="product-item-info">
           <h4>${product.name}</h4>
           <p>${product.category} • $${product.price.toFixed(2)}</p>
         </div>
       </div>
-    `).join('');
+    `
+      )
+      .join("");
 
     // Add loaded class for animation
-    container.classList.add('loaded');
+    container.classList.add("loaded");
 
     // Add click listeners
-    container.querySelectorAll('.product-item').forEach(item => {
-      item.addEventListener('click', () => {
+    container.querySelectorAll(".product-item").forEach((item) => {
+      item.addEventListener("click", () => {
         const productId = item.dataset.productId;
         this.selectProduct(productId);
-        
       });
     });
   }
@@ -295,45 +321,50 @@ class ResponsePage {
   }
 
   selectProduct(productId) {
-    this.currentProduct = this.products.find(p => p._id === productId);
+    this.currentProduct = this.products.find((p) => p._id === productId);
     if (!this.currentProduct) return;
 
     // Update active product in sidebar
-    document.querySelectorAll('.product-item').forEach(item => {
-      item.classList.remove('active');
+    document.querySelectorAll(".product-item").forEach((item) => {
+      item.classList.remove("active");
     });
-    document.querySelector(`[data-product-id="${productId}"]`).classList.add('active');
+    document
+      .querySelector(`[data-product-id="${productId}"]`)
+      .classList.add("active");
 
     // Update chat header
     this.updateChatHeader();
-    
+
     // Clear previous chat and start new conversation
     this.clearChat();
     this.startConversation();
-    
+
     // Show chat input
     // Always show chat input container (no matter if a product is selected)
-    document.getElementById('chat-input-container').style.display = 'block';
+    document.getElementById("chat-input-container").style.display = "block";
   }
 
   updateChatHeader() {
-    const chatWelcome = document.getElementById('chat-welcome');
-    const chatProductInfo = document.querySelector('.chat-product-info');
-    
-    chatWelcome.style.display = 'none';
-    chatProductInfo.style.display = 'flex';
-    
-    document.getElementById('chat-product-image').src = this.currentProduct.imageUrl;
-    document.getElementById('chat-product-name').textContent = this.currentProduct.name;
-    document.getElementById('chat-product-category').textContent = 
-      `${this.currentProduct.category} • $${this.currentProduct.price.toFixed(2)}`;
+    const chatWelcome = document.getElementById("chat-welcome");
+    const chatProductInfo = document.querySelector(".chat-product-info");
+
+    chatWelcome.style.display = "none";
+    chatProductInfo.style.display = "flex";
+
+    document.getElementById("chat-product-image").src =
+      this.currentProduct.imageUrl;
+    document.getElementById("chat-product-name").textContent =
+      this.currentProduct.name;
+    document.getElementById("chat-product-category").textContent = `${
+      this.currentProduct.category
+    } • $${this.currentProduct.price.toFixed(2)}`;
   }
 
   startConversation() {
     const welcomeMessage = {
-      type: 'ai',
+      type: "ai",
       content: `Hi! I'm your AI assistant for ${this.currentProduct.name}. I can help you with detailed information, reviews analysis, comparisons, and answer any questions you have about this product. What would you like to know?`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.addMessage(welcomeMessage);
@@ -344,23 +375,27 @@ class ResponsePage {
 
   showQuickQuestions() {
     const quickQuestions = [
-      'What are the pros and cons?',
-      'How does it compare to competitors?',
-      'What do reviews say about quality?',
-      'Is it worth the price?',
-      'What are common issues?'
+      "What are the pros and cons?",
+      "How does it compare to competitors?",
+      "What do reviews say about quality?",
+      "Is it worth the price?",
+      "What are common issues?",
     ];
 
-    const container = document.getElementById('quick-questions');
-    container.innerHTML = quickQuestions.map(question => `
+    const container = document.getElementById("quick-questions");
+    container.innerHTML = quickQuestions
+      .map(
+        (question) => `
       <button class="quick-question-btn" data-question="${question}">
         ${question}
       </button>
-    `).join('');
+    `
+      )
+      .join("");
 
     // Add click listeners
-    container.querySelectorAll('.quick-question-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    container.querySelectorAll(".quick-question-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
         const question = btn.dataset.question;
         this.sendQuickQuestion(question);
       });
@@ -370,9 +405,9 @@ class ResponsePage {
   sendQuickQuestion(question) {
     // Add user message
     const userMessage = {
-      type: 'user',
+      type: "user",
       content: question,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     this.addMessage(userMessage);
 
@@ -383,22 +418,22 @@ class ResponsePage {
   }
 
   sendMessage() {
-    const input = document.getElementById('chat-input');
+    const input = document.getElementById("chat-input");
     const message = input.value.trim();
-    
+
     if (!message || !this.currentProduct) return;
 
     // Add user message
     const userMessage = {
-      type: 'user',
+      type: "user",
       content: message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
     this.addMessage(userMessage);
-    
+
     // Clear input
-    input.value = '';
-    
+    input.value = "";
+
     // Show typing indicator and generate response
     this.showTypingIndicator();
     setTimeout(() => {
@@ -407,27 +442,30 @@ class ResponsePage {
   }
 
   addMessage(message) {
-    const messagesContainer = document.getElementById('chat-messages');
+    const messagesContainer = document.getElementById("chat-messages");
     const messageElement = this.createMessageElement(message);
     messagesContainer.appendChild(messageElement);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    
+
     this.chatHistory.push(message);
   }
 
   createMessageElement(message) {
-    const messageDiv = document.createElement('div');
+    const messageDiv = document.createElement("div");
     messageDiv.className = `message ${message.type}`;
-    
-    const avatar = message.type === 'ai' ? '🤖' : 'U';
-    const time = message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
+
+    const avatar = message.type === "ai" ? "🤖" : "U";
+    const time = message.timestamp.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
     messageDiv.innerHTML = `
       <div class="message-avatar">${avatar}</div>
       <div class="message-content">
         <p class="message-text">${message.content}</p>
         <div class="message-time">${time}</div>
-        ${message.type === 'ai' ? this.getMessageActions() : ''}
+        ${message.type === "ai" ? this.getMessageActions() : ""}
       </div>
     `;
 
@@ -445,11 +483,11 @@ class ResponsePage {
   }
 
   showTypingIndicator() {
-    const messagesContainer = document.getElementById('chat-messages');
-    const typingDiv = document.createElement('div');
-    typingDiv.className = 'typing-indicator';
-    typingDiv.id = 'typing-indicator';
-    
+    const messagesContainer = document.getElementById("chat-messages");
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "typing-indicator";
+    typingDiv.id = "typing-indicator";
+
     typingDiv.innerHTML = `
       <div class="message-avatar">🤖</div>
       <div class="typing-dots">
@@ -458,13 +496,13 @@ class ResponsePage {
         <div class="typing-dot"></div>
       </div>
     `;
-    
+
     messagesContainer.appendChild(typingDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
   }
 
   removeTypingIndicator() {
-    const typingIndicator = document.getElementById('typing-indicator');
+    const typingIndicator = document.getElementById("typing-indicator");
     if (typingIndicator) {
       typingIndicator.remove();
     }
@@ -472,16 +510,16 @@ class ResponsePage {
 
   generateAIResponse(userMessage) {
     this.removeTypingIndicator();
-    
+
     const responses = this.getAIResponses(userMessage);
     const response = responses[Math.floor(Math.random() * responses.length)];
-    
+
     const aiMessage = {
-      type: 'ai',
+      type: "ai",
       content: response,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    
+
     this.addMessage(aiMessage);
     this.aiResponses++;
     this.updateSummaryStats();
@@ -490,49 +528,60 @@ class ResponsePage {
   getAIResponses(userMessage) {
     const product = this.currentProduct;
     const lowerMessage = userMessage.toLowerCase();
-    
-    if (lowerMessage.includes('pros') || lowerMessage.includes('cons')) {
+
+    if (lowerMessage.includes("pros") || lowerMessage.includes("cons")) {
       return [
-        `Based on aggregated reviews for ${product.name}:\n\n Pros: \n• Excellent build quality and premium materials\n• Outstanding performance for the price range\n• Great user experience and intuitive interface\n• Strong battery life and fast charging\n\n Cons: \n• Higher price point compared to competitors\n• Limited color options available\n• Some users report minor software quirks\n• Accessories sold separately`
+        `Based on aggregated reviews for ${product.name}:\n\n Pros: \n• Excellent build quality and premium materials\n• Outstanding performance for the price range\n• Great user experience and intuitive interface\n• Strong battery life and fast charging\n\n Cons: \n• Higher price point compared to competitors\n• Limited color options available\n• Some users report minor software quirks\n• Accessories sold separately`,
       ];
     }
-    
-    if (lowerMessage.includes('compare') || lowerMessage.includes('competitor')) {
+
+    if (
+      lowerMessage.includes("compare") ||
+      lowerMessage.includes("competitor")
+    ) {
       return [
-        `${product.name} stands out in several key areas:\n\n vs Competitors: \n• Superior build quality and materials\n• Better performance benchmarks\n• More comprehensive feature set\n• Higher customer satisfaction ratings (${product.rating}/5)\n\n Price Comparison: \nAt $${product.price}, it's positioned as a premium option but offers excellent value for the features provided. Most competitors in this range lack some of the advanced features included here.`
+        `${product.name} stands out in several key areas:\n\n vs Competitors: \n• Superior build quality and materials\n• Better performance benchmarks\n• More comprehensive feature set\n• Higher customer satisfaction ratings (${product.rating}/5)\n\n Price Comparison: \nAt $${product.price}, it's positioned as a premium option but offers excellent value for the features provided. Most competitors in this range lack some of the advanced features included here.`,
       ];
     }
-    
-    if (lowerMessage.includes('quality') || lowerMessage.includes('review')) {
+
+    if (lowerMessage.includes("quality") || lowerMessage.includes("review")) {
       return [
-        `Review analysis for ${product.name} (${product.reviewCount} reviews):\n\n Quality Highlights: \n• 89% of users rate build quality as "Excellent"\n• Durability tests show above-average performance\n• Materials feel premium and well-constructed\n• Quality control appears consistent across units\n\n Common Praise: \n• "Feels solid and well-made"\n• "Attention to detail is impressive"\n• "Worth the investment for the quality"`
+        `Review analysis for ${product.name} (${product.reviewCount} reviews):\n\n Quality Highlights: \n• 89% of users rate build quality as "Excellent"\n• Durability tests show above-average performance\n• Materials feel premium and well-constructed\n• Quality control appears consistent across units\n\n Common Praise: \n• "Feels solid and well-made"\n• "Attention to detail is impressive"\n• "Worth the investment for the quality"`,
       ];
     }
-    
-    if (lowerMessage.includes('price') || lowerMessage.includes('worth')) {
+
+    if (lowerMessage.includes("price") || lowerMessage.includes("worth")) {
       return [
-        `Price Analysis for ${product.name}:\n\n Value Assessment: \n• Current price: $${product.price}\n• Market average for similar products: $${(product.price * 0.85).toFixed(2)}\n• Price-to-feature ratio: Excellent\n\n Is it worth it? \nBased on user feedback and feature comparison, 87% of buyers say "yes" - the premium price is justified by the quality, features, and long-term reliability. Consider it an investment rather than just a purchase.`
+        `Price Analysis for ${
+          product.name
+        }:\n\n Value Assessment: \n• Current price: $${
+          product.price
+        }\n• Market average for similar products: $${(
+          product.price * 0.85
+        ).toFixed(
+          2
+        )}\n• Price-to-feature ratio: Excellent\n\n Is it worth it? \nBased on user feedback and feature comparison, 87% of buyers say "yes" - the premium price is justified by the quality, features, and long-term reliability. Consider it an investment rather than just a purchase.`,
       ];
     }
-    
-    if (lowerMessage.includes('issue') || lowerMessage.includes('problem')) {
+
+    if (lowerMessage.includes("issue") || lowerMessage.includes("problem")) {
       return [
-        `Common Issues Analysis for ${product.name}:\n\n Reported Issues (frequency): \n• Minor software glitches (8% of users)\n• Initial setup complexity (5% of users)\n• Compatibility with older accessories (3% of users)\n\n Solutions Available: \n• Most software issues resolved with updates\n• Setup guides and video tutorials available\n• Adapter options for compatibility\n\n Overall Reliability:  94% issue-free experience rate`
+        `Common Issues Analysis for ${product.name}:\n\n Reported Issues (frequency): \n• Minor software glitches (8% of users)\n• Initial setup complexity (5% of users)\n• Compatibility with older accessories (3% of users)\n\n Solutions Available: \n• Most software issues resolved with updates\n• Setup guides and video tutorials available\n• Adapter options for compatibility\n\n Overall Reliability:  94% issue-free experience rate`,
       ];
     }
-    
+
     // Default responses
     return [
       `Great question about ${product.name}! Based on ${product.reviewCount} user reviews and expert analysis, this product has earned a ${product.rating}/5 rating. The consensus is that it offers excellent value in the ${product.category} category. Users particularly appreciate its reliability and performance. Would you like me to dive deeper into any specific aspect?`,
-      
+
       `${product.name} is highly regarded in the ${product.category} space. At $${product.price}, it's positioned as a premium option that delivers on its promises. The ${product.reviewCount} reviews show consistent satisfaction with quality and performance. What specific features are you most interested in learning about?`,
-      
-      `From analyzing user feedback and expert reviews, ${product.name} stands out for its build quality and user experience. The ${product.rating}/5 rating reflects strong customer satisfaction. Most users report that it meets or exceeds their expectations. Is there a particular use case or feature you'd like me to focus on?`
+
+      `From analyzing user feedback and expert reviews, ${product.name} stands out for its build quality and user experience. The ${product.rating}/5 rating reflects strong customer satisfaction. Most users report that it meets or exceeds their expectations. Is there a particular use case or feature you'd like me to focus on?`,
     ];
   }
 
   clearChat() {
-    document.getElementById('chat-messages').innerHTML = '';
+    document.getElementById("chat-messages").innerHTML = "";
     this.chatHistory = [];
     this.aiResponses = 0;
     this.userReviews = 0;
@@ -541,48 +590,58 @@ class ResponsePage {
 
   exportChat() {
     if (this.chatHistory.length === 0) {
-      alert('No chat history to export');
+      alert("No chat history to export");
       return;
     }
 
-    const chatText = this.chatHistory.map(msg => 
-      `[${msg.timestamp.toLocaleString()}] ${msg.type.toUpperCase()}: ${msg.content}`
-    ).join('\n\n');
+    const chatText = this.chatHistory
+      .map(
+        (msg) =>
+          `[${msg.timestamp.toLocaleString()}] ${msg.type.toUpperCase()}: ${
+            msg.content
+          }`
+      )
+      .join("\n\n");
 
-    const blob = new Blob([chatText], { type: 'text/plain' });
+    const blob = new Blob([chatText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `chat-${this.currentProduct?.name || 'conversation'}-${Date.now()}.txt`;
+    a.download = `chat-${
+      this.currentProduct?.name || "conversation"
+    }-${Date.now()}.txt`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
   toggleSummary() {
-    const summary = document.getElementById('response-summary');
-    if (summary.style.display === 'none' || !summary.style.display) {
-      summary.style.display = 'flex';
+    const summary = document.getElementById("response-summary");
+    if (summary.style.display === "none" || !summary.style.display) {
+      summary.style.display = "flex";
       this.updateSummaryInsights();
     } else {
-      summary.style.display = 'none';
+      summary.style.display = "none";
     }
   }
 
   closeSummary() {
-    document.getElementById('response-summary').style.display = 'none';
+    document.getElementById("response-summary").style.display = "none";
   }
 
   updateSummaryStats() {
-    document.getElementById('ai-responses-count').textContent = this.aiResponses;
-    document.getElementById('user-reviews-count').textContent = this.userReviews;
-    document.getElementById('summary-avg-rating').textContent = 
-      this.currentProduct ? this.currentProduct.rating.toFixed(1) : '0.0';
+    document.getElementById("ai-responses-count").textContent =
+      this.aiResponses;
+    document.getElementById("user-reviews-count").textContent =
+      this.userReviews;
+    //
+    document.getElementById("summary-avg-rating").textContent =
+      this.currentProduct?.rating?.toFixed(1) || "0.0";
   }
 
   updateSummaryInsights() {
-    const insights = document.getElementById('summary-insights');
+    const insights = document.getElementById("summary-insights");
     if (!this.currentProduct) {
-      insights.innerHTML = '<p>Select a product to see insights</p>';
+      insights.innerHTML = "<p>Select a product to see insights</p>";
       return;
     }
 
@@ -610,7 +669,7 @@ class ResponsePage {
   }
 
   showError(message) {
-    const container = document.getElementById('products-list');
+    const container = document.getElementById("products-list");
     container.innerHTML = `
       <div class="loading-products">
         <p style="color: #e74c3c;">${message}</p>
@@ -623,8 +682,30 @@ class ResponsePage {
 
   // Community Chat Methods
   generateAnonymousUsername() {
-    const adjectives = ['Cool', 'Smart', 'Quick', 'Bright', 'Sharp', 'Swift', 'Bold', 'Wise', 'Kind', 'Calm'];
-    const nouns = ['User', 'Reviewer', 'Buyer', 'Expert', 'Critic', 'Fan', 'Shopper', 'Guide', 'Helper', 'Advisor'];
+    const adjectives = [
+      "Cool",
+      "Smart",
+      "Quick",
+      "Bright",
+      "Sharp",
+      "Swift",
+      "Bold",
+      "Wise",
+      "Kind",
+      "Calm",
+    ];
+    const nouns = [
+      "User",
+      "Reviewer",
+      "Buyer",
+      "Expert",
+      "Critic",
+      "Fan",
+      "Shopper",
+      "Guide",
+      "Helper",
+      "Advisor",
+    ];
     const numbers = Math.floor(Math.random() * 999) + 1;
 
     const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
@@ -634,8 +715,10 @@ class ResponsePage {
   }
 
   initializeCommunityChat() {
-    document.getElementById('anonymous-username').textContent = this.anonymousUsername;
-    document.getElementById('online-users-count').textContent = this.onlineUsers;
+    document.getElementById("anonymous-username").textContent =
+      this.anonymousUsername;
+    document.getElementById("online-users-count").textContent =
+      this.onlineUsers;
 
     // Add some initial community messages
     this.addInitialCommunityMessages();
@@ -644,26 +727,28 @@ class ResponsePage {
   addInitialCommunityMessages() {
     const initialMessages = [
       {
-        type: 'user',
-        username: 'Tech_Guru_456',
-        content: 'Has anyone tried the new iPhone 15 Pro? Thinking about upgrading from my 13.',
-        timestamp: new Date(Date.now() - 300000) // 5 minutes ago
+        type: "user",
+        username: "Tech_Guru_456",
+        content:
+          "Has anyone tried the new iPhone 15 Pro? Thinking about upgrading from my 13.",
+        timestamp: new Date(Date.now() - 300000), // 5 minutes ago
       },
       {
-        type: 'ai',
-        username: 'AI Assistant',
-        content: 'The iPhone 15 Pro offers significant improvements in camera quality and performance. Based on user reviews, 89% of upgraders from iPhone 13 are satisfied with the upgrade.',
-        timestamp: new Date(Date.now() - 240000) // 4 minutes ago
+        type: "ai",
+        username: "AI Assistant",
+        content:
+          "The iPhone 15 Pro offers significant improvements in camera quality and performance. Based on user reviews, 89% of upgraders from iPhone 13 are satisfied with the upgrade.",
+        timestamp: new Date(Date.now() - 240000), // 4 minutes ago
       },
       {
-        type: 'user',
-        username: 'Budget_Shopper_789',
-        content: 'What about the price though? Is it worth the extra cost?',
-        timestamp: new Date(Date.now() - 180000) // 3 minutes ago
-      }
+        type: "user",
+        username: "Budget_Shopper_789",
+        content: "What about the price though? Is it worth the extra cost?",
+        timestamp: new Date(Date.now() - 180000), // 3 minutes ago
+      },
     ];
 
-    initialMessages.forEach(msg => {
+    initialMessages.forEach((msg) => {
       this.communityMessages.push(msg);
     });
 
@@ -673,7 +758,8 @@ class ResponsePage {
   startCommunitySimulation() {
     // Simulate other users joining and chatting
     setInterval(() => {
-      if (Math.random() < 0.3) { // 30% chance every 30 seconds
+      if (Math.random() < 0.3) {
+        // 30% chance every 30 seconds
         this.simulateUserMessage();
       }
     }, 30000);
@@ -681,35 +767,42 @@ class ResponsePage {
     // Update online users count occasionally
     setInterval(() => {
       this.onlineUsers = Math.floor(Math.random() * 20) + 8; // 8-28 users
-      document.getElementById('online-users-count').textContent = this.onlineUsers;
+      document.getElementById("online-users-count").textContent =
+        this.onlineUsers;
     }, 60000);
   }
 
   simulateUserMessage() {
     const simulatedUsers = [
-      'Product_Expert_123', 'Deal_Hunter_456', 'Tech_Lover_789',
-      'Smart_Buyer_321', 'Review_Reader_654', 'Gadget_Fan_987'
+      "Product_Expert_123",
+      "Deal_Hunter_456",
+      "Tech_Lover_789",
+      "Smart_Buyer_321",
+      "Review_Reader_654",
+      "Gadget_Fan_987",
     ];
 
     const simulatedMessages = [
-      'Just got this product and loving it so far!',
-      'Anyone know if there are any deals coming up?',
-      'The reviews on this are really mixed, what do you think?',
-      'Compared to the competition, this seems like a solid choice.',
-      'Has anyone had any issues with durability?',
-      'The AI recommendations here are pretty helpful!',
-      'Worth waiting for the next version or buy now?',
-      'Customer service experience has been great with this brand.'
+      "Just got this product and loving it so far!",
+      "Anyone know if there are any deals coming up?",
+      "The reviews on this are really mixed, what do you think?",
+      "Compared to the competition, this seems like a solid choice.",
+      "Has anyone had any issues with durability?",
+      "The AI recommendations here are pretty helpful!",
+      "Worth waiting for the next version or buy now?",
+      "Customer service experience has been great with this brand.",
     ];
 
-    const username = simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
-    const content = simulatedMessages[Math.floor(Math.random() * simulatedMessages.length)];
+    const username =
+      simulatedUsers[Math.floor(Math.random() * simulatedUsers.length)];
+    const content =
+      simulatedMessages[Math.floor(Math.random() * simulatedMessages.length)];
 
     const message = {
-      type: 'user',
+      type: "user",
       username: username,
       content: content,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.communityMessages.push(message);
@@ -725,38 +818,42 @@ class ResponsePage {
 
   switchTab(tabName) {
     // Update tab buttons
-    document.querySelectorAll('.chat-tab').forEach(tab => {
-      tab.classList.remove('active');
+    document.querySelectorAll(".chat-tab").forEach((tab) => {
+      tab.classList.remove("active");
     });
-    document.getElementById(`${tabName}-tab`).classList.add('active');
+    document.getElementById(`${tabName}-tab`).classList.add("active");
 
     // Update tab content
-    document.querySelectorAll('.tab-content').forEach(content => {
-      content.classList.remove('active');
+    document.querySelectorAll(".tab-content").forEach((content) => {
+      content.classList.remove("active");
     });
-    document.getElementById(`${tabName}-content`).classList.add('active');
+    document.getElementById(`${tabName}-content`).classList.add("active");
   }
 
   sendCommunityMessage() {
-    const input = document.getElementById('community-input');
+    const input = document.getElementById("community-input");
     const message = input.value.trim();
 
     if (!message) return;
 
     const communityMessage = {
-      type: 'own',
+      type: "own",
       username: this.anonymousUsername,
       content: message,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.communityMessages.push(communityMessage);
     this.renderCommunityMessages();
 
-    input.value = '';
+    input.value = "";
 
     // Sometimes trigger AI response
-    if (message.includes('?') || message.toLowerCase().includes('ai') || Math.random() < 0.3) {
+    if (
+      message.includes("?") ||
+      message.toLowerCase().includes("ai") ||
+      Math.random() < 0.3
+    ) {
       setTimeout(() => {
         this.generateAICommunityResponse(message);
       }, 1000 + Math.random() * 2000);
@@ -765,22 +862,23 @@ class ResponsePage {
 
   generateAICommunityResponse(userMessage) {
     const aiResponses = [
-      'Based on the reviews I\'ve analyzed, that\'s a great question! Most users report positive experiences with that aspect.',
-      'I can help with that! From aggregated data, here\'s what users typically experience...',
-      'That\'s a common concern. Looking at user feedback, about 85% of buyers are satisfied with that feature.',
-      'Great point! The data shows mixed opinions on that, but the majority lean positive.',
-      'I\'ve processed thousands of reviews on this topic. The consensus seems to be quite favorable.',
-      'Interesting question! Based on price comparisons and user satisfaction, it offers good value.',
-      'From what I can see in the review data, that\'s definitely worth considering before purchasing.'
+      "Based on the reviews I've analyzed, that's a great question! Most users report positive experiences with that aspect.",
+      "I can help with that! From aggregated data, here's what users typically experience...",
+      "That's a common concern. Looking at user feedback, about 85% of buyers are satisfied with that feature.",
+      "Great point! The data shows mixed opinions on that, but the majority lean positive.",
+      "I've processed thousands of reviews on this topic. The consensus seems to be quite favorable.",
+      "Interesting question! Based on price comparisons and user satisfaction, it offers good value.",
+      "From what I can see in the review data, that's definitely worth considering before purchasing.",
     ];
 
-    const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+    const response =
+      aiResponses[Math.floor(Math.random() * aiResponses.length)];
 
     const aiMessage = {
-      type: 'ai',
-      username: 'AI Assistant',
+      type: "ai",
+      username: "AI Assistant",
       content: response,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.communityMessages.push(aiMessage);
@@ -788,13 +886,18 @@ class ResponsePage {
   }
 
   renderCommunityMessages() {
-    const container = document.getElementById('community-messages');
+    const container = document.getElementById("community-messages");
 
-    container.innerHTML = this.communityMessages.map(msg => {
-      const time = msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const avatarText = msg.type === 'ai' ? '🤖' : msg.username.charAt(0).toUpperCase();
+    container.innerHTML = this.communityMessages
+      .map((msg) => {
+        const time = msg.timestamp.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+        const avatarText =
+          msg.type === "ai" ? "🤖" : msg.username.charAt(0).toUpperCase();
 
-      return `
+        return `
         <div class="community-message ${msg.type}">
           <div class="community-avatar ${msg.type}">${avatarText}</div>
           <div class="community-message-content">
@@ -806,44 +909,46 @@ class ResponsePage {
           </div>
         </div>
       `;
-    }).join('');
+      })
+      .join("");
 
     container.scrollTop = container.scrollHeight;
   }
 
   changeAnonymousUsername() {
     this.anonymousUsername = this.generateAnonymousUsername();
-    document.getElementById('anonymous-username').textContent = this.anonymousUsername;
+    document.getElementById("anonymous-username").textContent =
+      this.anonymousUsername;
   }
 
   askAIInCommunity() {
-    const input = document.getElementById('community-input');
-    input.value = '🤖 AI, what do you think about ';
+    const input = document.getElementById("community-input");
+    input.value = "🤖 AI, what do you think about ";
     input.focus();
   }
 
   shareOpinion() {
-    const input = document.getElementById('community-input');
-    input.value = '💭 In my opinion, ';
+    const input = document.getElementById("community-input");
+    input.value = "💭 In my opinion, ";
     input.focus();
   }
 
   askCommunity() {
-    const input = document.getElementById('community-input');
-    input.value = '❓ Has anyone here ';
+    const input = document.getElementById("community-input");
+    input.value = "❓ Has anyone here ";
     input.focus();
   }
 
   joinCommunityChat() {
-    this.switchTab('community');
-    document.getElementById('anonymous-chat-panel').style.display = 'flex';
+    this.switchTab("community");
+    document.getElementById("anonymous-chat-panel").style.display = "flex";
 
     // Add join message
     const joinMessage = {
-      type: 'ai',
-      username: 'System',
+      type: "ai",
+      username: "System",
       content: `${this.anonymousUsername} joined the community chat! 👋`,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     this.communityMessages.push(joinMessage);
@@ -851,17 +956,17 @@ class ResponsePage {
   }
 
   togglePanel() {
-    const panel = document.getElementById('anonymous-chat-panel');
-    if (panel.style.display === 'none' || !panel.style.display) {
-      panel.style.display = 'flex';
+    const panel = document.getElementById("anonymous-chat-panel");
+    if (panel.style.display === "none" || !panel.style.display) {
+      panel.style.display = "flex";
       this.updateSummaryInsights();
     } else {
-      panel.style.display = 'none';
+      panel.style.display = "none";
     }
   }
 
   closePanel() {
-    document.getElementById('anonymous-chat-panel').style.display = 'none';
+    document.getElementById("anonymous-chat-panel").style.display = "none";
   }
 
   // Update existing methods
@@ -875,6 +980,6 @@ class ResponsePage {
 }
 
 // Initialize response page when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
   new ResponsePage();
 });

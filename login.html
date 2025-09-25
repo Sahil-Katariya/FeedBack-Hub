@@ -112,9 +112,20 @@
   <script src="js/api.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Check if user is already logged in
+      // Check if user is already logged in and redirect based on role
       if (localStorage.getItem('token')) {
+        const userRaw = localStorage.getItem('user');
+        if (userRaw) {
+          try {
+            const user = JSON.parse(userRaw);
+            if (user.role === 'admin' || user.role === 'moderator') {
+              window.location.href = 'admin.html';
+              return;
+            }
+          } catch (e) { /* ignore parse errors */ }
+        }
         window.location.href = 'profile.html';
+        return;
       }
 
       const loginForm = document.querySelector('.login-form');
@@ -136,7 +147,11 @@
           if (result.success) {
             localStorage.setItem('token', result.token);
             localStorage.setItem('user', JSON.stringify(result.user));
-            window.location.href = 'profile.html';
+            if (result.user && (result.user.role === 'admin' || result.user.role === 'moderator')) {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'profile.html';
+            }
           } else {
             alert(result.error || 'Login failed');
           }
